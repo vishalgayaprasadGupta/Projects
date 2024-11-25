@@ -24,6 +24,7 @@
         android:id="@+id/button6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="RedirectToRegistrationPage"
         android:text="New User ? SIGN UP"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,7 +35,7 @@
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="361dp"
+        android:layout_width="322dp"
         android:layout_height="62dp"
         android:text="ĊäṁṗüṡĊöṅṅëċẗ"
         android:textColor="#13B683"
@@ -57,7 +58,7 @@
         app:layout_constraintVertical_bias="0.443">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/textView16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=" Username :     "
@@ -107,8 +108,8 @@
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="320dp"
-        android:layout_height="92dp"
+        android:layout_width="343dp"
+        android:layout_height="71dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -118,18 +119,20 @@
 
         <Button
             android:id="@+id/button2"
-            android:layout_width="154dp"
+            android:layout_width="171dp"
             android:layout_height="68dp"
             android:backgroundTint="#647687"
+            android:onClick="RedirectToUserLoginPage"
             android:padding="10dp"
             android:text="User Login"
             android:textSize="20sp" />
 
         <Button
             android:id="@+id/button3"
-            android:layout_width="154dp"
+            android:layout_width="167dp"
             android:layout_height="68dp"
             android:backgroundTint="#FFFFFF"
+            android:onClick="RedirectToAdminLoginPage"
             android:padding="10dp"
             android:selectAllOnFocus="true"
             android:text="Admin Login"
@@ -152,8 +155,8 @@
 
         <Button
             android:id="@+id/button4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="127dp"
+            android:layout_height="match_parent"
             android:text="Forget Password ?"
             android:textSize="08sp" />
     </LinearLayout>
