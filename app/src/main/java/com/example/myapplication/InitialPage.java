@@ -2,26 +2,33 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.os.Handler;
+import android.widget.VideoView;
+import android.media.MediaPlayer;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class InitialPage extends AppCompatActivity {
+
+    private VideoView videoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_initial_page);
-    }
 
-    public void RedirectToLoginPage(View view) {
-        Intent intent = new Intent(this, LoginPage.class);
-        startActivity(intent);
+        videoView = findViewById(R.id.videoView);
 
+        // Set the video path from the raw folder
+        String path = "android.resource://" + getPackageName() + "/" + R.raw.logo;
+        videoView.setVideoPath(path);  // Set the video source
+        videoView.setOnPreparedListener(mp -> videoView.start());
+        videoView.setOnCompletionListener(mp -> {
+            new Handler().postDelayed(() -> {
+                Intent intent = new Intent(InitialPage.this, LoginPage.class);
+                startActivity(intent);
+                finish();
+            }, 1000);
+        });
     }
 }

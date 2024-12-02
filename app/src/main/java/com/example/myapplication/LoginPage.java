@@ -22,7 +22,6 @@ public class LoginPage extends AppCompatActivity {
     public void RedirectToRegistrationPage(View view) {
         Intent intent = new Intent(this, RegistrationPage.class);
         startActivity(intent);
-
     }
     public void RedirectToAdminLoginPage(View view) {
         Intent intent = new Intent(this, AdminLogin.class);
@@ -32,5 +31,10 @@ public class LoginPage extends AppCompatActivity {
         Intent intent = new Intent(this, LoginPage.class);
         startActivity(intent);
 
+    }
+
+    public void RedirectToUserHomePage(View view){
+        Intent intent = new Intent(this, UserHomePage.class);
+        startActivity(intent);
     }
 }

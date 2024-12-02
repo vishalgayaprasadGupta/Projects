@@ -1,0 +1,14 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Rectangle Background Color -->
+    <solid android:color="#FFFFFF"/>  <!-- Optional: Set background color, e.g., white -->
+
+    <!-- Border Definition -->
+    <stroke
+        android:color="#000000"
+    android:width="2dp"
+    android:dashWidth="0dp"
+    android:dashGap="0dp" />
+
+    <!-- Optional: Rounded Corners -->
+    <corners android:radius="10dp" />  <!-- You can remove this line if you want sharp corners -->
+</shape>
