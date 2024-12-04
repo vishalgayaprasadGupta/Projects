@@ -10,15 +10,16 @@
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="349dp"
-        android:layout_height="56dp"
+        android:layout_width="310dp"
+        android:layout_height="70dp"
         android:text="ĊäṁṗüṡĊöṅṅëċẗ"
+        android:layout_marginStart="25dp"
         android:textColor="#003161"
-        android:textSize="45sp"
+        android:textSize="35sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.645"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.106" />
@@ -30,37 +31,35 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.588"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.263">
+        app:layout_constraintVertical_bias="0.228">
 
         <Button
             android:id="@+id/button2"
             android:layout_width="171dp"
             android:layout_height="68dp"
             android:backgroundTint="#FFFFFF"
-            android:onClick="RedirectToUserLoginPage"
+            android:onClick="redirectToUserLoginPage"
             android:padding="10dp"
-            android:textColor="@color/black"
             android:text="User Login"
+            android:textColor="@color/black"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/button3"
             android:layout_width="167dp"
             android:layout_height="68dp"
             android:backgroundTint="#006A67"
-            android:onClick="RedirectToAdminLoginPage"
             android:padding="10dp"
             android:selectAllOnFocus="true"
             android:text="ADMIN LOGIN"
-            android:textStyle="bold"
             android:textAllCaps="false"
             android:textColor="#0F0E0E"
             android:textColorHighlight="#FFFFFF"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -72,10 +71,10 @@
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.542"
+        app:layout_constraintHorizontal_bias="0.584"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintVertical_bias="0.783">
 
         <TextView
             android:id="@+id/textView0"
@@ -92,7 +91,7 @@
 
         <LinearLayout
             android:layout_width="310dp"
-            android:layout_height="48dp"
+            android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/border"
@@ -120,7 +119,7 @@
 
         <LinearLayout
             android:layout_width="310dp"
-            android:layout_height="48dp"
+            android:layout_height="50dp"
             android:background="@drawable/border"
             android:orientation="horizontal"
             android:padding="5dp">
@@ -146,28 +145,49 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="191dp"
-            android:layout_height="34dp"
-            android:layout_gravity="right"
-            android:background="@android:color/transparent"
-            android:textColor="#F1F1F1"
-            android:text="Forget Password ? "
-            android:textSize="12sp" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_gravity="center">
 
-        <Button
-            android:id="@+id/button5"
-            android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/button4"
+                android:layout_width="191dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:background="@android:color/transparent"
+                android:onClick="redirectToForgetPasswordPage"
+                android:text="Forget Password ? "
+                android:textColor="#F1F1F1"
+                android:textSize="12sp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="05dp"
-            android:backgroundTint="#FFC857"
-            android:onClick="RedirectToUserHomePage"
-            android:text="SIGN IN"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
+            android:layout_marginTop="20dp">
+
+            <Button
+                android:id="@+id/AdminLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="05dp"
+                android:backgroundTint="#FFC857"
+                android:text="SIGN IN"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <ProgressBar
+                android:id="@+id/AdminSigninProgressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:progressTint="@color/white"
+                android:visibility="invisible" />
+
+        </FrameLayout>
 
     </LinearLayout>
 

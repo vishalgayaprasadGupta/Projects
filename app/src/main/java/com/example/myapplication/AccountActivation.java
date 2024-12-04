@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,40 +8,37 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-public class ForgetPasswordPage extends AppCompatActivity {
+public class AccountActivation extends AppCompatActivity {
     Button btnReset,backbutton;
 
     EditText editEmailAddress;
     String Email;
-    ProgressBar forgetPasswordProgressbar;
+    ProgressBar VerificationProgressbar;
     ImageButton back;
     FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_forget_password_page);
+        setContentView(R.layout.activity_account_activation);
 
-        mAuth=FirebaseAuth.getInstance();
-        editEmailAddress=findViewById(R.id.editEmailAddress);
         btnReset=findViewById(R.id.btnReset);
         backbutton=findViewById(R.id.backbutton);
-        forgetPasswordProgressbar=findViewById(R.id.forgetPasswordProgressbar);
-        forgetPasswordProgressbar.setVisibility(View.INVISIBLE);
+        editEmailAddress=findViewById(R.id.editEmailAddress);
+        VerificationProgressbar=findViewById(R.id.emailVerificationProgressbar);
         back=findViewById(R.id.back);
+
         btnReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,7 +49,7 @@ public class ForgetPasswordPage extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ForgetPasswordPage.this, LoginPage.class);
+                Intent intent = new Intent(AccountActivation.this, LoginPage.class);
                 startActivity(intent);
                 finish();
             }
@@ -66,29 +62,31 @@ public class ForgetPasswordPage extends AppCompatActivity {
             Toast.makeText(this, "Enter your registered email", Toast.LENGTH_SHORT).show();
             return;
         }else{
-            resetPassword();
+            sendVerificationEmail();
         }
     }
-    public void resetPassword(){
-        forgetPasswordProgressbar.setVisibility(View.VISIBLE);
-        mAuth.sendPasswordResetEmail(Email).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-                forgetPasswordProgressbar.setVisibility(View.INVISIBLE);
-                if (task.isSuccessful()) {
-                    Toast.makeText(ForgetPasswordPage.this, "Password Reset link sent! Please check your email.", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(ForgetPasswordPage.this, LoginPage.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Toast.makeText(ForgetPasswordPage.this, "We cannot find your Email, Please try again", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+
+    public void sendVerificationEmail() {
+        VerificationProgressbar.setVisibility(View.VISIBLE);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null && user.isEmailVerified()) {
+            Toast.makeText(this, "Email already verified,Try Loging in", Toast.LENGTH_SHORT).show();
+        }else{
+            user.sendEmailVerification()
+                    .addOnCompleteListener(this, task -> {
+                        VerificationProgressbar.setVisibility(View.INVISIBLE);
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(), "We’ve sent a verification email", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(this, "Email verifiaction failed", Toast.LENGTH_LONG).show();
+                            Log.e("EmailVerification", "Error sending verification email: " + task.getException());
+                        }
+                    });
+        }
     }
+
     public void redirectToUserLoginPage(View view){
         Intent intent = new Intent(this, LoginPage.class);
         startActivity(intent);
     }
-
 }

@@ -1,29 +1,31 @@
 package com.example.myapplication;
 
 public class User {
+    private String role;
     private String name;
+    private String gender;
     private String email;
     private String phone;
     private String college;
     private String password;
-    private String gender;
 
-    public User(String name,String gender, String email, String phone, String college, String password) {
+    public User(String role, String name, String gender, String email, String phone, String college, String password) {
+        this.role = role;
         this.name = name;
+        this.gender = gender;
         this.email = email;
         this.phone = phone;
         this.college = college;
         this.password = password;
-        this.gender=gender;
-    }
-    public String getGender() {
-        return gender;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public String getRole() {
+        return role;
     }
 
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     public String getName() {
         return name;
@@ -31,6 +33,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getEmail() {

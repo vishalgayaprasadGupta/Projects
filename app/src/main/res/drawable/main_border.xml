@@ -2,4 +2,7 @@
     xmlns:padding="http://schemas.android.com/aapt">
     <solid android:color="#006A67" /> <!-- Background color -->
     <corners android:topLeftRadius="50dp" android:topRightRadius="50dp" /> <!-- Curve at the top -->
+    <stroke
+        android:width="3dp"
+        android:color="#000000" />
 </shape>

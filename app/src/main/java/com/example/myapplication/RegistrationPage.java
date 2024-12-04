@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -39,7 +40,8 @@ public class RegistrationPage extends AppCompatActivity {
     DatabaseReference myDatabase;
     RadioGroup radioGroup;
     RadioButton selectedRadioButton;
-    String Gender;
+    String Gender,Role;
+    ProgressBar RegisterProgressbar;
     static final String USER = "User";
     static final String TAG="RegistrationPage";
     User user;
@@ -58,6 +60,9 @@ public class RegistrationPage extends AppCompatActivity {
         Signup = findViewById(R.id.SignupButton);
         Signin = findViewById(R.id.SigninButton);
 
+        RegisterProgressbar=findViewById(R.id.SignupProgressbar);
+        RegisterProgressbar.setVisibility(View.INVISIBLE);
+
         radioGroup=findViewById(R.id.radioGroupGender);
 
 
@@ -75,10 +80,11 @@ public class RegistrationPage extends AppCompatActivity {
                     return;
                 }
                 selectedRadioButton = findViewById(radioButtonId);
-                Gender=selectedRadioButton.getText().toString();
-                String Contact = Phone.getText().toString();
-                String EmailId = EmailAddress.getText().toString();
+                Role="User";
                 String Username = UserName.getText().toString();
+                Gender=selectedRadioButton.getText().toString();
+                String EmailId = EmailAddress.getText().toString();
+                String Contact = Phone.getText().toString();
                 String College = CollegeName.getText().toString();
                 String Password = UserPassword.getText().toString();
                 String CheckPassword = ConfirmPassword.getText().toString();
@@ -87,31 +93,50 @@ public class RegistrationPage extends AppCompatActivity {
                     Toast.makeText(RegistrationPage.this, "All fields are mandatory!", Toast.LENGTH_LONG).show();
                     return;
                 }
+
                 if (!Password.equals(CheckPassword)) {
                     Toast.makeText(RegistrationPage.this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                user=new User(Username,Gender,EmailId,Contact,College,Password);
+                user=new User( Role, Username,  Gender,  EmailId,  Contact,  College,  Password);
                 registerUser(EmailId,Password);
             }
         });
     }
 
+    public void sendVerificationEmail() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // Send verification email
+            user.sendEmailVerification()
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(), "We’ve sent a verification email. Activate your account to proceed.", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(this, "To activate your account, please verify your email address.", Toast.LENGTH_LONG).show();
+                            Log.e("EmailVerification", "Error sending verification email: " + task.getException());
+                        }
+                    });
+        }
+    }
+
     public void registerUser(String EmailId,String Password){
+        RegisterProgressbar.setVisibility(View.VISIBLE);
         mAuth.createUserWithEmailAndPassword(EmailId, Password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        RegisterProgressbar.setVisibility(View.INVISIBLE);
+                        sendVerificationEmail();
                         if (task.isSuccessful()) {
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             Log.d(TAG, "Register done ");
-                            Toast.makeText(RegistrationPage.this, "Registration done,Redirecting to login page .",
+                            Toast.makeText(RegistrationPage.this, "Registered succesfully,Account activation link sent to your email,Verify! .",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(user);
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(RegistrationPage.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
@@ -124,7 +149,7 @@ public class RegistrationPage extends AppCompatActivity {
     public void updateUI(FirebaseUser user){
         if (user != null) {
             String uid = user.getUid();
-            User user1=new User(UserName.getText().toString(),Gender,EmailAddress.getText().toString(),
+            User user1=new User(Role,UserName.getText().toString(),Gender,EmailAddress.getText().toString(),
                     Phone.getText().toString(), CollegeName.getText().toString(), UserPassword.getText().toString());
             myDatabase.child(uid).setValue(user1).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -136,20 +161,14 @@ public class RegistrationPage extends AppCompatActivity {
             });
         } else {
             Toast.makeText(RegistrationPage.this, "User not authenticated.", Toast.LENGTH_SHORT).show();
-            mAuth.getCurrentUser().delete(); // Delete user from Firebase Authentication if data save fails
+            if (mAuth.getCurrentUser() != null) {
+                mAuth.getCurrentUser().delete(); // This will only be called if the user is authenticated
+            }
         }
     }
 
-    public void RedirectToRegistrationPage(View view) {
-        Intent intent = new Intent(this, RegistrationPage.class);
-        startActivity(intent);
-
-    }
-
-
-    public void RedirectToUserLoginPage(View view){
+    public void redirectToUserLoginPage(View view){
         Intent intent = new Intent(this, LoginPage.class);
         startActivity(intent);
-
     }
 }
