@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,72 +22,85 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class AccountActivation extends AppCompatActivity {
-    Button btnReset,backbutton;
+    Button activateAccount,backbutton;
 
     EditText editEmailAddress;
     String Email;
     ProgressBar VerificationProgressbar;
     ImageButton back;
     FirebaseAuth mAuth;
+    FirebaseUser user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_account_activation);
 
-        btnReset=findViewById(R.id.btnReset);
+        activateAccount=findViewById(R.id.verifyEmail);
         backbutton=findViewById(R.id.backbutton);
         editEmailAddress=findViewById(R.id.editEmailAddress);
         VerificationProgressbar=findViewById(R.id.emailVerificationProgressbar);
         back=findViewById(R.id.back);
-
-        btnReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                validateUser();
-            }
-        });
-
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        mAuth=FirebaseAuth.getInstance();
+        if(user!=null){
+            editEmailAddress.setText(user.getEmail());
+        }else{
+            Toast.makeText(this, "Error fetching user details , try again", Toast.LENGTH_SHORT).show();
+        }
+        if(editEmailAddress.getText().toString().isEmpty()){
+            Toast.makeText(this, "Error fetching user details , try again", Toast.LENGTH_SHORT).show();
+            return;
+        }else {
+            VerificationProgressbar.setVisibility(View.INVISIBLE);
+            activateAccount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    sendVerificationEmail();
+                }
+            });
+        }
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mAuth.signOut();
                 Intent intent = new Intent(AccountActivation.this, LoginPage.class);
                 startActivity(intent);
                 finish();
             }
         });
     }
-    public void validateUser(){
-        Email = editEmailAddress.getText().toString().trim();
-        Log.d("ForgetPassword", "Email entered: " + Email);
-        if(Email.isEmpty()){
-            Toast.makeText(this, "Enter your registered email", Toast.LENGTH_SHORT).show();
-            return;
-        }else{
-            sendVerificationEmail();
-        }
-    }
 
     public void sendVerificationEmail() {
         VerificationProgressbar.setVisibility(View.VISIBLE);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null && user.isEmailVerified()) {
-            Toast.makeText(this, "Email already verified,Try Loging in", Toast.LENGTH_SHORT).show();
-        }else{
+        activateAccount.setEnabled(false);
+        activateAccount.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#808080")));
+        if (user != null && !user.isEmailVerified()) {
             user.sendEmailVerification()
                     .addOnCompleteListener(this, task -> {
                         VerificationProgressbar.setVisibility(View.INVISIBLE);
+                        activateAccount.setEnabled(true);
+                        activateAccount.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFC857")));
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "We’ve sent a verification email", Toast.LENGTH_LONG).show();
+                            mAuth.signOut();
+                            Intent intent = new Intent(this, LoginPage.class);
+                            startActivity(intent);
+                            finish();
                         } else {
-                            Toast.makeText(this, "Email verifiaction failed", Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, "Email verifiaction failed!", Toast.LENGTH_LONG).show();
                             Log.e("EmailVerification", "Error sending verification email: " + task.getException());
+                            mAuth.signOut();
+                            finish();
                         }
                     });
+        }else{
+            Toast.makeText(this, "Email already verified!", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void redirectToUserLoginPage(View view){
+        mAuth.signOut();
         Intent intent = new Intent(this, LoginPage.class);
         startActivity(intent);
     }

@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -71,10 +72,14 @@ public class ForgetPasswordPage extends AppCompatActivity {
     }
     public void resetPassword(){
         forgetPasswordProgressbar.setVisibility(View.VISIBLE);
+        btnReset.setEnabled(false);
+        btnReset.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#808080")));
         mAuth.sendPasswordResetEmail(Email).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
                 forgetPasswordProgressbar.setVisibility(View.INVISIBLE);
+                btnReset.setEnabled(true);
+                btnReset.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFC857")));
                 if (task.isSuccessful()) {
                     Toast.makeText(ForgetPasswordPage.this, "Password Reset link sent! Please check your email.", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(ForgetPasswordPage.this, LoginPage.class);

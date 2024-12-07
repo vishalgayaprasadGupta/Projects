@@ -10,18 +10,18 @@
     tools:context=".AccountActivation">
 
   <LinearLayout
-      android:layout_width="335dp"
-      android:layout_height="523dp"
+      android:layout_width="332dp"
+      android:layout_height="543dp"
       android:background="@drawable/main_border"
       android:backgroundTint="@null"
       android:orientation="vertical"
       android:padding="10dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.584"
+      app:layout_constraintHorizontal_bias="0.556"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_bias="0.783">
+      app:layout_constraintVertical_bias="0.818">
 
     <TextView
         android:id="@+id/textView0"
@@ -33,35 +33,45 @@
         android:gravity="center"
         android:text="Activate Account"
         android:textColor="#FFF4B7"
-        android:textSize="28sp"
+        android:textSize="27sp"
         android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="310dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="20dp"
+        android:layout_height="53dp"
+        android:layout_marginBottom="5dp"
         android:background="@drawable/border"
-        android:orientation="horizontal">
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:padding="5dp">
 
       <ImageView
           android:id="@+id/imageView5"
           android:layout_width="45dp"
           android:layout_height="40dp"
-          android:layout_marginTop="5dp"
           app:srcCompat="@drawable/email" />
 
-      <EditText
-          android:id="@+id/editEmailAddress"
+      <com.google.android.material.textfield.TextInputLayout
+          android:id="@+id/email"
           android:layout_width="260dp"
-          android:layout_height="48dp"
+          android:layout_height="53dp"
           android:background="@null"
           android:ems="10"
           android:gravity="center"
-          android:hint="Enter Registered Email"
-          android:inputType="textEmailAddress"
-          android:textColor="#0F0E0E"
-          android:textColorHint="#3A3636" />
+          app:hintAnimationEnabled="false"
+          app:hintEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editEmailAddress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:backgroundTint="@color/white"
+            android:hint="Verify Email"
+            android:inputType="textEmailAddress"
+            android:textColor="#0F0E0E"
+            android:textColorHint="#3A3636" />
+      </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
@@ -69,6 +79,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+      <com.google.android.material.button.MaterialButton
+          android:id="@+id/verifyEmail"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:backgroundTint="#FFC857"
+          android:paddingStart="20dp"
+          android:paddingTop="10dp"
+          android:paddingEnd="20dp"
+          android:paddingBottom="10dp"
+          android:layout_marginTop="10dp"
+          android:text="Send Activation Link"
+          android:textColor="@color/black"
+          android:textStyle="bold"
+          app:cornerRadius="10dp"
+          app:iconGravity="textStart" />
       <ProgressBar
           android:id="@+id/emailVerificationProgressbar"
           android:layout_width="50dp"
@@ -77,20 +102,6 @@
           android:progressTint="@color/white"
           android:visibility="invisible" />
 
-      <com.google.android.material.button.MaterialButton
-          android:id="@+id/btnReset"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:backgroundTint="#FFC857"
-          android:paddingStart="20dp"
-          android:paddingTop="10dp"
-          android:paddingEnd="20dp"
-          android:paddingBottom="10dp"
-          android:text="Send Activation Link"
-          android:textColor="@color/black"
-          android:textStyle="bold"
-          app:cornerRadius="10dp"
-          app:iconGravity="textStart" />
     </FrameLayout>
 
     <FrameLayout
@@ -102,7 +113,7 @@
           android:id="@+id/back"
           android:layout_width="wrap_content"
           android:layout_height="14dp"
-          android:layout_marginStart="75dp"
+          android:layout_marginStart="70dp"
           android:layout_marginTop="26dp"
           android:background="@android:color/transparent"
           android:src="@drawable/back" />
@@ -126,7 +137,7 @@
       android:id="@+id/textView4"
       android:layout_width="310dp"
       android:layout_height="70dp"
-      android:layout_marginStart="25sp"
+      android:layout_marginStart="28sp"
       android:text="ĊäṁṗüṡĊöṅṅëċẗ"
       android:textColor="#003161"
       android:textSize="35sp"

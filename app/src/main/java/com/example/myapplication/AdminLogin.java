@@ -4,6 +4,8 @@ import static com.example.myapplication.RegistrationPage.TAG;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -31,13 +34,13 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AdminLogin extends AppCompatActivity {
-
-    EditText Email,UserPassword;
+    TextInputEditText Email,UserPassword;
     Button Signin;
     FirebaseAuth mAuth;
-    ProgressBar LoginProgressbar,RegisterProgressbar;
+    ProgressBar LoginProgressbar;
     String errorMessage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,34 +86,44 @@ public class AdminLogin extends AppCompatActivity {
     }
     public void userLogin(String EmailId,String Password){
         LoginProgressbar.setVisibility(View.VISIBLE);
+        Signin.setEnabled(false);
+        Signin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#D3D3D3")));
         mAuth.signInWithEmailAndPassword(EmailId,Password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         LoginProgressbar.setVisibility(View.INVISIBLE);
+                        Signin.setEnabled(true);
+                        Signin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFC857")));
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
                                 // Get user reference from Firebase Realtime Database
-                                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("User").child(user.getUid());
-                                userRef.child("Role").get().addOnCompleteListener(LoginTask -> {
+                                FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+                                firestore.collection("User").document(user.getUid()).get().addOnCompleteListener(LoginTask -> {
                                     if (LoginTask.isSuccessful()) {
-                                        String role = LoginTask.getResult().getValue(String.class);
+                                        String role = LoginTask.getResult().getString("role");                                            Log.d(TAG, "Role fetched: " + role);
                                         if ("Admin".equals(role)) {
-                                            updateUI(user);
-                                        } else {
-                                            Toast.makeText(AdminLogin.this, "Enter Registered EmailID and Password",
+                                            if(user.isEmailVerified()){
+                                                updateUI(user);
+                                            }else{
+                                                Toast.makeText(AdminLogin.this, "Verify your email to activate your account", Toast.LENGTH_LONG).show();
+                                                redirectToVerificationPage();
+                                                finish();
+                                            }
+                                        }else {
+                                            Toast.makeText(AdminLogin.this, "Restricted access. Please log in with a valid admin credentials to proceed",
                                                     Toast.LENGTH_SHORT).show();
                                             mAuth.signOut();
                                         }
                                     } else {
                                         Log.d(TAG, "Failed to retrieve user role.", LoginTask.getException());
-                                        Toast.makeText(AdminLogin.this, "Failed to retrieve user role.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(AdminLogin.this, "Login failed,try again", Toast.LENGTH_SHORT).show();
                                         mAuth.signOut();
                                     }
                                 });
-                            }else {
+                            }else{
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "signInWithEmail:failure", task.getException());
 
@@ -123,9 +136,6 @@ public class AdminLogin extends AppCompatActivity {
                                 } catch (Exception e) {
                                     errorMessage = "Authentication failed. " + e.getMessage();
                                 }
-
-                                Toast.makeText(AdminLogin.this, "Login failed : "+task.getException().getMessage(),
-                                        Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -149,7 +159,10 @@ public class AdminLogin extends AppCompatActivity {
         startActivity(intent);
     }
 
-
+    public void redirectToVerificationPage(){
+        Intent intent = new Intent(this, AccountActivation.class);
+        startActivity(intent);
+    }
     public void redirectToForgetPasswordPage(View view){
         Intent intent = new Intent(this, ForgetPasswordPage.class);
         startActivity(intent);

@@ -23,6 +23,7 @@ public class InitialPage extends AppCompatActivity {
         String path = "android.resource://" + getPackageName() + "/" + R.raw.logo;
         videoView.setVideoPath(path);  // Set the video source
         videoView.setOnPreparedListener(mp -> videoView.start());
+
         videoView.setOnCompletionListener(mp -> {
             new Handler().postDelayed(() -> {
                 Intent intent = new Intent(InitialPage.this, LoginPage.class);
