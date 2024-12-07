@@ -8,6 +8,19 @@
     android:background="#F1F1F1"
     tools:context=".RegistrationPage">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="310dp"
+        android:layout_height="70dp"
+        android:text="ĊäṁṗüṡĊöṅṅëċẗ"
+        android:textColor="#003161"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.121" />
 
     <LinearLayout
         android:id="@+id/linearLayout3"
@@ -18,10 +31,9 @@
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.584"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.783">
+        app:layout_constraintVertical_bias="0.756">
 
         <TextView
             android:id="@+id/textView0"
@@ -42,7 +54,7 @@
 
         <LinearLayout
             android:layout_width="310dp"
-            android:layout_height="55dp"
+            android:layout_height="53dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/border"
             android:orientation="horizontal"
@@ -54,30 +66,39 @@
                 android:layout_height="45dp"
                 app:srcCompat="@drawable/username" />
 
-            <EditText
-                android:id="@+id/editName"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editNameInput"
                 android:layout_width="260dp"
-                android:layout_height="48dp"
+                android:layout_height="53dp"
                 android:background="@null"
                 android:ems="10"
                 android:gravity="center"
-                android:hint="Enter Name"
-                android:inputType="text"
-                android:textColor="#0F0E0E"
-                android:textColorHint="#3A3636" />
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:backgroundTint="@color/white"
+
+                    android:hint="Enter Name"
+                    android:inputType="text"
+                    android:textColor="#0F0E0E"
+                    android:textColorHint="#3A3636" />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
         <RadioGroup
             android:id="@+id/radioGroupGender"
             android:layout_width="313dp"
-            android:layout_height="57dp"
+            android:layout_height="50dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/border"
             android:orientation="horizontal"
-            android:padding="5dp"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="286dp">
+            android:padding="5dp">
 
             <ImageView
                 android:id="@+id/imageView3"
@@ -92,6 +113,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="16dp"
                 android:background="@null"
+                android:buttonTint="#2196F3"
                 android:text="Male"
                 android:textColor="#0F0E0E"
                 android:textSize="20sp" />
@@ -103,6 +125,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="16dp"
                 android:background="@null"
+                android:buttonTint="#2196F3"
                 android:text="Female"
                 android:textColor="#1A1818"
                 android:textSize="20sp" />
@@ -111,34 +134,45 @@
 
         <LinearLayout
             android:layout_width="310dp"
-            android:layout_height="48dp"
+            android:layout_height="53dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/border"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="5dp">
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/imageView5"
                 android:layout_width="45dp"
                 android:layout_height="40dp"
-                android:layout_marginTop="4dp"
                 app:srcCompat="@drawable/email" />
 
-            <EditText
-                android:id="@+id/editEmailAddress"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/email"
                 android:layout_width="260dp"
-                android:layout_height="48dp"
+                android:layout_height="53dp"
                 android:background="@null"
                 android:ems="10"
                 android:gravity="center"
-                android:hint="Enter Email"
-                android:inputType="textEmailAddress"
-                android:textColor="#0F0E0E"
-                android:textColorHint="#3A3636" />
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editEmailAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:backgroundTint="@color/white"
+                    android:hint="Enter Email"
+                    android:inputType="textEmailAddress"
+                    android:textColor="#0F0E0E"
+                    android:textColorHint="#3A3636" />
+            </com.google.android.material.textfield.TextInputLayout>
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="310dp"
-            android:layout_height="54dp"
+            android:layout_height="53dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/border"
             android:orientation="horizontal"
@@ -150,24 +184,33 @@
                 android:layout_height="40dp"
                 app:srcCompat="@drawable/phone" />
 
-            <EditText
-                android:id="@+id/editPhone"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editPhoneInput"
                 android:layout_width="260dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
+                android:layout_height="53dp"
                 android:background="@null"
                 android:ems="10"
                 android:gravity="center"
-                android:hint="Enter Phone"
-                android:inputType="phone"
-                android:textColor="#0F0E0E"
-                android:textColorHint="#3A3636" />
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:backgroundTint="@color/white"
+                    android:hint="Enter Phone"
+                    android:inputType="phone"
+                    android:textColor="#0F0E0E"
+                    android:textColorHint="#3A3636" />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="312dp"
-            android:layout_height="52dp"
+            android:layout_height="53dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/border"
             android:orientation="horizontal"
@@ -180,22 +223,33 @@
                 android:layout_marginBottom="5dp"
                 app:srcCompat="@drawable/college" />
 
-            <EditText
-                android:id="@+id/editCollege"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editCollegeInput"
                 android:layout_width="260dp"
-                android:layout_height="48dp"
+                android:layout_height="53dp"
                 android:background="@null"
                 android:ems="10"
                 android:gravity="center"
-                android:hint="Enter College"
-                android:inputType="text"
-                android:textColor="#0F0E0E"
-                android:textColorHint="#3A3636" />
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editCollege"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:backgroundTint="@color/white"
+                    android:hint="Enter College"
+                    android:inputType="text"
+                    android:textColor="#0F0E0E"
+                    android:textColorHint="#3A3636" />
+            </com.google.android.material.textfield.TextInputLayout>
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="310dp"
-            android:layout_height="48dp"
+            android:layout_height="53dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/border"
             android:orientation="horizontal"
@@ -207,45 +261,59 @@
                 android:layout_height="35dp"
                 app:srcCompat="@drawable/password" />
 
-            <EditText
-                android:id="@+id/editPassword"
-                android:layout_width="310dp"
-                android:layout_height="48dp"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/password_toggle1"
+                android:layout_width="260dp"
+                android:layout_height="53dp"
                 android:layout_weight="1"
-                android:background="@null"
-                android:ems="10"
-                android:gravity="center"
-                android:hint="Enter Password"
-                android:inputType="textPassword"
-                android:textColor="#0F0E0E"
-                android:textColorHint="#3A3636" />
+                android:background="@drawable/border"
+                app:hintEnabled="true"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:hint="Enter Password"
+                    android:inputType="textPassword"
+                    android:textColorHint="#3A3636" />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="310dp"
-            android:layout_height="50dp"
+            android:layout_height="53dp"
             android:background="@drawable/border"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="5dp">
 
             <ImageView
-                android:id="@+id/imageView14"
-                android:layout_width="40dp"
-                android:layout_height="45dp"
-                android:layout_marginStart="8dp"
-                app:srcCompat="@drawable/confirm_password" />
+                android:id="@+id/imageView10"
+                android:layout_width="45dp"
+                android:layout_height="35dp"
+                app:srcCompat="@drawable/password" />
 
-            <EditText
-                android:id="@+id/editConfirmPassword"
-                android:layout_width="2600dp"
-                android:layout_height="48dp"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/password_toggle"
+                android:layout_width="260dp"
+                android:layout_height="53dp"
                 android:layout_weight="1"
-                android:background="@null"
-                android:ems="10"
-                android:gravity="center"
-                android:hint="Confirm Password"
-                android:inputType="textPassword"
-                android:textColorHint="#2A2626" />
+                android:background="@drawable/border"
+                app:hintEnabled="true"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editConfirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:hint="Confirm Password"
+                    android:inputType="textPassword"
+                    android:textColorHint="#3A3636" />
+            </com.google.android.material.textfield.TextInputLayout>
+
         </LinearLayout>
 
         <FrameLayout
@@ -254,68 +322,37 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp">
 
-            <ProgressBar
-                android:id="@+id/SignupProgressbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:progressTint="@color/white"
-                android:visibility="invisible" />
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/SignupButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:backgroundTint="#FFC857"
-
                 android:text="SIGN UP"
                 android:textColor="#161515"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.856" />
+                android:textStyle="bold" />
 
+            <ProgressBar
+                android:id="@+id/SignupProgressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:progressTint="@color/white"
+                android:visibility="invisible" />
         </FrameLayout>
 
         <Button
             android:id="@+id/SigninButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="303dp"
+            android:layout_height="47dp"
             android:layout_gravity="center"
             android:backgroundTint="#FFC857"
-            android:cursorVisible="false"
             android:onClick="redirectToUserLoginPage"
             android:text="Already Register? Sign In"
             android:textColor="#141313"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.926" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="310dp"
-        android:layout_height="69dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="25sp"
-        android:text="ĊäṁṗüṡĊöṅṅëċẗ"
-        android:textColor="#003161"
-        android:textSize="35sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.077" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,7 +12,7 @@
         android:id="@+id/textView3"
         android:layout_width="310dp"
         android:layout_height="70dp"
-        android:layout_marginStart="25sp"
+        android:layout_marginStart="28sp"
         android:text="ĊäṁṗüṡĊöṅṅëċẗ"
         android:textColor="#003161"
         android:textSize="35sp"
@@ -26,8 +26,8 @@
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="343dp"
-        android:layout_height="71dp"
+        android:layout_width="338dp"
+        android:layout_height="65dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,26 +38,30 @@
 
         <Button
             android:id="@+id/button2"
-            android:layout_width="171dp"
+            android:layout_width="163dp"
             android:layout_height="68dp"
             android:backgroundTint="#006A67"
             android:padding="10dp"
-            android:text="User Login"
-            android:textSize="20sp" />
+            android:text="USER LOGIN"
+            android:textAllCaps="true"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/button3"
-            android:layout_width="167dp"
+            android:layout_width="163dp"
             android:layout_height="68dp"
             android:backgroundTint="#FFFFFF"
             android:onClick="redirectToAdminLoginPage"
             android:padding="10dp"
             android:selectAllOnFocus="true"
-            android:text="Admin Login"
-            android:textAllCaps="false"
-            android:textColor="#0F0E0E"
+            android:text="ADMIN LOGIN"
+            android:textAllCaps="true"
+            android:textColor="@color/black"
             android:textColorHighlight="#FFFFFF"
-            android:textSize="20sp" />
+            android:textSize="15sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -70,10 +74,10 @@
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.602"
+        app:layout_constraintHorizontal_bias="0.578"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.855">
+        app:layout_constraintVertical_bias="0.852">
 
         <TextView
             android:id="@+id/textView0"
@@ -91,34 +95,49 @@
         <LinearLayout
             android:layout_width="310dp"
             android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
             android:background="@drawable/border"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp">
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/imageView8"
                 android:layout_width="45dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="5dp"
+                android:layout_height="35dp"
                 app:srcCompat="@drawable/username" />
 
-            <EditText
-                android:id="@+id/editEmailAddress"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/password_toggle1"
                 android:layout_width="260dp"
-                android:layout_height="50dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
                 android:background="@null"
                 android:ems="10"
                 android:gravity="center"
-                android:hint="Enter Email"
-                android:inputType="textEmailAddress"
+                android:inputType="textPassword"
                 android:textColor="#0F0E0E"
-                android:textColorHint="#3A3636" />
+                android:textColorHint="#3A3636"
+                android:layout_gravity="center">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editEmailAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:textColorHint="#3A3636"
+                    android:hint="Enter Email"
+                    android:layout_gravity="center">
+
+                </com.google.android.material.textfield.TextInputEditText>
+            </com.google.android.material.textfield.TextInputLayout>
+
         </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="310dp"
-            android:layout_height="55dp"
+            android:layout_height="50dp"
             android:background="@drawable/border"
             android:orientation="horizontal"
             android:padding="5dp">
@@ -129,40 +148,44 @@
                 android:layout_height="35dp"
                 app:srcCompat="@drawable/password" />
 
-            <EditText
-                android:id="@+id/editPassword"
-                android:layout_width="310dp"
-                android:layout_height="50dp"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/password_toggle"
+                android:layout_width="260dp"
+                android:layout_height="52dp"
                 android:layout_weight="1"
                 android:background="@null"
                 android:ems="10"
                 android:gravity="center"
-                android:hint="Enter Password"
                 android:inputType="textPassword"
                 android:textColor="#0F0E0E"
-                android:textColorHint="#3A3636" />
+                android:textColorHint="#3A3636"
+                app:passwordToggleEnabled="true"
+                android:layout_gravity="center">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:textColorHint="#3A3636"
+                    android:hint="Enter Password"
+                    android:layout_gravity="center">
+
+                </com.google.android.material.textfield.TextInputEditText>
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
+
         <Button
             android:id="@+id/button4"
-            android:layout_width="191dp"
+            android:layout_width="205dp"
             android:layout_height="40dp"
             android:layout_gravity="right"
+            android:layout_marginTop="10dp"
             android:background="@android:color/transparent"
             android:onClick="redirectToForgetPasswordPage"
             android:text="Forget Password ? "
-            android:textColor="#F1F1F1"
-            android:textSize="10sp" />
-
-        <Button
-            android:id="@+id/button"
-            android:layout_width="191dp"
-            android:layout_height="38dp"
-            android:layout_gravity="right"
-            android:background="@android:color/transparent"
-            android:onClick="redirectToVerificationPage"
-            android:text="Activate Your Account 🔑"
             android:textColor="#F1F1F1"
             android:textSize="10sp" />
 
@@ -209,7 +232,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/Register"
-                android:layout_width="195dp"
+                android:layout_width="231dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
@@ -222,5 +245,7 @@
         </FrameLayout>
 
     </LinearLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

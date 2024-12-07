@@ -4,6 +4,9 @@ import static com.example.myapplication.RegistrationPage.TAG;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -24,6 +27,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -31,10 +35,11 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginPage extends AppCompatActivity {
 
-    EditText Email,UserPassword;
+    TextInputEditText Email,UserPassword;
     Button Signin;
     FirebaseAuth mAuth;
     ProgressBar LoginProgressbar,RegisterProgressbar;
@@ -86,52 +91,57 @@ public class LoginPage extends AppCompatActivity {
     }
     public void userLogin(String EmailId,String Password){
         LoginProgressbar.setVisibility(View.VISIBLE);
+        Signin.setEnabled(false);
+        Signin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#808080")));
         mAuth.signInWithEmailAndPassword(EmailId,Password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         LoginProgressbar.setVisibility(View.INVISIBLE);
+                        Signin.setEnabled(true);
+                        Signin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFC857")));
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
-                                if(user.isEmailVerified()){
-                                    // Get user reference from Firebase Realtime Database
-                                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("User").child(user.getUid());
-                                    userRef.child("role").get().addOnCompleteListener(LoginTask -> {
-                                        if (LoginTask.isSuccessful()) {
-                                            String role = LoginTask.getResult().getValue(String.class);
-                                            Log.d(TAG, "Role fetched: " + role);
-                                            if ("User".equals(role)) {
+                                // Get user reference from Firebase Realtime Database
+                                FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+                                firestore.collection("User").document(user.getUid()).get().addOnCompleteListener(LoginTask -> {
+                                    if (LoginTask.isSuccessful()) {
+                                        String role = LoginTask.getResult().getString("role");                                            Log.d(TAG, "Role fetched: " + role);
+                                        if ("User".equals(role)) {
+                                            if(user.isEmailVerified()){
                                                 updateUI(user);
-                                            } else {
-                                                Toast.makeText(LoginPage.this, "Enter Registered EmailID and Password",
-                                                        Toast.LENGTH_SHORT).show();
-                                                mAuth.signOut();
+                                            }else{
+                                                Toast.makeText(LoginPage.this, "Verify your email to activate your account", Toast.LENGTH_LONG).show();
+                                                redirectToVerificationPage();
+                                                finish();
                                             }
-                                        } else {
-                                            Log.d(TAG, "Failed to retrieve user role.", LoginTask.getException());
-                                            Toast.makeText(LoginPage.this, "Login failed,try again", Toast.LENGTH_SHORT).show();
+                                        }else {
+                                            Toast.makeText(LoginPage.this, "Enter Registered EmailID and Password",
+                                                    Toast.LENGTH_SHORT).show();
                                             mAuth.signOut();
                                         }
-                                    });
-                                }else{
-                                    Toast.makeText(LoginPage.this, "Verify your email to activate your account", Toast.LENGTH_SHORT).show();
-                                }
-                            }else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                    } else {
+                                        Log.d(TAG, "Failed to retrieve user role.", LoginTask.getException());
+                                        Toast.makeText(LoginPage.this, "Login failed,try again", Toast.LENGTH_SHORT).show();
+                                        mAuth.signOut();
+                                    }
+                                });
+                            }else{
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithEmail:failure", task.getException());
 
-                            try {
-                                throw task.getException();
-                            } catch (FirebaseAuthInvalidCredentialsException e) {
-                                errorMessage = "Incorrect password. Please try again.";
-                            } catch (FirebaseAuthInvalidUserException e) {
-                                errorMessage = "No account found with this email address.";
-                            } catch (Exception e) {
-                                errorMessage = "Authentication failed. " + e.getMessage();
+                                try {
+                                    throw task.getException();
+                                } catch (FirebaseAuthInvalidCredentialsException e) {
+                                    errorMessage = "Incorrect password. Please try again.";
+                                } catch (FirebaseAuthInvalidUserException e) {
+                                    errorMessage = "No account found with this email address.";
+                                } catch (Exception e) {
+                                    errorMessage = "Authentication failed. " + e.getMessage();
+                                }
                             }
-                             }
                         }
                     }
                 });
@@ -141,11 +151,11 @@ public class LoginPage extends AppCompatActivity {
             Intent intent = new Intent(LoginPage.this, UserHomePage.class);
             startActivity(intent);
             Toast.makeText(LoginPage.this, "Login Succesfully .",
-                    Toast.LENGTH_SHORT).show();
-
+                    Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(LoginPage.this, "User not authenticated.", Toast.LENGTH_SHORT).show();
-
+            finish();
+            mAuth.signOut();
         }
     }
     public void redirectToRegistrationPage(View view) {
@@ -164,7 +174,7 @@ public class LoginPage extends AppCompatActivity {
         startActivity(intent);
 
     }
-    public void redirectToVerificationPage(View view){
+    public void redirectToVerificationPage(){
         Intent intent = new Intent(this, AccountActivation.class);
         startActivity(intent);
     }

@@ -2,7 +2,12 @@ package com.example.myapplication;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,19 +30,20 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.myapplication.databinding.ActivityAdminLoginBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class RegistrationPage extends AppCompatActivity {
-  //  TextView Name,Email,Phone,College,Password1,Password2,textView,textView0;
-    EditText Phone,EmailAddress,UserName,CollegeName,UserPassword,ConfirmPassword;
+    //  TextView Name,Email,Phone,College,Password1,Password2,textView,textView0;
+    TextInputEditText Phone,EmailAddress,UserName,CollegeName,UserPassword,ConfirmPassword;
     Button Signup,Signin;
     FirebaseAuth mAuth;
-    FirebaseDatabase database;
-    DatabaseReference myDatabase;
+    FirebaseFirestore firestore;
+    CollectionReference userData;
     RadioGroup radioGroup;
     RadioButton selectedRadioButton;
     String Gender,Role;
@@ -66,8 +72,8 @@ public class RegistrationPage extends AppCompatActivity {
         radioGroup=findViewById(R.id.radioGroupGender);
 
 
-        database=FirebaseDatabase.getInstance();
-        myDatabase=database.getReference(USER);
+        firestore= FirebaseFirestore.getInstance();
+        userData = firestore.collection(USER);
         mAuth=FirebaseAuth.getInstance();
 
         Signup.setOnClickListener(new View.OnClickListener(){
@@ -99,12 +105,22 @@ public class RegistrationPage extends AppCompatActivity {
                     return;
                 }
 
-                user=new User( Role, Username,  Gender,  EmailId,  Contact,  College,  Password);
-                registerUser(EmailId,Password);
+                if(isNetworkAvailable()) {
+                    user = new User(Role, Username, Gender, EmailId, Contact, College, Password);
+                    registerUser(EmailId, Password);
+                }else{
+                    Toast.makeText(RegistrationPage.this, "Network error", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
         });
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnected();
+    }
     public void sendVerificationEmail() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -112,7 +128,7 @@ public class RegistrationPage extends AppCompatActivity {
             user.sendEmailVerification()
                     .addOnCompleteListener(this, task -> {
                         if (task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), "We’ve sent a verification email. Activate your account to proceed.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "We’ve sent a verification email. Activate your account to proceed", Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(this, "To activate your account, please verify your email address.", Toast.LENGTH_LONG).show();
                             Log.e("EmailVerification", "Error sending verification email: " + task.getException());
@@ -123,24 +139,41 @@ public class RegistrationPage extends AppCompatActivity {
 
     public void registerUser(String EmailId,String Password){
         RegisterProgressbar.setVisibility(View.VISIBLE);
+        Signup.setEnabled(false);
+        Signup.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#808080")));
         mAuth.createUserWithEmailAndPassword(EmailId, Password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         RegisterProgressbar.setVisibility(View.INVISIBLE);
-                        sendVerificationEmail();
+                        Signup.setEnabled(true);
+                        Signup.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFC857")));
                         if (task.isSuccessful()) {
+                            sendVerificationEmail();
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Log.d(TAG, "Register done ");
-                            Toast.makeText(RegistrationPage.this, "Registered succesfully,Account activation link sent to your email,Verify! .",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(user);
+                            if(user!=null){
+                                Log.d(TAG, "Register done ");
+                                Toast.makeText(RegistrationPage.this, "Registered succesfully", Toast.LENGTH_SHORT).show();
+                                if(isNetworkAvailable()) {
+                                    updateUI(user);
+                                }else{
+                                    mAuth.getCurrentUser().delete();
+                                }
+                            }
+
                         } else {
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(RegistrationPage.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+                            Exception exception = task.getException();
+                            if (exception != null) {
+                                String errorMessage = exception.getMessage();
+                                if (errorMessage != null && errorMessage.contains("The email address is already in use")) {
+                                    // Handle email already registered error
+                                    Toast.makeText(RegistrationPage.this, "Email is already regisered,Try logging in!", Toast.LENGTH_LONG).show();
+                                } else {
+                                    Log.w(TAG, "createUserWithEmail:failure", exception);
+                                    Toast.makeText(RegistrationPage.this, "Authentication failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+                                }
+                            }
                         }
                     }
                 });
@@ -151,7 +184,7 @@ public class RegistrationPage extends AppCompatActivity {
             String uid = user.getUid();
             User user1=new User(Role,UserName.getText().toString(),Gender,EmailAddress.getText().toString(),
                     Phone.getText().toString(), CollegeName.getText().toString(), UserPassword.getText().toString());
-            myDatabase.child(uid).setValue(user1).addOnCompleteListener(task -> {
+            userData.document(uid).set(user1).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Intent intent = new Intent(RegistrationPage.this, LoginPage.class);
                     startActivity(intent);
