@@ -1,6 +1,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:padding="http://schemas.android.com/aapt">
-    <solid android:color="#006A67" /> <!-- Background color -->
+    <solid android:color="#007F73" /> <!-- Background color -->
     <corners android:topLeftRadius="50dp" android:topRightRadius="50dp" /> <!-- Curve at the top -->
     <stroke
         android:width="3dp"

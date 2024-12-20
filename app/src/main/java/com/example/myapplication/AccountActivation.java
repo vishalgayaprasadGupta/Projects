@@ -27,7 +27,6 @@ public class AccountActivation extends AppCompatActivity {
     EditText editEmailAddress;
     String Email;
     ProgressBar VerificationProgressbar;
-    ImageButton back;
     FirebaseAuth mAuth;
     FirebaseUser user;
     @Override
@@ -40,7 +39,6 @@ public class AccountActivation extends AppCompatActivity {
         backbutton=findViewById(R.id.backbutton);
         editEmailAddress=findViewById(R.id.editEmailAddress);
         VerificationProgressbar=findViewById(R.id.emailVerificationProgressbar);
-        back=findViewById(R.id.back);
         user = FirebaseAuth.getInstance().getCurrentUser();
         mAuth=FirebaseAuth.getInstance();
         if(user!=null){
@@ -60,15 +58,6 @@ public class AccountActivation extends AppCompatActivity {
                 }
             });
         }
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAuth.signOut();
-                Intent intent = new Intent(AccountActivation.this, LoginPage.class);
-                startActivity(intent);
-                finish();
-            }
-        });
     }
 
     public void sendVerificationEmail() {

@@ -24,12 +24,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgetPasswordPage extends AppCompatActivity {
-    Button btnReset,backbutton;
-
+    Button btnReset;
+    TextView backButton;
     EditText editEmailAddress;
     String Email;
     ProgressBar forgetPasswordProgressbar;
-    ImageButton back;
     FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,18 +39,8 @@ public class ForgetPasswordPage extends AppCompatActivity {
         mAuth=FirebaseAuth.getInstance();
         editEmailAddress=findViewById(R.id.editEmailAddress);
         btnReset=findViewById(R.id.btnReset);
-        backbutton=findViewById(R.id.backbutton);
-        forgetPasswordProgressbar=findViewById(R.id.forgetPasswordProgressbar);
-        forgetPasswordProgressbar.setVisibility(View.INVISIBLE);
-        back=findViewById(R.id.back);
-        btnReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                validateUser();
-            }
-        });
-
-        back.setOnClickListener(new View.OnClickListener() {
+        backButton=findViewById(R.id.backbutton);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ForgetPasswordPage.this, LoginPage.class);
@@ -59,6 +48,15 @@ public class ForgetPasswordPage extends AppCompatActivity {
                 finish();
             }
         });
+        forgetPasswordProgressbar=findViewById(R.id.forgetPasswordProgressbar);
+        forgetPasswordProgressbar.setVisibility(View.INVISIBLE);
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                validateUser();
+            }
+        });
+
     }
     public void validateUser(){
         Email = editEmailAddress.getText().toString().trim();
@@ -94,6 +92,7 @@ public class ForgetPasswordPage extends AppCompatActivity {
     public void redirectToUserLoginPage(View view){
         Intent intent = new Intent(this, LoginPage.class);
         startActivity(intent);
+        finish();
     }
 
 }

@@ -13,13 +13,23 @@
         android:roundIcon="@mipmap/logo_foreground"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
+        android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
+        <activity
+            android:name=".AdminHomePage"
+            android:exported="false" />
+
         <activity
             android:name=".RegistrationPage"
             android:exported="false" />
         <activity
             android:name=".LoginPage"
-            android:exported="false" />
+            android:exported="true" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
         <activity
             android:name=".AccountActivation"
             android:exported="false" />
@@ -31,13 +41,8 @@
             android:exported="true" />
         <activity
             android:name=".InitialPage"
-            android:exported="true"
-            android:theme="@style/Theme.InitialPage">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".AdminLogin"

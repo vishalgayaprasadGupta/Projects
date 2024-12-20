@@ -4,6 +4,7 @@ import static com.example.myapplication.RegistrationPage.TAG;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -39,20 +41,48 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginPage extends AppCompatActivity {
 
+    TextView userRegisterPage,forgetPasswordPage;
     TextInputEditText Email,UserPassword;
     Button Signin;
     FirebaseAuth mAuth;
     ProgressBar LoginProgressbar,RegisterProgressbar;
-    String errorMessage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login_page);
 
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            Intent intent = new Intent(LoginPage.this, UserHomePage.class);
+            startActivity(intent);
+            finish();
+        }
         Email=findViewById(R.id.editEmailAddress);
         UserPassword=findViewById(R.id.editPassword);
         Signin=findViewById(R.id.UserLogin);
+
+        forgetPasswordPage=findViewById(R.id.userForgetPassword);
+        forgetPasswordPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginPage.this, ForgetPasswordPage.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        userRegisterPage=findViewById(R.id.registerUser);
+        userRegisterPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RegisterProgressbar.setVisibility(View.VISIBLE);
+                Intent intent = new Intent(LoginPage.this, RegistrationPage.class);
+                startActivity(intent);
+                RegisterProgressbar.setVisibility(View.INVISIBLE);
+                finish();
+            }
+        });
 
         LoginProgressbar=findViewById(R.id.SigninProgressbar);
         LoginProgressbar.setVisibility(View.INVISIBLE);
@@ -99,7 +129,7 @@ public class LoginPage extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         LoginProgressbar.setVisibility(View.INVISIBLE);
                         Signin.setEnabled(true);
-                        Signin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFC857")));
+                        Signin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1E3C72")));
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
@@ -108,15 +138,18 @@ public class LoginPage extends AppCompatActivity {
                                 FirebaseFirestore firestore = FirebaseFirestore.getInstance();
                                 firestore.collection("User").document(user.getUid()).get().addOnCompleteListener(LoginTask -> {
                                     if (LoginTask.isSuccessful()) {
-                                        String role = LoginTask.getResult().getString("role");                                            Log.d(TAG, "Role fetched: " + role);
+                                        String role = LoginTask.getResult().getString("role");
+                                        Log.d(TAG, "Role fetched: " + role);
                                         if ("User".equals(role)) {
                                             if(user.isEmailVerified()){
-                                                updateUI(user);
+                                                userUpdateUI(user);
                                             }else{
-                                                Toast.makeText(LoginPage.this, "Verify your email to activate your account", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(LoginPage.this, "Verify your email to activate your account", Toast.LENGTH_SHORT).show();
                                                 redirectToVerificationPage();
                                                 finish();
                                             }
+                                        }else if("Admin".equals(role)){
+                                            adminUpdateUI(user);
                                         }else {
                                             Toast.makeText(LoginPage.this, "Enter Registered EmailID and Password",
                                                     Toast.LENGTH_SHORT).show();
@@ -131,56 +164,67 @@ public class LoginPage extends AppCompatActivity {
                             }else{
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "signInWithEmail:failure", task.getException());
-
-                                try {
-                                    throw task.getException();
-                                } catch (FirebaseAuthInvalidCredentialsException e) {
-                                    errorMessage = "Incorrect password. Please try again.";
-                                } catch (FirebaseAuthInvalidUserException e) {
-                                    errorMessage = "No account found with this email address.";
-                                } catch (Exception e) {
-                                    errorMessage = "Authentication failed. " + e.getMessage();
-                                }
+                                Toast.makeText(LoginPage.this, "Authenticiation failed..!", Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            try {
+                                throw task.getException();
+                            } catch (FirebaseAuthInvalidCredentialsException e) {
+                                Toast.makeText(LoginPage.this, "Incorrect Username or Password. Try again!", Toast.LENGTH_SHORT).show();
+                            } catch (FirebaseAuthInvalidUserException e) {
+                                Toast.makeText(LoginPage.this, "No account found with this email address! ", Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+                                Toast.makeText(LoginPage.this, "Authentication failed! " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
                 });
     }
-    public void updateUI(FirebaseUser user){
+    public void userUpdateUI(FirebaseUser user){
         if (user != null) {
             Intent intent = new Intent(LoginPage.this, UserHomePage.class);
             startActivity(intent);
-            Toast.makeText(LoginPage.this, "Login Succesfully .",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginPage.this, "Login Succesfully .", Toast.LENGTH_LONG).show();
+            finish();
         } else {
-            Toast.makeText(LoginPage.this, "User not authenticated.", Toast.LENGTH_SHORT).show();
+
+            Toast.makeText(LoginPage.this, "UserProfile not authenticated.", Toast.LENGTH_SHORT).show();
             finish();
             mAuth.signOut();
         }
     }
-    public void redirectToRegistrationPage(View view) {
-        RegisterProgressbar.setVisibility(View.VISIBLE);
-        Intent intent = new Intent(this, RegistrationPage.class);
-        startActivity(intent);
-        RegisterProgressbar.setVisibility(View.INVISIBLE);
-        finish();
+    public void adminUpdateUI(FirebaseUser user){
+        if (user != null) {
+            Intent intent = new Intent(LoginPage.this, AdminHomePage.class);
+            startActivity(intent);
+            Toast.makeText(LoginPage.this, "Login Succesfully .", Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            Toast.makeText(LoginPage.this, "UserProfile not authenticated.", Toast.LENGTH_SHORT).show();
+            finish();
+            mAuth.signOut();
+        }
     }
+
     public void redirectToAdminLoginPage(View view) {
         Intent intent = new Intent(this, AdminLogin.class);
         startActivity(intent);
+        finish();
     }
     public void redirectToUserLoginPage(View view){
         Intent intent = new Intent(this, LoginPage.class);
         startActivity(intent);
-
+        finish();
     }
     public void redirectToVerificationPage(){
         Intent intent = new Intent(this, AccountActivation.class);
         startActivity(intent);
+        finish();
     }
 
     public void redirectToForgetPasswordPage(View view){
         Intent intent = new Intent(this, ForgetPasswordPage.class);
         startActivity(intent);
+        finish();
     }
 }

@@ -1,12 +1,19 @@
 package com.example.myapplication;
 
+import static com.example.myapplication.RegistrationPage.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.VideoView;
 import android.media.MediaPlayer;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class InitialPage extends AppCompatActivity {
 
@@ -26,10 +33,32 @@ public class InitialPage extends AppCompatActivity {
 
         videoView.setOnCompletionListener(mp -> {
             new Handler().postDelayed(() -> {
-                Intent intent = new Intent(InitialPage.this, LoginPage.class);
-                startActivity(intent);
-                finish();
-            }, 1000);
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                FirebaseUser user = mAuth.getCurrentUser();
+
+                if (user != null) {
+                    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+                    firestore.collection("User").document(user.getUid()).get().addOnCompleteListener(LoginTask -> {
+                        if (LoginTask.isSuccessful()) {
+                            String role = LoginTask.getResult().getString("role");
+                            Log.d(TAG, "Role fetched: " + role);
+                            if ("Admin".equals(role)) {
+                                Intent intent = new Intent(InitialPage.this, AdminHomePage.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Intent intent = new Intent(InitialPage.this, UserHomePage.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
+                    });
+                }else{
+                    Intent intent = new Intent(InitialPage.this, LoginPage.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }, 500);
         });
     }
 }

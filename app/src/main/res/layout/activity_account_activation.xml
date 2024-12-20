@@ -1,151 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
-    android:background="#F1F1F1"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AccountActivation">
+    tools:context=".AdminLoginPage"
+    android:background="@drawable/gradient_background">
 
-  <LinearLayout
-      android:layout_width="332dp"
-      android:layout_height="543dp"
-      android:background="@drawable/main_border"
-      android:backgroundTint="@null"
-      android:orientation="vertical"
-      android:padding="10dp"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.556"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_bias="0.818">
+  <!-- Title Text -->
 
-    <TextView
-        android:id="@+id/textView0"
-        android:layout_width="261dp"
-        android:layout_height="59dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="40dp"
-        android:gravity="center"
-        android:text="Activate Account"
-        android:textColor="#FFF4B7"
-        android:textSize="27sp"
-        android:textStyle="bold" />
-
-    <LinearLayout
-        android:layout_width="310dp"
-        android:layout_height="53dp"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/border"
-        android:layout_gravity="center"
-        android:orientation="horizontal"
-        android:padding="5dp">
-
-      <ImageView
-          android:id="@+id/imageView5"
-          android:layout_width="45dp"
-          android:layout_height="40dp"
-          app:srcCompat="@drawable/email" />
-
-      <com.google.android.material.textfield.TextInputLayout
-          android:id="@+id/email"
-          android:layout_width="260dp"
-          android:layout_height="53dp"
-          android:background="@null"
-          android:ems="10"
-          android:gravity="center"
-          app:hintAnimationEnabled="false"
-          app:hintEnabled="true">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editEmailAddress"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@null"
-            android:backgroundTint="@color/white"
-            android:hint="Verify Email"
-            android:inputType="textEmailAddress"
-            android:textColor="#0F0E0E"
-            android:textColorHint="#3A3636" />
-      </com.google.android.material.textfield.TextInputLayout>
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-      <com.google.android.material.button.MaterialButton
-          android:id="@+id/verifyEmail"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:backgroundTint="#FFC857"
-          android:paddingStart="20dp"
-          android:paddingTop="10dp"
-          android:paddingEnd="20dp"
-          android:paddingBottom="10dp"
-          android:layout_marginTop="10dp"
-          android:text="Send Activation Link"
-          android:textColor="@color/black"
-          android:textStyle="bold"
-          app:cornerRadius="10dp"
-          app:iconGravity="textStart" />
-      <ProgressBar
-          android:id="@+id/emailVerificationProgressbar"
-          android:layout_width="50dp"
-          android:layout_height="50dp"
-          android:layout_gravity="center_horizontal"
-          android:progressTint="@color/white"
-          android:visibility="invisible" />
-
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
-
-      <ImageButton
-          android:id="@+id/back"
-          android:layout_width="wrap_content"
-          android:layout_height="14dp"
-          android:layout_marginStart="70dp"
-          android:layout_marginTop="26dp"
-          android:background="@android:color/transparent"
-          android:src="@drawable/back" />
-
-      <Button
-          android:id="@+id/backbutton"
-          android:layout_width="191dp"
-          android:layout_height="65dp"
-          android:layout_gravity="center"
-          android:background="@android:color/transparent"
-          android:onClick="redirectToUserLoginPage"
-          android:text="Back to Login "
-          android:textColor="#F1F1F1"
-          android:textSize="12sp"
-          android:textStyle="bold" />
-
-    </FrameLayout>
-  </LinearLayout>
+  <!-- CardView for Admin Login Form -->
 
   <TextView
-      android:id="@+id/textView4"
+      android:id="@+id/adminTitle"
       android:layout_width="310dp"
       android:layout_height="70dp"
-      android:layout_marginStart="28sp"
+      android:gravity="center"
       android:text="ĊäṁṗüṡĊöṅṅëċẗ"
-      android:textColor="#003161"
+      android:textColor="#00224D"
       android:textSize="35sp"
       android:textStyle="bold"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.495"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_bias="0.172" />
+      app:layout_constraintVertical_bias="0.147" />
+
+  <androidx.cardview.widget.CardView
+      android:id="@+id/adminCardContainer"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_margin="16dp"
+      android:background="@color/white"
+      app:cardCornerRadius="20dp"
+      app:cardElevation="10dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.5">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+      <!-- Header Text -->
+      <TextView
+          android:id="@+id/adminLoginTitle"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:layout_marginBottom="12dp"
+          android:gravity="center"
+          android:text="Activate Account"
+          android:textColor="#1E3C72"
+          android:textSize="30sp"
+          android:textStyle="bold" />
+
+      <!-- Email Input -->
+      <com.google.android.material.textfield.TextInputLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="12dp"
+          android:hint="Email">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editEmailAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress" />
+      </com.google.android.material.textfield.TextInputLayout>
+
+      <!-- Login Button -->
+      <FrameLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/verifyEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#1E3C72"
+            android:text="Send account Activation Link"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <ProgressBar
+            android:id="@+id/emailVerificationProgressbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:visibility="invisible" />
+      </FrameLayout>
+
+      <!-- Redirect to User Login -->
+      <TextView
+          android:id="@+id/adminToUserLogin"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:layout_marginTop="20dp"
+          android:text="Back to Login"
+          android:textColor="#1E3C72"
+          android:textSize="20dp"
+          android:textStyle="bold" />
+    </LinearLayout>
+  </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

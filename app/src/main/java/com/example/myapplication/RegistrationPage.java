@@ -34,13 +34,14 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class RegistrationPage extends AppCompatActivity {
-    //  TextView Name,Email,Phone,College,Password1,Password2,textView,textView0;
+    TextView Signin;
     TextInputEditText Phone,EmailAddress,UserName,CollegeName,UserPassword,ConfirmPassword;
-    Button Signup,Signin;
+    Button Signup;
     FirebaseAuth mAuth;
     FirebaseFirestore firestore;
     CollectionReference userData;
@@ -66,12 +67,18 @@ public class RegistrationPage extends AppCompatActivity {
         Signup = findViewById(R.id.SignupButton);
         Signin = findViewById(R.id.SigninButton);
 
+        Signin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RegistrationPage.this, LoginPage.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         RegisterProgressbar=findViewById(R.id.SignupProgressbar);
         RegisterProgressbar.setVisibility(View.INVISIBLE);
 
         radioGroup=findViewById(R.id.radioGroupGender);
-
-
         firestore= FirebaseFirestore.getInstance();
         userData = firestore.collection(USER);
         mAuth=FirebaseAuth.getInstance();
@@ -137,6 +144,22 @@ public class RegistrationPage extends AppCompatActivity {
         }
     }
 
+    public void setDisplayName(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String displayName = UserName.getText().toString();
+            if(!TextUtils.isEmpty(displayName)) {
+                user.updateProfile(new UserProfileChangeRequest.Builder()
+                        .setDisplayName(displayName).build());
+            }else{
+                Toast.makeText(this, "User not authenticated.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }else{
+            Toast.makeText(this, "User not authenticated.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+    }
     public void registerUser(String EmailId,String Password){
         RegisterProgressbar.setVisibility(View.VISIBLE);
         Signup.setEnabled(false);
@@ -147,12 +170,13 @@ public class RegistrationPage extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         RegisterProgressbar.setVisibility(View.INVISIBLE);
                         Signup.setEnabled(true);
-                        Signup.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFC857")));
+                        Signup.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1E3C72")));
                         if (task.isSuccessful()) {
                             sendVerificationEmail();
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             if(user!=null){
+                                setDisplayName();
                                 Log.d(TAG, "Register done ");
                                 Toast.makeText(RegistrationPage.this, "Registered succesfully", Toast.LENGTH_SHORT).show();
                                 if(isNetworkAvailable()) {
@@ -181,27 +205,30 @@ public class RegistrationPage extends AppCompatActivity {
 
     public void updateUI(FirebaseUser user){
         if (user != null) {
-            String uid = user.getUid();
-            User user1=new User(Role,UserName.getText().toString(),Gender,EmailAddress.getText().toString(),
-                    Phone.getText().toString(), CollegeName.getText().toString(), UserPassword.getText().toString());
-            userData.document(uid).set(user1).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Intent intent = new Intent(RegistrationPage.this, LoginPage.class);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(RegistrationPage.this, "Error Saving User Data", Toast.LENGTH_SHORT).show();
-                }
-            });
+            if(isNetworkAvailable()) {
+                String uid = user.getUid();
+                User userdata = new User(Role, UserName.getText().toString(), Gender, EmailAddress.getText().toString(),
+                        Phone.getText().toString(), CollegeName.getText().toString(), UserPassword.getText().toString());
+                userData.document(uid).set(userdata).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Intent intent = new Intent(RegistrationPage.this, LoginPage.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(RegistrationPage.this, "Error Saving User Data", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
+            }else {
+                Toast.makeText(RegistrationPage.this, "Network error", Toast.LENGTH_SHORT).show();
+            }
         } else {
             Toast.makeText(RegistrationPage.this, "User not authenticated.", Toast.LENGTH_SHORT).show();
             if (mAuth.getCurrentUser() != null) {
                 mAuth.getCurrentUser().delete(); // This will only be called if the user is authenticated
+                finish();
             }
         }
     }
 
-    public void redirectToUserLoginPage(View view){
-        Intent intent = new Intent(this, LoginPage.class);
-        startActivity(intent);
-    }
 }

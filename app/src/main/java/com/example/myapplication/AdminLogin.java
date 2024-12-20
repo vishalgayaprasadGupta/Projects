@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -37,8 +38,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AdminLogin extends AppCompatActivity {
+    TextView adminToLoginPage;
     TextInputEditText Email,UserPassword;
-    Button Signin;
+    Button Signin,userLoginPage;
     FirebaseAuth mAuth;
     ProgressBar LoginProgressbar;
     String errorMessage;
@@ -55,6 +57,24 @@ public class AdminLogin extends AppCompatActivity {
         LoginProgressbar=findViewById(R.id.AdminSigninProgressbar);
         LoginProgressbar.setVisibility(View.INVISIBLE);
 
+        adminToLoginPage=findViewById(R.id.adminToUserLogin);
+        adminToLoginPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AdminLogin.this, LoginPage.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        userLoginPage=findViewById(R.id.buttonUserLogin);
+        userLoginPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AdminLogin.this, LoginPage.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         mAuth = FirebaseAuth.getInstance();
         Signin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +114,7 @@ public class AdminLogin extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         LoginProgressbar.setVisibility(View.INVISIBLE);
                         Signin.setEnabled(true);
-                        Signin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFC857")));
+                        Signin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#73EC8B")));
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
@@ -131,10 +151,13 @@ public class AdminLogin extends AppCompatActivity {
                                     throw task.getException();
                                 } catch (FirebaseAuthInvalidCredentialsException e) {
                                     errorMessage = "Incorrect password. Please try again.";
+                                    Toast.makeText(AdminLogin.this, ""+errorMessage, Toast.LENGTH_SHORT).show();
                                 } catch (FirebaseAuthInvalidUserException e) {
                                     errorMessage = "No account found with this email address.";
+                                    Toast.makeText(AdminLogin.this, ""+errorMessage, Toast.LENGTH_SHORT).show();
                                 } catch (Exception e) {
                                     errorMessage = "Authentication failed. " + e.getMessage();
+                                    Toast.makeText(AdminLogin.this, ""+errorMessage, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
@@ -143,28 +166,29 @@ public class AdminLogin extends AppCompatActivity {
     }
     public void updateUI(FirebaseUser user){
         if (user != null) {
-            Intent intent = new Intent(AdminLogin.this, UserHomePage.class);
+            Intent intent = new Intent(AdminLogin.this, AdminHomePage.class);
             startActivity(intent);
-            Toast.makeText(AdminLogin.this, "Login Succesfully .",
-                    Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(AdminLogin.this, "Login Succesfully .", Toast.LENGTH_SHORT).show();
+            finish();
         } else {
             Toast.makeText(AdminLogin.this, "User not authenticated.", Toast.LENGTH_SHORT).show();
-
         }
     }
 
     public void redirectToUserLoginPage(View view) {
         Intent intent = new Intent(this, LoginPage.class);
         startActivity(intent);
+        finish();
     }
 
     public void redirectToVerificationPage(){
         Intent intent = new Intent(this, AccountActivation.class);
         startActivity(intent);
+        finish();
     }
     public void redirectToForgetPasswordPage(View view){
         Intent intent = new Intent(this, ForgetPasswordPage.class);
         startActivity(intent);
+        finish();
     }
 }

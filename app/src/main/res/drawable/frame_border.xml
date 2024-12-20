@@ -1,0 +1,17 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Outer border -->
+    <solid android:color="#FFC107" /> <!-- Light gray for the border -->
+    <corners android:radius="15dp"/> <!-- Rounded corners -->
+
+    <!-- Stroke (border with thickness) -->
+    <stroke android:color="#000000" android:width="2dp" /> <!-- Border color and thickness -->
+
+    <!-- Inner color (light fill) -->
+    <gradient xmlns:android="http://schemas.android.com/apk/res/android"
+        android:startColor="#FFFFFF"
+        android:endColor="#007BFF"
+        android:angle="90"
+        android:type="linear" />
+
+</shape>
+
