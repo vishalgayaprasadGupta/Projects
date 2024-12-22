@@ -7,18 +7,18 @@
     android:background="#EDEDED"
     android:padding="16dp"
     tools:context=".fragments.Home">
+    <!--
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:layout_marginBottom="35dp"
+            android:background="#F4E1D2"
+            android:gravity="center_vertical"
+            android:layout_marginTop="16dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:layout_marginBottom="35dp"
-        android:background="#F4E1D2"
-        android:gravity="center_vertical"
-        android:layout_marginTop="16dp">
 
-        <!-- Total Events Registered -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             android:textStyle="bold"/>
         </LinearLayout>
 
-        <!-- User Rank -->
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
             android:textStyle="bold"/>
         </LinearLayout>
 
-        <!-- Events Attended -->
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -100,6 +100,17 @@
 
     </LinearLayout>
 
+-->
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Events Category"
+        android:textSize="30dp"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"/>
     <!-- Event Block 1 -->
 
     <LinearLayout
@@ -107,6 +118,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/frame_border"
+        android:clickable="true"
         android:padding="12dp"
         android:layout_marginBottom="16dp"
         android:gravity="center_vertical">
@@ -117,11 +129,13 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="College Events"
-            android:textSize="18sp"
+            android:clickable="true"
+            android:textSize="20dp"
             android:textStyle="bold"
             android:textColor="@color/black" />
         <TextView
             android:layout_width="match_parent"
+            android:clickable="true"
             android:layout_height="wrap_content"
             android:gravity="center">
         </TextView>
@@ -134,6 +148,7 @@
         android:orientation="vertical"
         android:background="@drawable/frame_border"
         android:padding="12dp"
+        android:clickable="true"
         android:layout_marginBottom="16dp"
         android:gravity="center_vertical">
 
@@ -141,14 +156,16 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_weight="1"
+            android:clickable="true"
             android:text="Inter-College Events"
-            android:textSize="18sp"
+            android:textSize="20dp"
             android:textStyle="bold"
             android:gravity="center"
             android:textColor="@color/black" />
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:clickable="true">
 
         </TextView>
     </LinearLayout>
@@ -160,6 +177,7 @@
         android:orientation="vertical"
         android:background="@drawable/frame_border"
         android:padding="12dp"
+        android:clickable="true"
         android:layout_marginBottom="16dp"
         android:gravity="center_vertical">
 
@@ -168,13 +186,15 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:text="Workshops"
-            android:textSize="18sp"
+            android:textSize="20dp"
             android:gravity="center"
+            android:clickable="true"
             android:textStyle="bold"
             android:textColor="@color/black" />
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:clickable="true">
         </TextView>
     </LinearLayout>
     <LinearLayout
@@ -183,6 +203,7 @@
         android:orientation="vertical"
         android:background="@drawable/frame_border"
         android:padding="12dp"
+        android:clickable="true"
         android:layout_marginBottom="16dp"
         android:gravity="center_vertical">
 
@@ -191,13 +212,15 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:text="Seminars"
-            android:textSize="18sp"
+            android:textSize="20dp"
+            android:clickable="true"
             android:gravity="center"
             android:textStyle="bold"
             android:textColor="@color/black" />
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:clickable="true">
         </TextView>
     </LinearLayout>
 
