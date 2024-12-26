@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="false">
+    android:fitsSystemWindows="true">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -25,7 +25,7 @@
 
         <ImageButton
             android:id="@+id/DrawerButtonToggle"
-            android:layout_width="50dp"
+            android:layout_width="45dp"
             android:layout_height="40dp"
             android:layout_gravity="start"
             android:background="#E5E5E5"
@@ -43,7 +43,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="8dp"
                 android:gravity="end"
-                android:textColor="#007BFF"
+                android:textColor="#00224D"
                 android:textSize="12dp"
                 android:textStyle="bold" />
 
@@ -54,7 +54,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:textColor="#007BFF"
+                android:textColor="#00224D"
                 android:gravity="end"
                 android:textSize="15dp"
                 android:textStyle="bold" />
@@ -79,7 +79,6 @@
         android:layout_gravity="bottom"
         android:background="#A4C2F4"
         android:elevation="4dp"
-        app:itemRippleColor="@color/lavender_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

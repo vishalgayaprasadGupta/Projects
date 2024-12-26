@@ -83,10 +83,9 @@ public class UserHomePage extends AppCompatActivity {
                 int id=item.getItemId();
                 if(id==R.id.logout){
                     mAuth.signOut();
+                    Toast.makeText(UserHomePage.this, "Logout Succesfully", Toast.LENGTH_SHORT).show();
                     Intent intent=new Intent(UserHomePage.this,LoginPage.class);
                     startActivity(intent);
-                    Toast.makeText(UserHomePage.this, "Logout Succesfully", Toast.LENGTH_SHORT).show();
-                    finish();
                 }else if(id==R.id.setting){
                     Toast.makeText(UserHomePage.this, "Settng Page ", Toast.LENGTH_SHORT).show();
                 }else if(id==R.id.share){

@@ -5,16 +5,16 @@ public class User {
     private String name;
     private String gender;
     private String email;
-    private String phone;
+    private String contact;
     private String college;
     private String password;
 
-    public User(String role, String name, String gender, String email, String phone, String college, String password) {
+    public User(String role, String name, String gender, String email, String contact, String college, String password) {
         this.role = role;
         this.name = name;
         this.gender = gender;
         this.email = email;
-        this.phone = phone;
+        this.contact = contact;
         this.college = college;
         this.password = password;
     }
@@ -51,12 +51,12 @@ public class User {
         this.email = email;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getContact() {
+        return contact;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
     public String getCollege() {

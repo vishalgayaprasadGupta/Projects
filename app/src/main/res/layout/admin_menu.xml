@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
@@ -24,11 +25,11 @@
 
         <ImageButton
             android:id="@+id/DrawerButtonToggle"
-            android:layout_width="50dp"
+            android:layout_width="45dp"
             android:layout_height="40dp"
             android:layout_gravity="start"
-            android:gravity="start"
             android:background="#E5E5E5"
+            android:gravity="start"
             android:src="@drawable/menu" />
 
         <FrameLayout
@@ -42,18 +43,18 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="8dp"
                 android:gravity="end"
-                android:textColor="@color/white"
+                android:textColor="#00224D"
                 android:textSize="12dp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/welcome"
                 android:layout_width="match_parent"
-                android:layout_height="25dp"
+                android:layout_height="30dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
-                android:textColor="@color/white"
+                android:textColor="#00224D"
                 android:gravity="end"
                 android:textSize="15dp"
                 android:textStyle="bold" />
@@ -63,30 +64,22 @@
 
     <FrameLayout
         android:id="@+id/fragement_layout"
-        android:layout_width="409dp"
-        android:layout_height="617dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="1dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
-    </FrameLayout>
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"></FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
+        alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="#A4C2F4"
-        android:elevation="4dp"
-        alignParentBottom="true"
-        app:itemRippleColor="@color/lavender_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"

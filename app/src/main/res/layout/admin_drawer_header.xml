@@ -35,7 +35,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="5dp"
         android:text="Admin Name"
-        android:textColor="@color/white"
+        android:textColor="#00224D"
         android:textStyle="bold"
         android:textSize="15sp" />
     <TextView
@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Admin Email"
-        android:textColor="@color/white"
+        android:textColor="#00224D"
         android:textStyle="bold"
         android:textSize="15sp" />
 </LinearLayout>

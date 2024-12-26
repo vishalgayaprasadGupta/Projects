@@ -41,10 +41,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginPage extends AppCompatActivity {
 
-    TextView userRegisterPage,forgetPasswordPage;
+    TextView userRegisterPage,forgetPasswordPage,toAdminlogin;
     TextInputEditText Email,UserPassword;
     Button Signin;
     FirebaseAuth mAuth;
+    FirebaseFirestore firestore;
     ProgressBar LoginProgressbar,RegisterProgressbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +53,6 @@ public class LoginPage extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login_page);
 
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            Intent intent = new Intent(LoginPage.this, UserHomePage.class);
-            startActivity(intent);
-            finish();
-        }
         Email=findViewById(R.id.editEmailAddress);
         UserPassword=findViewById(R.id.editPassword);
         Signin=findViewById(R.id.UserLogin);
@@ -113,7 +107,6 @@ public class LoginPage extends AppCompatActivity {
             }
         });
     }
-
     private boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
@@ -206,25 +199,10 @@ public class LoginPage extends AppCompatActivity {
         }
     }
 
-    public void redirectToAdminLoginPage(View view) {
-        Intent intent = new Intent(this, AdminLogin.class);
-        startActivity(intent);
-        finish();
-    }
-    public void redirectToUserLoginPage(View view){
-        Intent intent = new Intent(this, LoginPage.class);
-        startActivity(intent);
-        finish();
-    }
     public void redirectToVerificationPage(){
         Intent intent = new Intent(this, AccountActivation.class);
         startActivity(intent);
         finish();
     }
 
-    public void redirectToForgetPasswordPage(View view){
-        Intent intent = new Intent(this, ForgetPasswordPage.class);
-        startActivity(intent);
-        finish();
-    }
 }

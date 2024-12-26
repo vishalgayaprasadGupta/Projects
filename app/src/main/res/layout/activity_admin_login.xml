@@ -27,46 +27,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.147" />
 
-    <LinearLayout
-        android:id="@+id/headerButtons"
-        android:layout_width="0dp"
-        android:layout_height="70dp"
-        android:orientation="horizontal"
-        android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.283">
-
-        <!-- User Login Button -->
-        <Button
-            android:id="@+id/buttonUserLogin"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:backgroundTint="#FFFFFF"
-            android:text="USER LOGIN"
-            android:textAllCaps="true"
-            android:textColor="#1E3C72"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
-        <!-- Admin Login Button -->
-        <Button
-            android:id="@+id/buttonAdminLogin"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:backgroundTint="#1E3C72"
-            android:text="ADMIN LOGIN"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
     <androidx.cardview.widget.CardView
         android:id="@+id/adminCardContainer"
         android:layout_width="0dp"
@@ -166,7 +126,7 @@
 
             <!-- Redirect to User Login -->
             <TextView
-                android:id="@+id/adminToUserLogin"
+                android:id="@+id/buttonUserLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

@@ -12,5 +12,7 @@
     <color name="lavendar_light">#E6E6FA</color>
     <color name="gray">#9E9E9E</color>
 
-
+    <color name="colorAccent">#FF4081</color> <!-- Your app's accent color -->
+    <color name="card_background">#F5F5F5</color> <!-- Light background for cards -->
 </resources>
+

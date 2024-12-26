@@ -14,10 +14,13 @@
         <item name="android:statusBarColor">#007F73</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
-    <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color" > @color/lavendar_light</item>
-    </style>
+
     <style name="Theme.InitialPage" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.MyApplication" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 </resources>
