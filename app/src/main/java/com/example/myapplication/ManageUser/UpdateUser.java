@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
-import com.example.myapplication.fetchUserDetails;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -69,7 +68,7 @@ public class UpdateUser extends Fragment {
                                 if (task.isSuccessful() && !task.getResult().isEmpty()) {
                                     String userId = task.getResult().getDocuments().get(0).getId();
                                     Log.d("UpdateUser", "User found! UID: " + userId);
-                                    fetchUserDetails fragment = new fetchUserDetails();
+                                    fetchUserDetailsAndUpdate fragment = new fetchUserDetailsAndUpdate();
                                     Bundle bundle = new Bundle();
                                     bundle.putString("uid", userId);
                                     fragment.setArguments(bundle);

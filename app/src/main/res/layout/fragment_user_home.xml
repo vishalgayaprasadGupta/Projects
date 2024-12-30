@@ -82,6 +82,7 @@
                 android:gravity="center_vertical" />
 
             <TextView
+                android:id="@+id/interCollegeEvent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="➔"
@@ -118,6 +119,7 @@
                 android:gravity="center_vertical" />
 
             <TextView
+                android:id="@+id/workshopEvent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="➔"
@@ -152,6 +154,7 @@
                 android:gravity="center_vertical" />
 
             <TextView
+                android:id="@+id/seminarEvents"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="➔"

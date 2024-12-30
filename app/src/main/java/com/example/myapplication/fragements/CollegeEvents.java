@@ -1,8 +1,10 @@
 package com.example.myapplication.fragements;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,7 +16,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.myapplication.Event;
-import com.example.myapplication.EventAdapter;
+import com.example.myapplication.Adapter.EventAdapter;
 import com.example.myapplication.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -39,7 +41,6 @@ public class CollegeEvents extends Fragment {
         recyclerView = view.findViewById(R.id.eventsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-
         db = FirebaseFirestore.getInstance();
         eventAdapter = new EventAdapter(new ArrayList<>());
         eventAdapter.setOnItemClickListener(this::onItemClick); // Set the listener
@@ -63,13 +64,13 @@ public class CollegeEvents extends Fragment {
     }
 
     private void fetchEvents() {
-        db.collection("events").get()
+        db.collection("College Events").get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         List<Event> events = task.getResult().toObjects(Event.class);
                         if (events.isEmpty()) {
                             // Navigate to a fragment indicating no events
-                            showNoEventsFragment();
+                            showNoEventDialog();
                         } else {
                             eventAdapter = new EventAdapter(events);
                             eventAdapter.setOnItemClickListener(this::onItemClick); // Re-attach the listener
@@ -77,12 +78,24 @@ public class CollegeEvents extends Fragment {
                         }
                     } else {
                         Toast.makeText(getActivity(), "Error fetching events", Toast.LENGTH_SHORT).show();
+                        getFragment(new CollegeEvents());
                     }
                 });
-    }
 
-    public void showNoEventsFragment(){
-        getFragment(new NoEvents());
+    }
+    private void showNoEventDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("No Event");
+        builder.setMessage("No activity or event is there");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
     public void getFragment(Fragment fragment) {
         requireActivity().getSupportFragmentManager()

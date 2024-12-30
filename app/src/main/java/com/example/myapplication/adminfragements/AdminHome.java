@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.manageUser;
+import com.example.myapplication.ManageUser.manageUser;
 import com.example.myapplication.manageEvents;
 import com.google.firebase.firestore.FirebaseFirestore;
 

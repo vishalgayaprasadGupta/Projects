@@ -143,12 +143,15 @@ public class LoginPage extends AppCompatActivity {
                                             }
                                         }else if("Admin".equals(role)){
                                             adminUpdateUI(user);
-                                        }else {
-                                            Toast.makeText(LoginPage.this, "Enter Registered EmailID and Password",
-                                                    Toast.LENGTH_SHORT).show();
+                                        }else if("Deactivate".equals(role)) {
+                                            Toast.makeText(LoginPage.this, "Your account has been deactivated", Toast.LENGTH_LONG).show();
                                             mAuth.signOut();
-                                        }
-                                    } else {
+                                        }else {
+                                                Toast.makeText(LoginPage.this, "Enter Registered EmailID and Password",
+                                                        Toast.LENGTH_SHORT).show();
+                                                mAuth.signOut();
+                                            }
+                                        } else {
                                         Log.d(TAG, "Failed to retrieve user role.", LoginTask.getException());
                                         Toast.makeText(LoginPage.this, "Login failed,try again", Toast.LENGTH_SHORT).show();
                                         mAuth.signOut();

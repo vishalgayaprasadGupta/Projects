@@ -1,10 +1,8 @@
 package com.example.myapplication.ManageUser;
 
 import static android.content.ContentValues.TAG;
-import static androidx.core.content.ContextCompat.getSystemService;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -14,7 +12,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,11 +24,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.myapplication.LoginPage;
 import com.example.myapplication.R;
-import com.example.myapplication.RegistrationPage;
 import com.example.myapplication.User;
-import com.example.myapplication.manageUser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;

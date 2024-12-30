@@ -152,7 +152,6 @@ public class UserHomePage extends AppCompatActivity {
         }
     }
 
-
     public void setDrawerProfile(){
         user=mAuth.getCurrentUser();
         if (user!=null){

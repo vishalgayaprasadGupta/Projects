@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 import android.widget.VideoView;
 import android.media.MediaPlayer;
 
@@ -43,13 +44,29 @@ public class InitialPage extends AppCompatActivity {
                             String role = LoginTask.getResult().getString("role");
                             Log.d(TAG, "Role fetched: " + role);
                             if ("Admin".equals(role)) {
-                                Intent intent = new Intent(InitialPage.this, AdminHomePage.class);
+                                if(user.isEmailVerified()) {
+                                    Intent intent = new Intent(InitialPage.this, AdminHomePage.class);
+                                    startActivity(intent);
+                                    finish();
+                                }else{
+                                    mAuth.signOut();
+                                }
+                            } else if("Deactivate".equals(role)) {
+                                Intent intent = new Intent(InitialPage.this, LoginPage.class);
                                 startActivity(intent);
+                                Toast.makeText(InitialPage.this, "Your account has been deactivated", Toast.LENGTH_LONG).show();
+                                mAuth.signOut();
                                 finish();
-                            } else {
-                                Intent intent = new Intent(InitialPage.this, UserHomePage.class);
-                                startActivity(intent);
-                                finish();
+                            }else if ("User".equals(role)) {
+                                if(user.isEmailVerified()){
+                                    Intent intent = new Intent(InitialPage.this, UserHomePage.class);
+                                    startActivity(intent);
+                                    finish();
+                                }else{
+                                    mAuth.signOut();
+                                }
+                            }else{
+                                Toast.makeText(this, "Redirecting to Login Page", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

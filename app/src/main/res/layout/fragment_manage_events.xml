@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EDEDED"
-    tools:context=".adminfragements.AdminHome">
+    tools:context=".manageEvents">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -38,14 +38,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Add College Events"
+                        android:text="View Events"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
                         android:gravity="center_vertical" />
 
                     <TextView
-                        android:id="@+id/addCollegeEvents"
+                        android:id="@+id/viewEvents"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="➔"
@@ -74,13 +74,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Add InterCollege Events"
+                        android:text="Add Event "
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
                         android:gravity="center_vertical" />
 
                     <TextView
+                        android:id="@+id/addCollegeEvents"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="➔"
@@ -110,13 +111,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Add Workshops"
+                        android:text="Update Event Details"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
                         android:gravity="center_vertical" />
 
                     <TextView
+                        android:id="@+id/updateEvents"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="➔"
@@ -144,13 +146,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Add Seminars"
+                        android:text="Delete Events"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
                         android:gravity="center_vertical" />
 
                     <TextView
+                        android:id="@+id/deleteEvents"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="➔"

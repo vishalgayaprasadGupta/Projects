@@ -1,34 +1,24 @@
 package com.example.myapplication;
 public class Event {
     private String name;
-    private String description;
-    private String date;
-    private String time;
-    private String location;
     private String eventId;
+    private String eventType;
 
 
     public Event() {
         // Firestore needs a no-argument constructor to deserialize the object
     }
-    public Event(String name, String description, String date,String eventId) {
+    public Event(String name, String eventType) {
         this.name = name;
-        this.description = description;
-        this.date = date;
-        this.time = time;
-        this.location = location;
+        this.eventType = eventType;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public String getDate() {
-        return date;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEventId() {
@@ -39,11 +29,11 @@ public class Event {
         this.eventId = eventId;
     }
 
-    public String getTime() {
-        return time;
+    public String getEventType() {
+        return eventType;
     }
 
-    public String getLocation() {
-        return location;
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
     }
 }

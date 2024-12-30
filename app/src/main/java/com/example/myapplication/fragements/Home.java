@@ -9,10 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.myapplication.ManageEvents.SeminarsEvent;
 import com.example.myapplication.R;
 
 public class Home extends Fragment {
-    TextView CollegeEvents;
+    TextView CollegeEvents,InterCollegeEvents,Workshops,Seminars;
     View view;
     public Home() {
         // Required empty public constructor
@@ -24,6 +25,31 @@ public class Home extends Fragment {
         view= inflater.inflate(R.layout.fragment_user_home, container, false);
 
         CollegeEvents=view.findViewById(R.id.CollegeEvents);
+        InterCollegeEvents=view.findViewById(R.id.interCollegeEvent);
+        Workshops=view.findViewById(R.id.workshopEvent);
+        Seminars=view.findViewById(R.id.seminarEvents);
+
+        Workshops.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragment(new WorkshopsEvents());
+            }
+        });
+
+        Seminars.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragment(new SeminarsEvent());
+            }
+            });
+
+        InterCollegeEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragment(new InterCollegeEvents());
+            }
+            });
+
         CollegeEvents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
