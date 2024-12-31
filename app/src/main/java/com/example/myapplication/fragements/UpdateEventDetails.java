@@ -2,7 +2,9 @@ package com.example.myapplication.fragements;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import com.example.myapplication.ManageEvents.UpdateEvent.InterCollegeEventList;
 import com.example.myapplication.ManageEvents.UpdateEvent.SeminarEventList;
 import com.example.myapplication.ManageEvents.UpdateEvent.WorkshopEventList;
 import com.example.myapplication.R;
+import com.example.myapplication.manageEvents;
 
 public class UpdateEventDetails extends Fragment {
     View view;
@@ -27,6 +30,17 @@ public class UpdateEventDetails extends Fragment {
         // Inflate the layout for this fragment
         view= inflater.inflate(R.layout.fragment_update_event_details, container, false);
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                        fragmentManager.popBackStack();
+                        getFragment(new manageEvents());
+                    }
+                });
+
         updateCollegeEvent=view.findViewById(R.id.updateCollegeEvents);
         updateCollegeEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -34,6 +48,7 @@ public class UpdateEventDetails extends Fragment {
                 getFragment(new CollegeEventList());
             }
         });
+
         updateInterCollegeEvent=view.findViewById(R.id.updateInterCollegeEvent);
         updateInterCollegeEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,6 +56,7 @@ public class UpdateEventDetails extends Fragment {
                 getFragment(new InterCollegeEventList());
             }
         });
+
         updateWorkshopEvent=view.findViewById(R.id.updateWorkshopEvent);
         updateWorkshopEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,6 +64,7 @@ public class UpdateEventDetails extends Fragment {
                 getFragment(new WorkshopEventList());
             }
         });
+
         updateSeminarEvent=view.findViewById(R.id.updateSeminarEvent);
         updateSeminarEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +72,7 @@ public class UpdateEventDetails extends Fragment {
                 getFragment(new SeminarEventList());
             }
         });
+
         return view;
     }
         public void getFragment(Fragment fragment) {

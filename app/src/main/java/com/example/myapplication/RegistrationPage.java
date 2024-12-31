@@ -47,7 +47,7 @@ public class RegistrationPage extends AppCompatActivity {
     CollectionReference userData;
     RadioGroup radioGroup;
     RadioButton selectedRadioButton;
-    String Gender,Role;
+    String Gender,Role,Status;
     ProgressBar RegisterProgressbar;
     static final String USER = "User";
     static final String TAG="RegistrationPage";
@@ -94,6 +94,7 @@ public class RegistrationPage extends AppCompatActivity {
                 }
                 selectedRadioButton = findViewById(radioButtonId);
                 Role="User";
+                Status="Active";
                 String Username = UserName.getText().toString();
                 Gender=selectedRadioButton.getText().toString();
                 String EmailId = EmailAddress.getText().toString();
@@ -113,7 +114,7 @@ public class RegistrationPage extends AppCompatActivity {
                 }
 
                 if(isNetworkAvailable()) {
-                    user = new User(Role, Username, Gender, EmailId, Contact, College, Password);
+                    user = new User(Status,Role, Username, Gender, EmailId, Contact, College, Password);
                     registerUser(EmailId, Password);
                 }else{
                     Toast.makeText(RegistrationPage.this, "Network error", Toast.LENGTH_SHORT).show();
@@ -207,7 +208,7 @@ public class RegistrationPage extends AppCompatActivity {
         if (user != null) {
             if(isNetworkAvailable()) {
                 String uid = user.getUid();
-                User userdata = new User(Role, UserName.getText().toString(), Gender, EmailAddress.getText().toString(),
+                User userdata = new User(Status,Role, UserName.getText().toString(), Gender, EmailAddress.getText().toString(),
                         Phone.getText().toString(), CollegeName.getText().toString(), UserPassword.getText().toString());
                 userData.document(uid).set(userdata).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

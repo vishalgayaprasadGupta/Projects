@@ -2,8 +2,10 @@ package com.example.myapplication.ManageUser;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Environment;
 import android.util.Log;
@@ -15,6 +17,8 @@ import android.widget.Toast;
 
 
 import com.example.myapplication.R;
+import com.example.myapplication.adminfragements.AdminHome;
+import com.example.myapplication.manageEvents;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -32,17 +36,28 @@ public class manageUser extends Fragment {
     public manageUser() {
         // Required empty public constructor
     }
-    TextView addUser,updateUser,deactivateUser,export;
+    TextView addUser,updateUser,deactivateUser,activate,export;
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_manage_user, container, false);
 
         addUser=view.findViewById(R.id.addUser);
         updateUser=view.findViewById(R.id.updateUser);
         deactivateUser=view.findViewById(R.id.deactivateUser);
+        activate=view.findViewById(R.id.activateUser);
         export=view.findViewById(R.id.export);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                        fragmentManager.popBackStack();
+                        getFragment(new AdminHome());
+                    }
+                });
 
         addUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +75,12 @@ public class manageUser extends Fragment {
             @Override
             public void onClick(View v) {
                 getFragment(new fetchUserDetailsforDeactivate());
+            }
+        });
+        activate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragment(new fetchUserDetailsandActivate());
             }
         });
         export.setOnClickListener(new View.OnClickListener() {
@@ -108,9 +129,15 @@ public class manageUser extends Fragment {
 
     public void generatePDF(List<Map<String, Object>> userList) {
         try {
-            // Path to the Downloads folder
-            File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            File pdfFile = new File(downloadDir, "UserDetails.pdf");
+            File pdfFile;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                // For Android 10 and above (Scoped Storage)
+                pdfFile = new File(requireContext().getExternalFilesDir(null), "UserDetails.pdf");
+            } else {
+                // For devices below Android 10
+                File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                pdfFile = new File(downloadDir, "UserDetails.pdf");
+            }
 
             // Create PDF writer
             PdfWriter writer = new PdfWriter(pdfFile);
@@ -131,6 +158,7 @@ public class manageUser extends Fragment {
             table.addHeaderCell("Phone");
             table.addHeaderCell("College");
             table.addHeaderCell("Role");
+            table.addHeaderCell("Status");
 
             // Add rows
             for (Map<String, Object> User : userList) {
@@ -140,14 +168,17 @@ public class manageUser extends Fragment {
                 table.addCell((String) User.get("contact"));
                 table.addCell((String) User.get("college"));
                 table.addCell((String) User.get("role"));
+                table.addCell((String) User.get("status"));
             }
 
             // Add table to document
             document.add(table);
             document.close();
 
-            Log.d("PDF", "PDF generated: " + pdfFile.getAbsolutePath());
-            Toast.makeText(getActivity(), "Pdf downloaded..", Toast.LENGTH_SHORT).show();
+            String message = "PDF saved to: " + pdfFile.getAbsolutePath();
+            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+            Log.d("PDF", message);
+            getFragment(new AdminHome());
         } catch (Exception e) {
             Log.e("PDF", "Error generating PDF: ", e);
             Toast.makeText(getActivity(), "Error downloading Pdf!", Toast.LENGTH_SHORT).show();

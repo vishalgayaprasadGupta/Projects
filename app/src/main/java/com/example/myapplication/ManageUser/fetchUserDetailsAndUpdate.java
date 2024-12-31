@@ -4,7 +4,9 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.UserDetails;
+import com.example.myapplication.manageEvents;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -53,7 +56,14 @@ public class fetchUserDetailsAndUpdate extends Fragment {
         updateProgressbar.setVisibility(View.INVISIBLE);
         radioGroup=view.findViewById(R.id.radioGroupGender);
 
-
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        getFragment(new UpdateUser());
+                    }
+                });
 
         if (getArguments() != null) {
             update.setEnabled(true);
@@ -86,8 +96,7 @@ public class fetchUserDetailsAndUpdate extends Fragment {
                 String College = documentSnapshot.getString("college");
 
                 if(Gender!=null) {
-                    String gender=Gender.toLowerCase();
-                    switch (gender) {
+                    switch (Gender) {
                         case "Male":
                             radioGroup.check(R.id.radioMale);
                             break;
@@ -123,6 +132,11 @@ public class fetchUserDetailsAndUpdate extends Fragment {
         String Email = email.getText().toString().trim();
         String College = college.getText().toString().trim();
 
+        if (Name.isEmpty() || Gender.isEmpty() || Contact.isEmpty() || Email.isEmpty() || College.isEmpty()) {
+            Toast.makeText(getActivity(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         UserDetails userDetails = new UserDetails(Name, Gender, Contact, Email, College);
         firestore.collection("User").document(userId).update(
                         "name", userDetails.getName(),
@@ -149,7 +163,7 @@ public class fetchUserDetailsAndUpdate extends Fragment {
     public void getFragment(Fragment fragment){
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.update_fragement_layout,fragment)
+                .replace(R.id.fragement_layout,fragment)
                 .addToBackStack(null)
                 .commit();
     }

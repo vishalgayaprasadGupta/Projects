@@ -4,7 +4,9 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
+import com.example.myapplication.manageEvents;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -51,6 +54,15 @@ public class DeactivateUser extends Fragment {
         deactivateProgressbar.setVisibility(View.INVISIBLE);
         radioGroup=view.findViewById(R.id.radioGroupGender);
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        getFragment(new fetchUserDetailsforDeactivate());
+                    }
+                });
+
         if (getArguments() != null) {
             deactivate.setEnabled(true);
             String uid = getArguments().getString("uid");
@@ -71,7 +83,6 @@ public class DeactivateUser extends Fragment {
     }
     private void fetchUserDetails(String uid) {
         Log.d("UpdateUser", "User UID: " + uid);
-
         firestore.collection("User").document(uid).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 String Name = documentSnapshot.getString("name");
@@ -80,17 +91,18 @@ public class DeactivateUser extends Fragment {
                 String Email = documentSnapshot.getString("email");
                 String College = documentSnapshot.getString("college");
                 String Role=documentSnapshot.getString("role");
+                String Status=documentSnapshot.getString("status");
 
-                if ("Deactivate".equalsIgnoreCase(Role)) {
-                    Toast.makeText(getActivity(), "User is already Deactivated!", Toast.LENGTH_LONG).show();
+                if ("Inactive".equals(Status)) {
                     deactivate.setEnabled(false);
                     deactivate.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#808080")));
+                    Toast.makeText(getActivity(), "User is already Deactivated!", Toast.LENGTH_LONG).show();
+                    requireActivity().getSupportFragmentManager().popBackStack();
                     return;
                 }
 
                 if(Gender!=null) {
-                    String gender=Gender.toLowerCase();
-                    switch (gender) {
+                    switch (Gender) {
                         case "Male":
                             radioGroup.check(R.id.radioMale);
                             break;
@@ -112,7 +124,7 @@ public class DeactivateUser extends Fragment {
         });
     }
     private void deactivateUser(String uid) {
-        firestore.collection("User").document(uid).update("role", "Deactivate")
+        firestore.collection("User").document(uid).update("status", "Inactive")
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(getActivity(), "User deactivated successfully!", Toast.LENGTH_LONG).show();
                     name.setText("");
@@ -123,6 +135,7 @@ public class DeactivateUser extends Fragment {
                     deactivateProgressbar.setVisibility(View.INVISIBLE);
                     deactivate.setEnabled(true);
                     deactivate.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#008577")));
+
                     getFragment(new manageUser());
                 })
                 .addOnFailureListener(e -> {
@@ -132,10 +145,11 @@ public class DeactivateUser extends Fragment {
                     deactivate.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#008577")));
                 });
     }
+
     public void getFragment(Fragment fragment){
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.update_fragement_layout,fragment)
+                .replace(R.id.fragement_layout,fragment)
                 .addToBackStack(null)
                 .commit();
     }

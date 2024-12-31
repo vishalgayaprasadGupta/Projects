@@ -2,6 +2,7 @@ package com.example.myapplication.ManageEvents.UpdateEvent;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.myapplication.ManageEvents.UpdateEvent.addActivity.addCollegeActivity;
 import com.example.myapplication.ManageEvents.UpdateEvent.addActivity.addInterCollegiateActivity;
@@ -20,10 +22,12 @@ import com.example.myapplication.ManageEvents.UpdateEvent.updateEventActivity.Se
 import com.example.myapplication.ManageEvents.UpdateEvent.updateEventActivity.WorkshopActivityList;
 import com.example.myapplication.ManageEvents.UpdateEvent.updateEventDetails.updateEvent;
 import com.example.myapplication.R;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class UpdatePage extends Fragment {
     View view;
     String eventType,eventId,eventName;
+    FirebaseFirestore db;
     TextView addEventActivity,updateEventDetails,updateEventsActivities,deleteEventActivities,deleteEvent,EventName;
     public UpdatePage() {
         // Required empty public constructor
@@ -47,7 +51,47 @@ public class UpdatePage extends Fragment {
         deleteEventActivities=view.findViewById(R.id.deleteEventActivities);
         deleteEvent=view.findViewById(R.id.deleteEvent);
         EventName=view.findViewById(R.id.eventName);
-        EventName.setText(eventName);
+        fetchEventName();
+
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (getArguments() != null && getArguments().containsKey("activityId")) {
+                            String activityId = getArguments().getString("activityId");
+                            String eventId=getArguments().getString("eventId");
+
+                            Fragment targetFragment;
+                            switch(eventType.trim()){
+                                case "College Events":
+                                    targetFragment=new CollegeEventList();
+                                    break;
+                                case "InterCollegiate Events":
+                                    targetFragment=new InterCollegeEventList();
+                                    break;
+                                case "Workshops":
+                                    targetFragment=new WorkshopEventList();
+                                    break;
+                                case "Seminars":
+                                    targetFragment=new SeminarEventList();
+                                    break;
+                                default:
+                                    targetFragment=new UpdatePage();
+                                    break;
+                            }
+                            Bundle bundle = new Bundle();
+                            bundle.putString("activityId", activityId);
+                            bundle.putString("eventId",eventId);
+                            targetFragment.setArguments(bundle);
+                            getFragment(targetFragment);
+                        } else {
+                            requireActivity().getSupportFragmentManager().popBackStack();
+                        }
+                    }
+                }
+        );
 
         addEventActivity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +168,30 @@ public class UpdatePage extends Fragment {
 
         return view;
     }
+    private void fetchEventName() {
+        db = FirebaseFirestore.getInstance();
+        db.collection(eventType)
+                .document(eventId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Assuming the event name is stored in the field "name" in the event document
+                        String eventName = documentSnapshot.getString("name");
+                        if (eventName != null) {
+                            // Update your UI with the event name
+                            EventName.setText(eventName);
+                        } else {
+                            Toast.makeText(getContext(), "Event name not found", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "No event found with the given eventId", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Error fetching event details", Toast.LENGTH_SHORT).show();
+                });
+    }
+
 
     public void getFragment(Fragment fragment){
         getActivity().getSupportFragmentManager()

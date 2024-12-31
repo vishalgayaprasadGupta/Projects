@@ -132,26 +132,30 @@ public class LoginPage extends AppCompatActivity {
                                 firestore.collection("User").document(user.getUid()).get().addOnCompleteListener(LoginTask -> {
                                     if (LoginTask.isSuccessful()) {
                                         String role = LoginTask.getResult().getString("role");
+                                        String status = LoginTask.getResult().getString("status");
                                         Log.d(TAG, "Role fetched: " + role);
-                                        if ("User".equals(role)) {
-                                            if(user.isEmailVerified()){
-                                                userUpdateUI(user);
-                                            }else{
-                                                Toast.makeText(LoginPage.this, "Verify your email to activate your account", Toast.LENGTH_SHORT).show();
-                                                redirectToVerificationPage();
-                                                finish();
-                                            }
-                                        }else if("Admin".equals(role)){
-                                            adminUpdateUI(user);
-                                        }else if("Deactivate".equals(role)) {
-                                            Toast.makeText(LoginPage.this, "Your account has been deactivated", Toast.LENGTH_LONG).show();
-                                            mAuth.signOut();
-                                        }else {
+                                        if ("Active".equals(status)) {
+                                            if ("User".equals(role)) {
+                                                if (user.isEmailVerified()) {
+                                                    userUpdateUI(user);
+                                                } else {
+                                                    Toast.makeText(LoginPage.this, "Verify your email to activate your account", Toast.LENGTH_SHORT).show();
+                                                    redirectToVerificationPage();
+                                                    finish();
+                                                }
+                                            } else if ("Admin".equals(role)) {
+                                                adminUpdateUI(user);
+                                            } else {
                                                 Toast.makeText(LoginPage.this, "Enter Registered EmailID and Password",
                                                         Toast.LENGTH_SHORT).show();
                                                 mAuth.signOut();
                                             }
-                                        } else {
+                                        }else{
+                                            mAuth.signOut();
+                                            Toast.makeText(LoginPage.this, "Your Account has been Deactivated,Contact Admin!", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        }
+                                    }else {
                                         Log.d(TAG, "Failed to retrieve user role.", LoginTask.getException());
                                         Toast.makeText(LoginPage.this, "Login failed,try again", Toast.LENGTH_SHORT).show();
                                         mAuth.signOut();

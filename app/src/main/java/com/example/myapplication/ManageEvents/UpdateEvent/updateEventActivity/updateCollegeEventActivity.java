@@ -8,6 +8,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,26 +46,30 @@ public class updateCollegeEventActivity extends Fragment {
         availability=view.findViewById(R.id.availability);
 
         firestore = FirebaseFirestore.getInstance();
-        String activityId="";
+        String activityId="",eventId="";
         // Get the eventId from the bundle
         if (getArguments() != null) {
             activityId = getArguments().getString("activityId"); // Retrieve the activityId passed from the previous fragment
+            eventId=getArguments().getString("eventType");
+            Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
         }
         Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
 
         //handle back pressed
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                requireActivity(),
+                getViewLifecycleOwner(),  // Safely attached to view lifecycle
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
                         if (getArguments() != null && getArguments().containsKey("activityId")) {
                             String activityId = getArguments().getString("activityId");
-
+                            String eventId=getArguments().getString("eventId");
+                            String eventType=getArguments().getString("eventType");
                             // Pass activityId to the previous fragment
                             Bundle bundle = new Bundle();
                             bundle.putString("activityId", activityId);
-
+                            bundle.putString("eventId",eventId);
+                            bundle.putString("eventType",eventType);
                             CollegeActivityList updatePage = new CollegeActivityList();
                             updatePage.setArguments(bundle);
                             getFragment(updatePage);

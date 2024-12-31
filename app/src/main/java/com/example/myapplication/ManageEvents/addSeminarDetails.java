@@ -84,6 +84,12 @@ public class addSeminarDetails extends Fragment {
         String availability=this.availability.getText().toString();
         String requirement=requirments.getText().toString();
         String registrationFee = registrationFeeSeminar.getText().toString();
+        
+        if (name.isEmpty() || description.isEmpty() || date.isEmpty() ||
+                venue.isEmpty() || Duration.isEmpty() || speaker.isEmpty() || bio.isEmpty() ||
+                agenda.isEmpty() || availability.isEmpty() || requirement.isEmpty() || registrationFee.isEmpty()) {
+            Toast.makeText(getActivity(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
+        }
 
         // Log the retrieved values
         Log.d("addEvent", "Event ID (Passed): " + eventId);

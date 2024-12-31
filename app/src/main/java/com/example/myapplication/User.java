@@ -8,8 +8,10 @@ public class User {
     private String contact;
     private String college;
     private String password;
+    private  String status;
 
-    public User(String role, String name, String gender, String email, String contact, String college, String password) {
+    public User(String status,String role, String name, String gender, String email, String contact, String college, String password) {
+        this.status=status;
         this.role = role;
         this.name = name;
         this.gender = gender;
@@ -17,6 +19,13 @@ public class User {
         this.contact = contact;
         this.college = college;
         this.password = password;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getRole() {

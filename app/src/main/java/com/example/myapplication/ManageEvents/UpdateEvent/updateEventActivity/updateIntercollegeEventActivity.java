@@ -56,17 +56,19 @@ public class updateIntercollegeEventActivity extends Fragment {
             });
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                requireActivity(),
+                getViewLifecycleOwner(),  // Safely attached to view lifecycle
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
                         if (getArguments() != null && getArguments().containsKey("activityId")) {
                             String activityId = getArguments().getString("activityId");
-
+                            String eventId=getArguments().getString("eventId");
+                            String eventType=getArguments().getString("eventType");
                             // Pass activityId to the previous fragment
                             Bundle bundle = new Bundle();
                             bundle.putString("activityId", activityId);
-
+                            bundle.putString("eventId",eventId);
+                            bundle.putString("eventType",eventType);
                             InterCollegeActivityList updatePage = new InterCollegeActivityList();
                             updatePage.setArguments(bundle);
                             getFragment(updatePage);

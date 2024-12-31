@@ -68,10 +68,16 @@ public class WorkshopsEvents extends Fragment {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         List<Event> events = task.getResult().toObjects(Event.class);
-                        if (events.isEmpty()) {
+                        List<Event> filteredEvents = new ArrayList<>();
+                        for (Event event : events) {
+                            if (!"delete".equals(event.getEventStatus())) {
+                                filteredEvents.add(event);
+                            }
+                        }
+                        if (filteredEvents.isEmpty()) {
                             showNoEventDialog();
                         } else {
-                            eventAdapter = new EventAdapter(events);
+                            eventAdapter = new EventAdapter(filteredEvents);
                             eventAdapter.setOnItemClickListener(this::onItemClick); // Re-attach the listener
                             recyclerView.setAdapter(eventAdapter);
                         }
@@ -102,13 +108,18 @@ public class WorkshopsEvents extends Fragment {
                 .commit();
     }
 
-    public void onItemClick(String eventId) {
-        // Navigate to the next fragment
-        Toast.makeText(getActivity(), "Button clicked", Toast.LENGTH_SHORT).show();
-        WorkshopEventActivtiy activitiesFragment = new WorkshopEventActivtiy();
-        Bundle bundle = new Bundle();
-        bundle.putString("eventId", eventId);
-        activitiesFragment.setArguments(bundle);
-        getFragment(activitiesFragment);
+    public void onItemClick(String eventId,String Status) {
+       if(Status.equals("Active")){
+           WorkshopEventActivtiy activitiesFragment = new WorkshopEventActivtiy();
+           Bundle bundle = new Bundle();
+           bundle.putString("eventId", eventId);
+           activitiesFragment.setArguments(bundle);
+           getFragment(activitiesFragment);
+       }else if(Status.equals("Cancel")){
+           Toast.makeText(getActivity(), "Event has been Cancel", Toast.LENGTH_LONG).show();
+       }else{
+           Toast.makeText(getActivity(), "Event has been Closed", Toast.LENGTH_LONG).show();
+       }
+
     }
 }

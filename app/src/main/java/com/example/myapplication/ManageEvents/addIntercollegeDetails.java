@@ -80,6 +80,11 @@ public class addIntercollegeDetails extends Fragment {
         String availability = this.availability.getText().toString();
         String registrationFee = this.registrationFee.getText().toString();
 
+        if (name.isEmpty() || description.isEmpty() || date.isEmpty() ||
+                venue.isEmpty() || rules.isEmpty() || availability.isEmpty() || registrationFee.isEmpty()) {
+            Toast.makeText(getActivity(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
+        }
+
         // Log the retrieved values
         Log.d("addEvent", "Event ID (Passed): " + eventId);
 

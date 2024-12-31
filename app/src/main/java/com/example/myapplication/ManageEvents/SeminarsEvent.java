@@ -69,11 +69,17 @@ public class SeminarsEvent extends Fragment {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         List<Event> events = task.getResult().toObjects(Event.class);
-                        if (events.isEmpty()) {
-                            // Navigate to a fragment indicating no events
+                        List<Event> filteredEvents = new ArrayList<>();
+                        for (Event event : events) {
+                            if (!"delete".equals(event.getEventStatus())) {
+                                filteredEvents.add(event);
+                            }
+                        }
+                        if (filteredEvents.isEmpty()) {
                             showNoEventDialog();
                         } else {
-                            eventAdapter = new EventAdapter(events);
+                            // Update the adapter with filtered events
+                            eventAdapter = new EventAdapter(filteredEvents);
                             eventAdapter.setOnItemClickListener(this::onItemClick); // Re-attach the listener
                             recyclerView.setAdapter(eventAdapter);
                         }
@@ -105,13 +111,18 @@ public class SeminarsEvent extends Fragment {
                 .commit();
     }
 
-    public void onItemClick(String eventId) {
-        // Navigate to the next fragment
-        Toast.makeText(getActivity(), "Button clicked", Toast.LENGTH_SHORT).show();
-        SeminarEventActivity activitiesFragment = new SeminarEventActivity();
-        Bundle bundle = new Bundle();
-        bundle.putString("eventId", eventId);
-        activitiesFragment.setArguments(bundle);
-        getFragment(activitiesFragment);
+    public void onItemClick(String eventId,String Status) {
+        if(Status.equals("Active")) {
+            SeminarEventActivity activitiesFragment = new SeminarEventActivity();
+            Bundle bundle = new Bundle();
+            bundle.putString("eventId", eventId);
+            activitiesFragment.setArguments(bundle);
+            getFragment(activitiesFragment);
+        }else if(Status.equals("Cancel")){
+            Toast.makeText(getActivity(), "Event has been Cancel", Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(getActivity(), "Event has been Closed", Toast.LENGTH_LONG).show();
+        }
+
     }
 }

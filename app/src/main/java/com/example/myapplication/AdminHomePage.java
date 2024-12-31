@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -57,6 +59,12 @@ public class AdminHomePage extends AppCompatActivity {
         welcomeName=findViewById(R.id.welcome);
         Date=findViewById(R.id.date);
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                onBackPressButton();
+            }
+        });
 
         DrawerButtonToggle=findViewById(R.id.DrawerButtonToggle);
         DrawerButtonToggle.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +125,27 @@ public class AdminHomePage extends AppCompatActivity {
 
     public void getFragment(Fragment fragment){
         getSupportFragmentManager().beginTransaction().replace(R.id.fragement_layout,fragment).commit();
+    }
+
+    public void onBackPressButton() {
+        if (bottomNavigationView.getSelectedItemId() == R.id.Home) {
+            // Show exit confirmation dialog when on Home Page
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle("Exit App")
+                    .setMessage("Are you sure you want to exit?")
+                    .setPositiveButton("Yes", (dialog1, which) -> {
+                        finish(); // Close the app
+                    })
+                    .setNegativeButton("No", (dialog1, which) -> dialog1.dismiss()) // Dismiss dialog
+                    .setCancelable(true) // Optional: Allow dismissing with the back button
+                    .create();
+
+            dialog.setCanceledOnTouchOutside(false); // Allow dismissing by touching outside
+            dialog.show();
+        } else {
+            // Navigate back to the Home Page
+            bottomNavigationView.setSelectedItemId(R.id.Home);
+        }
     }
     public void setDrawerProfile(){
         user=mAuth.getCurrentUser();

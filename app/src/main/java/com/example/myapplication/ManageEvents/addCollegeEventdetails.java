@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,6 +81,12 @@ public class addCollegeEventdetails extends Fragment {
         String rules = eventRules.getText().toString();
         String availability = this.availability.getText().toString();
         String registrationFee = this.registrationFee.getText().toString();
+
+        if(TextUtils.isEmpty(name)||TextUtils.isEmpty(description)||TextUtils.isEmpty(date)
+                ||TextUtils.isEmpty(venue)||TextUtils.isEmpty(rules)||
+                TextUtils.isEmpty(availability)||TextUtils.isEmpty(registrationFee)){
+            Toast.makeText(getActivity(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
+        }
 
         // Log the retrieved values
         Log.d("addEvent", "Event ID (Passed): " + eventId);

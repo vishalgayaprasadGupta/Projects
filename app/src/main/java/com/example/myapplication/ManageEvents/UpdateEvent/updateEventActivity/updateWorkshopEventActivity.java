@@ -49,17 +49,19 @@ public class updateWorkshopEventActivity extends Fragment {
         update = view.findViewById(R.id.updateEvent);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                requireActivity(),
+                getViewLifecycleOwner(),  // Safely attached to view lifecycle
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
                         if (getArguments() != null && getArguments().containsKey("activityId")) {
                             String activityId = getArguments().getString("activityId");
-
+                            String eventId=getArguments().getString("eventId");
+                            String eventType=getArguments().getString("eventType");
                             // Pass activityId to the previous fragment
                             Bundle bundle = new Bundle();
                             bundle.putString("activityId", activityId);
-
+                            bundle.putString("eventId",eventId);
+                            bundle.putString("eventType",eventType);
                             WorkshopActivityList updatePage = new WorkshopActivityList();
                             updatePage.setArguments(bundle);
                             getFragment(updatePage);

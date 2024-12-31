@@ -3,14 +3,24 @@ public class Event {
     private String name;
     private String eventId;
     private String eventType;
+    private String eventStatus;
 
 
     public Event() {
         // Firestore needs a no-argument constructor to deserialize the object
     }
-    public Event(String name, String eventType) {
+    public Event(String name, String eventType,String eventStatus) {
         this.name = name;
         this.eventType = eventType;
+        this.eventStatus=eventStatus;
+    }
+
+    public String getEventStatus() {
+        return eventStatus;
+    }
+
+    public void setEventStatus(String eventStatus) {
+        this.eventStatus = eventStatus;
     }
 
     public String getName() {

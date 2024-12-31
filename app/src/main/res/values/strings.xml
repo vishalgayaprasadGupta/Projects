@@ -18,6 +18,7 @@
     <string name="previous">Previous</string>
 
     <string-array name="event_options">
+        <item>Select Event Type</item>
         <item>College Events</item>
         <item>InterCollegiate Events</item>
         <item>Seminars</item>

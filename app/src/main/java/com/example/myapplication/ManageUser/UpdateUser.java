@@ -4,7 +4,9 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
+import com.example.myapplication.manageEvents;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -42,6 +45,17 @@ public class UpdateUser extends Fragment {
         mAuth=FirebaseAuth.getInstance();
         fetchProgressbar=view.findViewById(R.id.fetchProgressbar);
         fetchProgressbar.setVisibility(View.INVISIBLE);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                        fragmentManager.popBackStack();
+                        getBackFragment(new manageUser());
+                    }
+                });
 
         back=view.findViewById(R.id.back);
         back.setOnClickListener(v -> {
@@ -75,11 +89,15 @@ public class UpdateUser extends Fragment {
                                     getFragment(fragment);
                                 } else {
                                     Toast.makeText(getActivity(), "User not found!", Toast.LENGTH_SHORT).show();
+                                    getFragment(new fetchUserDetailsAndUpdate());
                                 }
                             });
                 } else {
                     Toast.makeText(getActivity(), "Please enter an email", Toast.LENGTH_SHORT).show();
-                }
+                    fetchUser.setEnabled(true);
+                    fetchUser.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF018786")));
+                    fetchProgressbar.setVisibility(View.INVISIBLE);
+                    return;                }
             }
         });
 
@@ -89,6 +107,13 @@ public class UpdateUser extends Fragment {
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.update_fragement_layout,fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+    public void getBackFragment(Fragment fragment){
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragement_layout,fragment)
                 .addToBackStack(null)
                 .commit();
     }

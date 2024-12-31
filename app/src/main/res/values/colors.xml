@@ -11,7 +11,8 @@
     <color name="lavender_medium">#CAB9DC</color>
     <color name="lavendar_light">#E6E6FA</color>
     <color name="gray">#9E9E9E</color>
-
+    <color name="spinner_background">#FFFFFF</color> <!-- Light background -->
+    <color name="spinner_text">#000000</color> <!-- Dark text -->
     <color name="colorAccent">#FF4081</color> <!-- Your app's accent color -->
     <color name="card_background">#F5F5F5</color> <!-- Light background for cards -->
 </resources>

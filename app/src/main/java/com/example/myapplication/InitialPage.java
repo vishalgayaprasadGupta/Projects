@@ -41,33 +41,38 @@ public class InitialPage extends AppCompatActivity {
                     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
                     firestore.collection("User").document(user.getUid()).get().addOnCompleteListener(LoginTask -> {
                         if (LoginTask.isSuccessful()) {
-                            String role = LoginTask.getResult().getString("role");
-                            Log.d(TAG, "Role fetched: " + role);
-                            if ("Admin".equals(role)) {
-                                if(user.isEmailVerified()) {
-                                    Intent intent = new Intent(InitialPage.this, AdminHomePage.class);
-                                    startActivity(intent);
-                                    finish();
-                                }else{
-                                    mAuth.signOut();
-                                }
-                            } else if("Deactivate".equals(role)) {
-                                Intent intent = new Intent(InitialPage.this, LoginPage.class);
-                                startActivity(intent);
-                                Toast.makeText(InitialPage.this, "Your account has been deactivated", Toast.LENGTH_LONG).show();
-                                mAuth.signOut();
-                                finish();
-                            }else if ("User".equals(role)) {
-                                if(user.isEmailVerified()){
-                                    Intent intent = new Intent(InitialPage.this, UserHomePage.class);
-                                    startActivity(intent);
-                                    finish();
-                                }else{
-                                    mAuth.signOut();
+                            String Status = LoginTask.getResult().getString("status");
+                            String Role = LoginTask.getResult().getString("role");
+                            Log.d(TAG, "Role fetched: " + Role);
+                            if("Active".equals(Status)) {
+                                if ("Admin".equals(Role)) {
+                                    if (user.isEmailVerified()) {
+                                        Intent intent = new Intent(InitialPage.this, AdminHomePage.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        mAuth.signOut();
+                                    }
+                                } else if ("User".equals(Role)) {
+                                    if (user.isEmailVerified()) {
+                                        Intent intent = new Intent(InitialPage.this, UserHomePage.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        mAuth.signOut();
+                                    }
+                                } else {
+                                    Toast.makeText(this, "Redirecting to Login Page", Toast.LENGTH_SHORT).show();
                                 }
                             }else{
-                                Toast.makeText(this, "Redirecting to Login Page", Toast.LENGTH_SHORT).show();
+                                mAuth.signOut();
+                                Toast.makeText(this, "Your Account has been Deactivated,Contact Admin!", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(InitialPage.this, LoginPage.class);
+                                startActivity(intent);
+                                finish();
                             }
+                        }else{
+                            Toast.makeText(this, "Error fetching user data", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }else{

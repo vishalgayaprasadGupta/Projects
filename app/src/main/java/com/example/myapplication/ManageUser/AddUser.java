@@ -9,8 +9,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,6 +28,7 @@ import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.User;
+import com.example.myapplication.manageEvents;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -48,7 +51,7 @@ public class AddUser extends Fragment {
     static final String USER = "User";
     CollectionReference userData;
     User user;
-    String Gender,Role;
+    String Gender,Role,Status;
     RadioButton selectedRadioButton;
     public AddUser() {
         // Required empty public constructor
@@ -72,6 +75,15 @@ public class AddUser extends Fragment {
         phone=view.findViewById(R.id.editPhone);
         password=view.findViewById(R.id.editPassword);
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        getFragment(new manageUser());
+                    }
+                });
+
         addUserProgressbar=view.findViewById(R.id.addUserProgressbar);
         addUserProgressbar.setVisibility(View.INVISIBLE);
 
@@ -91,15 +103,20 @@ public class AddUser extends Fragment {
                 }
                 selectedRadioButton = view.findViewById(radioButtonId);
                 Role="User";
+                Status="Active";
                 String Username = name.getText().toString();
                 Gender=selectedRadioButton.getText().toString();
                 String EmailId = email.getText().toString();
                 String Contact = phone.getText().toString();
                 String College = college.getText().toString();
                 String Password = password.getText().toString();
+                if(Username.isEmpty()||College.isEmpty()||EmailId.isEmpty()||Contact.isEmpty()||Password.isEmpty()||Gender.isEmpty()){
+                    Toast.makeText(getActivity(), "All fields are mandatory!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 validateInput(Username,College,EmailId,Contact,Password);
             }
-
         });
 
         return view;
@@ -126,7 +143,7 @@ public class AddUser extends Fragment {
         }
 
         if(isNetworkAvailable()) {
-            user = new User(Role, Username, Gender, EmailId, Contact, College, Password);
+            user = new User(Status,Role, Username, Gender, EmailId, Contact, College, Password);
             registerUser(EmailId, Password);
         }else{
             Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
@@ -202,7 +219,7 @@ public class AddUser extends Fragment {
         if (user != null) {
             if(isNetworkAvailable()) {
                 String uid = user.getUid();
-                User userdata = new User(Role, name.getText().toString(), Gender, email.getText().toString(),
+                User userdata = new User(Status,Role, name.getText().toString(), Gender, email.getText().toString(),
                         phone.getText().toString(), college.getText().toString(), password.getText().toString());
                 userData.document(uid).set(userdata).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

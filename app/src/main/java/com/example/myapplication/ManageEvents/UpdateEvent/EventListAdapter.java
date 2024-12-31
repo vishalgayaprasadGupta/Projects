@@ -32,6 +32,8 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = eventList.get(position);
         holder.eventName.setText(event.getName());
+        holder.Status.setText(event.getEventStatus());
+
         // Make the entire item clickable, not just the CardView
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
@@ -50,10 +52,11 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
-        public TextView eventName;
+        public TextView eventName,Status;
         public EventViewHolder(View itemView) {
             super(itemView);
             eventName = itemView.findViewById(R.id.eventName);
+            Status=itemView.findViewById(R.id.status);
         }
     }
 

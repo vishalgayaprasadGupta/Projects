@@ -69,6 +69,6 @@ public class CollegeActivityListAdapter extends RecyclerView.Adapter<CollegeActi
         }
     }
     public interface OnItemClickListener {
-        void onItemClick(String eventId); // Pass eventId when item is clicked
+        void onItemClick(String activityId); // Pass eventId when item is clicked
     }
 }

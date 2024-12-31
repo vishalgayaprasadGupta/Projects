@@ -51,16 +51,12 @@ public class InterCollegeEventList extends Fragment {
 
         fetchEvents();
 
-        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                // Custom back button logic
-                if (getParentFragmentManager().getBackStackEntryCount() > 0) {
-                    getParentFragmentManager().popBackStack();
-                } else {
-                    // If no fragments in back stack, finish activity or default behavior
-                    requireActivity().finish();
-                }
+                getFragment(new UpdateEventDetails());
             }
         });
         return view;
@@ -90,6 +86,7 @@ public class InterCollegeEventList extends Fragment {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                getFragment(new UpdateEventDetails());
                 dialog.dismiss();
             }
         });
@@ -107,16 +104,27 @@ public class InterCollegeEventList extends Fragment {
     }
 
     public void onItemClick(String eventId,String eventType, String eventName) {
-        // Navigate to the next fragment
-        Toast.makeText(getActivity(), "Button clicked", Toast.LENGTH_SHORT).show();
-        UpdatePage activitiesFragment = new UpdatePage();
-        Bundle bundle = new Bundle();
-        bundle.putString("eventId", eventId);
-        Log.d("InterCollegeEventList", "Event ID: " + eventId);
-        bundle.putString("eventType",eventType);
-        Log.d("InterCollegeEventList", "Event Type: " + eventType);
-        bundle.putString("eventName", eventName);
-        activitiesFragment.setArguments(bundle);
-        getFragment(activitiesFragment);
+        db.collection("College Events").document(eventId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String status = documentSnapshot.getString("eventStatus");
+                        if ("Active".equals(status)) {
+                            Toast.makeText(getActivity(), "Button clicked", Toast.LENGTH_SHORT).show();
+                            UpdatePage activitiesFragment = new UpdatePage();
+                            Bundle bundle = new Bundle();
+                            bundle.putString("eventId", eventId);
+                            bundle.putString("eventType", eventType);
+                            bundle.putString("eventName", eventName);
+                            activitiesFragment.setArguments(bundle);
+                            getFragment(activitiesFragment);
+                        }else if("Cancel".equals(status)){
+                            Toast.makeText(getActivity(), "Event has been Canceled", Toast.LENGTH_LONG).show();
+                        } else if("Closed".equals(status)){
+                            Toast.makeText(getActivity(), "Event has been Closed", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                });
     }
 }

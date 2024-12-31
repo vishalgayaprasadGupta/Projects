@@ -48,7 +48,7 @@ public class updateEvent extends Fragment {
         progressBar = view.findViewById(R.id.addCollegeProgressbaar);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                requireActivity(),
+                getViewLifecycleOwner(),  // Safely attached to view lifecycle
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {

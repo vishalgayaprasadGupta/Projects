@@ -30,7 +30,7 @@ public class CollegeActivityList extends Fragment {
     private FirebaseFirestore db;
     private CollegeActivityListAdapter activityAdapter;
     private String eventId = "";
-    private String activityId="";
+    private String activityId="",eventType="";
 
     public CollegeActivityList() {
         // Required empty public constructor
@@ -43,6 +43,8 @@ public class CollegeActivityList extends Fragment {
 
         if (getArguments() != null) {
             eventId = getArguments().getString("eventId");
+            eventType=getArguments().getString("eventType");
+            Log.d("CollegeEventActivities", "Received activityId: " + activityId);
             Log.d("CollegeEventActivities", "Received eventId: " + eventId);
         }
 
@@ -54,17 +56,19 @@ public class CollegeActivityList extends Fragment {
         activityRecyclerView.setAdapter(activityAdapter);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                requireActivity(),
+                getViewLifecycleOwner(),  // Safely attached to view lifecycle
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
                         if (getArguments() != null && getArguments().containsKey("activityId")) {
                             String activityId = getArguments().getString("activityId");
-
+                            String eventId=getArguments().getString("eventId");
+                            String eventType=getArguments().getString("eventType");
                             // Pass activityId to the previous fragment
                             Bundle bundle = new Bundle();
                             bundle.putString("activityId", activityId);
-
+                            bundle.putString("eventId",eventId);
+                            bundle.putString("eventType",eventType);
                             UpdatePage updatePage = new UpdatePage();
                             updatePage.setArguments(bundle);
                             getFragment(updatePage);
@@ -120,9 +124,13 @@ public class CollegeActivityList extends Fragment {
     public void onItemClick(String activtiyId) {
         // Navigate to the next fragment
         Toast.makeText(getActivity(), "Button clicked", Toast.LENGTH_SHORT).show();
+        String eventType=getArguments().getString("eventType");
+        String eventId=getArguments().getString("eventId");
         updateCollegeEventActivity activitiesFragment = new updateCollegeEventActivity();
         Bundle bundle = new Bundle();
         bundle.putString("activityId", activtiyId);
+        bundle.putString("eventType",eventType);
+        bundle.putString("eventId",eventId);
         activitiesFragment.setArguments(bundle);
         getFragment(activitiesFragment);
     }

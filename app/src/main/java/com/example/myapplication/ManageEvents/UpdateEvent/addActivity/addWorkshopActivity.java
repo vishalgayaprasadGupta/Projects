@@ -103,6 +103,12 @@ public class addWorkshopActivity extends Fragment {
         String availability = maxParticipants.getText().toString();
         String registrationFee = registrationFees.getText().toString();
 
+        if(name.isEmpty()||description.isEmpty()||date.isEmpty()||
+                venue.isEmpty()||requirements.isEmpty()||availability.isEmpty()
+                ||registrationFee.isEmpty()){
+            Toast.makeText(getActivity(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
+        }
+
         // Log the retrieved values
         Log.d("addEvent", "Event ID (Passed): " + eventId);
 

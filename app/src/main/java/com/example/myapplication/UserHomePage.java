@@ -67,7 +67,6 @@ public class UserHomePage extends AppCompatActivity {
 
         DrawerButtonToggle=findViewById(R.id.DrawerButtonToggle);
         DrawerButtonToggle.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 drawerLayout.openDrawer(GravityCompat.START);
@@ -137,20 +136,24 @@ public class UserHomePage extends AppCompatActivity {
     public void onBackPressButton() {
         if (bottomNavigationView.getSelectedItemId() == R.id.Home) {
             // Show exit confirmation dialog when on Home Page
-            new AlertDialog.Builder(this)
+            AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("Exit App")
                     .setMessage("Are you sure you want to exit?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
+                    .setPositiveButton("Yes", (dialog1, which) -> {
                         finish(); // Close the app
                     })
-                    .setNegativeButton("No", (dialog, which) -> dialog.dismiss()) // Dismiss dialog
-                    .setCancelable(true)
-                    .show();
+                    .setNegativeButton("No", (dialog1, which) -> dialog1.dismiss()) // Dismiss dialog
+                    .setCancelable(true) // Optional: Allow dismissing with the back button
+                    .create();
+
+            dialog.setCanceledOnTouchOutside(true); // Allow dismissing by touching outside
+            dialog.show();
         } else {
             // Navigate back to the Home Page
             bottomNavigationView.setSelectedItemId(R.id.Home);
         }
     }
+
 
     public void setDrawerProfile(){
         user=mAuth.getCurrentUser();

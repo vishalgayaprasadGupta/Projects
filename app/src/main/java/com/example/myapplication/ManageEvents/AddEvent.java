@@ -4,6 +4,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
@@ -20,16 +21,17 @@ import android.widget.Toast;
 
 import com.example.myapplication.Event;
 import com.example.myapplication.R;
+import com.example.myapplication.manageEvents;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class AddCollegeEvent extends Fragment {
+public class AddEvent extends Fragment {
     View view;
     String eventType;
     private FirebaseFirestore db;
     private EditText eventName;
     private Button addEventButton;
     ProgressBar addEvent;
-    public AddCollegeEvent() {
+    public AddEvent() {
         // Required empty public constructor
     }
 
@@ -45,24 +47,34 @@ public class AddCollegeEvent extends Fragment {
         addEvent=view.findViewById(R.id.addCollegeProgressbaar);
         addEvent.setVisibility(View.INVISIBLE);
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        getFragment(new manageEvents());
+                    }
+                });
+
         Spinner spinner = view.findViewById(R.id.mySpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(),
                 R.array.event_options, android.R.layout.simple_spinner_item);
 
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
-
-        // Set a listener to handle the selected item
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // Get the selected item as a string
                 eventType = parent.getItemAtPosition(position).toString();
-                Toast.makeText(getActivity(), "Selected: " + eventType, Toast.LENGTH_SHORT).show();
+                if(eventType.equals("Select Event Type")){
+                    Toast.makeText(getActivity(), "Select Event Type", Toast.LENGTH_SHORT).show();
+                    return;
+                }else {
+                    Toast.makeText(getActivity(), "Selected: " + eventType, Toast.LENGTH_SHORT).show();
+                }
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
@@ -74,11 +86,6 @@ public class AddCollegeEvent extends Fragment {
             addEvent.setVisibility(View.VISIBLE);
             addEventButton.setEnabled(false);
             addEvent.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#808080")));
-
-            if (eventType == null || eventType.equals("Select Event Type")) {
-                Toast.makeText(getActivity(), "Please select a valid event type", Toast.LENGTH_SHORT).show();
-                return;
-            }
 
             switch (eventType) {
                 case "College Events":
@@ -102,12 +109,13 @@ public class AddCollegeEvent extends Fragment {
     }
     private void addEventToFirestore(String collectionName) {
         String name = eventName.getText().toString();
+        String Status="Active";
         if (name.isEmpty()) {
             Toast.makeText(getActivity(), "Event name cannot be empty", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Event event = new Event(name, eventType);
+        Event event = new Event(name, eventType,Status);
 
         db.collection(collectionName).add(event)
                 .addOnSuccessListener(documentReference -> {
@@ -152,7 +160,6 @@ public class AddCollegeEvent extends Fragment {
                 Toast.makeText(requireContext(), "Invalid event type", Toast.LENGTH_SHORT).show();
                 return; // Exit the method if eventType is invalid
         }
-
         // Create a bundle to pass arguments
         Bundle bundle = new Bundle();
         bundle.putString("documentId", documentId);
@@ -162,16 +169,22 @@ public class AddCollegeEvent extends Fragment {
         addEvent.setVisibility(View.INVISIBLE);
         addEventButton.setEnabled(true);
         addEvent.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1E3C72")));
-        // Show a confirmation dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Proceed to Add Event Activities")
+
+        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(getContext())
+                .setTitle("Proceed to Add Event Activities")
                 .setMessage("You are navigating to add activities for " + eventType)
-                .setPositiveButton("Add Activities", (dialog, which) -> {
+                .setPositiveButton("Add Activities", (dialog1, which) -> {
                     // Navigate to the target fragment
                     getFragment(targetFragment);
                 })
-                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
-                .show();
+                .setNegativeButton("Cancel", (dialog1, which) -> {
+                    getFragment(new manageEvents());
+                    dialog1.dismiss();
+                })
+                .setCancelable(true)
+                .create();
+        dialog.setCanceledOnTouchOutside(false); // Allow dismissing by touching outside
+        dialog.show();
     }
 
 
