@@ -13,7 +13,7 @@ import com.example.myapplication.R;
 
 public class UserProfile extends Fragment {
 
-
+View view;
     public UserProfile() {
         // Required empty public constructor
     }
@@ -22,7 +22,13 @@ public class UserProfile extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user, container, false);
+        view= inflater.inflate(R.layout.fragment_user, container, false);
+
+
+        return view;
     }
 }
