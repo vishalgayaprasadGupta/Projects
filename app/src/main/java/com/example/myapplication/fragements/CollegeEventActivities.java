@@ -59,8 +59,8 @@ public class CollegeEventActivities extends Fragment {
     }
 
     private void fetchActivities(String eventId) {
-        db.collection("EventActivities") // Assuming your Firestore collection is named "activity"
-                .whereEqualTo("eventId", eventId) // Match the eventId field in Firestore
+        db.collection("EventActivities")
+                .whereEqualTo("eventId", eventId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -69,7 +69,7 @@ public class CollegeEventActivities extends Fragment {
                             showNoEventDialog();
                         } else {
                             activityAdapter = new ActivityAdapter(activity);
-                            activityAdapter.setOnItemClickListener(this::onItemClick); // Re-attach the listener
+                            activityAdapter.setOnItemClickListener(this::onItemClick);
                             activityRecyclerView.setAdapter(activityAdapter);
                         }
                     } else {

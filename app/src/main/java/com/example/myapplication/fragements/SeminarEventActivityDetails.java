@@ -33,7 +33,6 @@ public class SeminarEventActivityDetails extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view= inflater.inflate(R.layout.fragment_seminar_event_activity_details, container, false);
         String activityId="";
         activityTitle = view.findViewById(R.id.seminarTitle);
@@ -49,12 +48,10 @@ public class SeminarEventActivityDetails extends Fragment {
 
         firestore = FirebaseFirestore.getInstance();
 
-        // Get the eventId from the bundle
         if (getArguments() != null) {
-            activityId = getArguments().getString("activityId"); // Retrieve the activityId passed from the previous fragment
+            activityId = getArguments().getString("activityId");
         }
         Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
-        // Fetch event details from your data source (Firestore, Database, etc.)
         fetchEventDetails(activityId);
         return view;
     }
@@ -69,21 +66,18 @@ public class SeminarEventActivityDetails extends Fragment {
         Log.d("CollegeEventActivityDetails", "Received activityId : " + activityId);
 
 
-        // Query Firestore to get the activity details using the activityId
-        firestore.collection("EventActivities")  // Collection name, replace if needed
-                .document(activityId)  // Use the activityId to fetch the document
+        firestore.collection("EventActivities")
+                .document(activityId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     Log.d("CollegeEventActivityDetails", "Received activityId 2: " + activityId);
 
                     if (documentSnapshot.exists()) {
-                        // Map the document to an Activity object
                         Seminar activity = documentSnapshot.toObject(Seminar.class);
                         Log.d("CollegeEventActivityDetails", "Activity Name: " + activity.getSeminarTitle());
                         Log.d("CollegeEventActivityDetails", "Activity Description: " + activity.getSeminarDescription());
 
                         if (activity != null) {
-                            // Set the activity details to the respective TextViews
                             activityTitle.setText(activity.getSeminarTitle());
                             activityDescription.setText(activity.getSeminarDescription());
                             activityDate.setText(activity.getSeminarDate());

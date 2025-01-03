@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.myapplication.ManageEvents.SeminarsEvent;
 import com.example.myapplication.R;
 
 public class UserHome extends Fragment {

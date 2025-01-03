@@ -17,7 +17,7 @@ import java.util.List;
 
 public class SeminarActivtiyAdapater extends RecyclerView.Adapter<SeminarActivtiyAdapater.EventViewHolder> {
     private List<Seminar> eventList;
-    private OnItemClickListener listener; // Declare the listener
+    private OnItemClickListener listener;
 
     public SeminarActivtiyAdapater(List<Seminar> eventList) {
         this.eventList = eventList;
@@ -39,10 +39,9 @@ public class SeminarActivtiyAdapater extends RecyclerView.Adapter<SeminarActivti
         holder.activityDescription.setText(activity.getSeminarDescription());
         holder.activityDate.setText(activity.getSeminarDate());
 
-        // Make the entire item clickable, not just the CardView
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onItemClick(activity.getEventId()); // Pass document ID on click
+                listener.onItemClick(activity.getEventId());
             }
         });
     }
@@ -53,7 +52,7 @@ public class SeminarActivtiyAdapater extends RecyclerView.Adapter<SeminarActivti
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener; // Set the listener
+        this.listener = listener;
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
@@ -67,6 +66,6 @@ public class SeminarActivtiyAdapater extends RecyclerView.Adapter<SeminarActivti
     }
 
     public interface OnItemClickListener {
-        void onItemClick(String eventId); // Pass eventId when item is clicked
+        void onItemClick(String eventId);
     }
 }

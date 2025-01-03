@@ -16,10 +16,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.myapplication.Event;
-import com.example.myapplication.Adapter.EventAdapter;
-import com.example.myapplication.ManageEvents.SeminarsEvent;
+import com.example.myapplication.fragements.SeminarsEvent;
 import com.example.myapplication.R;
-import com.example.myapplication.fragements.SeminarEventActivity;
 import com.example.myapplication.fragements.UpdateEventDetails;
 import com.google.firebase.firestore.FirebaseFirestore;
 

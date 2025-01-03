@@ -32,8 +32,14 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = eventList.get(position);
         holder.eventName.setText(event.getName());
-        holder.Status.setText(event.getEventStatus());
-
+        String status=event.getEventStatus();
+        if(status.equals("Active")) {
+            holder.Status.setText("Registration Started");
+        }else if(status.equals("Closed")){
+            holder.Status.setText("Registration Closed");
+        }else if(status.equals("Cancel")){
+            holder.Status.setText("Event Canceled");
+        }
         // Make the entire item clickable, not just the CardView
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {

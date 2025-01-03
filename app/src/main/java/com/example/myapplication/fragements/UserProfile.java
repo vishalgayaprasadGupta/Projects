@@ -1,5 +1,6 @@
 package com.example.myapplication.fragements;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.myapplication.LoginPage;
 import com.example.myapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -17,7 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class UserProfile extends Fragment {
     View view;
     FirebaseAuth mAuth;
-    TextView userName,userEmail;
+    TextView userName,userEmail,logout;
     public UserProfile() {
         // Required empty public constructor
     }
@@ -29,6 +31,17 @@ public class UserProfile extends Fragment {
         userName=view.findViewById(R.id.userName);
         userEmail=view.findViewById(R.id.userEmail);
         setProfile();
+
+        logout=view.findViewById(R.id.signOut);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.signOut();
+                Intent intent=new Intent(getActivity(), LoginPage.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
 
         return view;
     }

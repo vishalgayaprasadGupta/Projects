@@ -27,11 +27,10 @@ public class UpdateEventDetails extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view= inflater.inflate(R.layout.fragment_update_event_details, container, false);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {

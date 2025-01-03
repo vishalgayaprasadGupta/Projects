@@ -1,4 +1,4 @@
-package com.example.myapplication.ManageEvents;
+package com.example.myapplication.fragements;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.example.myapplication.Event;
 import com.example.myapplication.Adapter.EventAdapter;
 import com.example.myapplication.R;
-import com.example.myapplication.fragements.SeminarEventActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -52,11 +51,9 @@ public class SeminarsEvent extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                // Custom back button logic
                 if (getParentFragmentManager().getBackStackEntryCount() > 0) {
                     getParentFragmentManager().popBackStack();
                 } else {
-                    // If no fragments in back stack, finish activity or default behavior
                     requireActivity().finish();
                 }
             }
@@ -71,16 +68,15 @@ public class SeminarsEvent extends Fragment {
                         List<Event> events = task.getResult().toObjects(Event.class);
                         List<Event> filteredEvents = new ArrayList<>();
                         for (Event event : events) {
-                            if (!"delete".equals(event.getEventStatus())) {
+                            if (!"Deleted".equals(event.getEventStatus())) {
                                 filteredEvents.add(event);
                             }
                         }
                         if (filteredEvents.isEmpty()) {
                             showNoEventDialog();
                         } else {
-                            // Update the adapter with filtered events
                             eventAdapter = new EventAdapter(filteredEvents);
-                            eventAdapter.setOnItemClickListener(this::onItemClick); // Re-attach the listener
+                            eventAdapter.setOnItemClickListener(this::onItemClick);
                             recyclerView.setAdapter(eventAdapter);
                         }
                     } else {

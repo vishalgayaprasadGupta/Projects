@@ -15,7 +15,7 @@ import java.util.List;
 
 public class InterCollegeActivityAdapter extends RecyclerView.Adapter<InterCollegeActivityAdapter.EventViewHolder> {
     private List<InterCollege> eventList;
-    private OnItemClickListener listener; // Declare the listener
+    private OnItemClickListener listener;
 
     public InterCollegeActivityAdapter(List<InterCollege> eventList) {
         this.eventList = eventList;
@@ -37,10 +37,9 @@ public class InterCollegeActivityAdapter extends RecyclerView.Adapter<InterColle
 
 
 
-        // Make the entire item clickable, not just the CardView
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onItemClick(activity.getActivityId()); // Pass document ID on click
+                listener.onItemClick(activity.getActivityId());
             }
         });
     }
@@ -51,7 +50,7 @@ public class InterCollegeActivityAdapter extends RecyclerView.Adapter<InterColle
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener; // Set the listener
+        this.listener = listener;
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
@@ -65,6 +64,6 @@ public class InterCollegeActivityAdapter extends RecyclerView.Adapter<InterColle
     }
 
     public interface OnItemClickListener {
-        void onItemClick(String activityId); // Pass eventId when item is clicked
+        void onItemClick(String activityId);
     }
 }

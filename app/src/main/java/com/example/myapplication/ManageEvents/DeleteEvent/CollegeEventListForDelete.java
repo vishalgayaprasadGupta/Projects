@@ -68,7 +68,6 @@ public class CollegeEventListForDelete extends Fragment {
                     if (task.isSuccessful()) {
                         List<Event> events = task.getResult().toObjects(Event.class);
                         if (events.isEmpty()) {
-                            // Navigate to a fragment indicating no events
                             showNoEventDialog();
                         } else {
                             eventAdapter = new EventListAdapter(events);
@@ -105,14 +104,12 @@ public class CollegeEventListForDelete extends Fragment {
     }
 
     public void onItemClick(String eventId,String eventType,String eventName) {
-        // Navigate to the next fragment
         db.collection("College Events").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         String status = documentSnapshot.getString("eventStatus");
                         if ("Active".equals(status)) {
-                            Toast.makeText(getActivity(), "Button clicked", Toast.LENGTH_SHORT).show();
                             DeletePage activitiesFragment = new DeletePage();
                             Bundle bundle = new Bundle();
                             bundle.putString("eventId", eventId);
@@ -120,9 +117,10 @@ public class CollegeEventListForDelete extends Fragment {
                             bundle.putString("eventName", eventName);
                             activitiesFragment.setArguments(bundle);
                             getFragment(activitiesFragment);
-                        }else{
+                        }else if("Closed".equals(status)){
                             Toast.makeText(getActivity(), "Event has been Closed", Toast.LENGTH_LONG).show();
-
+                        }else if("Cancel".equals(status)){
+                            Toast.makeText(getActivity(), "Event has been Cancelled", Toast.LENGTH_LONG).show();
                         }
                     }
                 });

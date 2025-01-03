@@ -8,33 +8,17 @@
     android:fitsSystemWindows="true"
     tools:context=".UserHomePage">
 
-    <!-- Navigation Drawer Section -->
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigation_View"
-        android:layout_width="wrap_content"
-        android:fitsSystemWindows="true"
-        android:layout_height="match_parent"
-        app:menu="@menu/drawer_items"
-        android:background="#F1F1F1"
-        app:dividerInsetStart="60dp"
-        app:itemIconPadding="10dp"
-        app:headerLayout="@layout/drawer_header"
-        android:layout_gravity="start" />
-
-    <!-- Main Content of the Screen -->
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <!-- Include the user_menu layout which contains the BottomNavigationView -->
         <include
             layout="@layout/user_menu" />
-
-        <FrameLayout
-            android:id="@+id/fragment_layout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-    </LinearLayout>
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/navigation_View"
+            android:layout_width="wrap_content"
+            android:fitsSystemWindows="true"
+            android:layout_height="match_parent"
+            app:menu="@menu/drawer_items"
+            android:background="#F1F1F1"
+            app:dividerInsetStart="60dp"
+            app:itemIconPadding="10dp"
+            app:headerLayout="@layout/drawer_header"
+            android:layout_gravity="start" />
 </androidx.drawerlayout.widget.DrawerLayout>

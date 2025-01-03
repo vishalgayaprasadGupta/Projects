@@ -51,7 +51,6 @@ public class InterCollegeEventActivities extends Fragment {
         activityAdapter = new InterCollegeActivityAdapter(new ArrayList<>());
         activityRecyclerView.setAdapter(activityAdapter);
 
-        // Set the click listener
         activityAdapter.setOnItemClickListener(this::onItemClick);
 
         fetchActivities(eventId);
@@ -59,8 +58,8 @@ public class InterCollegeEventActivities extends Fragment {
     }
 
     private void fetchActivities(String eventId) {
-        db.collection("EventActivities") // Assuming your Firestore collection is named "activity"
-                .whereEqualTo("eventId", eventId) // Match the eventId field in Firestore
+        db.collection("EventActivities")
+                .whereEqualTo("eventId", eventId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

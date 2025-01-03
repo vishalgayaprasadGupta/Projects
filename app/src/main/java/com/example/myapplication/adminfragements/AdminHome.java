@@ -36,14 +36,16 @@ public class AdminHome extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_admin_home, container, false);
 
         userCount=view.findViewById(R.id.UserCount);
         activeCount=view.findViewById(R.id.activeCount);
+        firestore=FirebaseFirestore.getInstance();
+        setUserCount();
+        setActiveCount();
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
@@ -51,10 +53,6 @@ public class AdminHome extends Fragment {
                         getParentFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     }
                 });
-
-        firestore=FirebaseFirestore.getInstance();
-        setUserCount();
-        setActiveCount();
 
         manageUser=view.findViewById(R.id.manageUser);
         manageUser.setOnClickListener(new View.OnClickListener() {

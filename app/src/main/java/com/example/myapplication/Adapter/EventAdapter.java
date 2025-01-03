@@ -40,10 +40,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         }else if(status.equals("Cancel")){
             holder.Status.setText("Event Canceled");
         }
-        // Make the entire item clickable, not just the CardView
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onItemClick(event.getEventId(),event.getEventStatus()); // Pass document ID on click
+                listener.onItemClick(event.getEventId(),event.getEventStatus());
             }
         });
     }
@@ -54,7 +53,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener; // Set the listener
+        this.listener = listener;
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
@@ -67,6 +66,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     public interface OnItemClickListener {
-        void onItemClick(String eventId,String Status); // Pass eventId when item is clicked
+        void onItemClick(String eventId,String Status);
     }
 }

@@ -50,7 +50,6 @@ public class SeminarEventActivity extends Fragment {
         activityAdapter = new SeminarActivtiyAdapater(new ArrayList<>());
         activityRecyclerView.setAdapter(activityAdapter);
 
-        // Set the click listener
         activityAdapter.setOnItemClickListener(this::onItemClick);
 
         fetchActivities(eventId);
@@ -58,8 +57,8 @@ public class SeminarEventActivity extends Fragment {
     }
 
     private void fetchActivities(String eventId) {
-        db.collection("EventActivities") // Assuming your Firestore collection is named "activity"
-                .whereEqualTo("eventId", eventId) // Match the eventId field in Firestore
+        db.collection("EventActivities")
+                .whereEqualTo("eventId", eventId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -93,7 +92,6 @@ public class SeminarEventActivity extends Fragment {
     }
 
     public void onItemClick(String activtiyId) {
-        // Navigate to the next fragment
         Toast.makeText(getActivity(), "Button clicked", Toast.LENGTH_SHORT).show();
         CollegeEventActivityDetails activitiesFragment = new CollegeEventActivityDetails();
         Bundle bundle = new Bundle();

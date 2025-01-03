@@ -126,7 +126,7 @@ public class DeletePage extends Fragment {
     public void closeRegistration(String eventId,String eventType) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(eventType).document(eventId)
-                .update("eventStatus", "closed")
+                .update("eventStatus", "Closed")
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(getActivity(), "Event status updated to closed", Toast.LENGTH_SHORT).show();
                 })
@@ -138,7 +138,7 @@ public class DeletePage extends Fragment {
     public void cancelRegistration(String eventId,String eventType) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(eventType).document(eventId)
-                .update("eventStatus", "closed")
+                .update("eventStatus", "Cancel")
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(getActivity(), "Event status updated to cancel", Toast.LENGTH_SHORT).show();
                 })
@@ -167,10 +167,8 @@ public class DeletePage extends Fragment {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        // Assuming the event name is stored in the field "name" in the event document
                         String EventName = documentSnapshot.getString("name");
                         if (eventName != null) {
-                            // Update your UI with the event name
                             eventName.setText(EventName);
                         } else {
                             Toast.makeText(getContext(), "Event name not found", Toast.LENGTH_SHORT).show();

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EDEDED"
     tools:context=".fragements.Announcement">
 
     <!-- TODO: Update blank fragment layout -->
@@ -10,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Announcement Page"
+        android:textSize="25dp"
         android:gravity="center"/>
 
 </FrameLayout>

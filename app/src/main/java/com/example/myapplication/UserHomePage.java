@@ -53,7 +53,7 @@ public class UserHomePage extends AppCompatActivity {
 
         mAuth=FirebaseAuth.getInstance();
         drawerLayout = findViewById(R.id.drawerLayout);
-        NavigationView navigationView = findViewById(R.id.navigation_View);
+        navigationView=findViewById(R.id.navigation_View);
         View headerview=navigationView.getHeaderView(0);
         userName=headerview.findViewById(R.id.name);
         userEmail=headerview.findViewById(R.id.email);
@@ -66,21 +66,21 @@ public class UserHomePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 drawerLayout.openDrawer(GravityCompat.START);
-
             }
         });
-        setDrawerProfile();
-        //Navigation Drawer
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Log.d("DrawerClick", "Item Clicked: " + item.getTitle());
+
                 int id=item.getItemId();
                 if(id==R.id.logout){
                     mAuth.signOut();
                     Toast.makeText(UserHomePage.this, "Logout Succesfully", Toast.LENGTH_SHORT).show();
                     Intent intent=new Intent(UserHomePage.this,LoginPage.class);
                     startActivity(intent);
+                    finish();
                 }else if(id==R.id.setting){
                     Toast.makeText(UserHomePage.this, "Settng Page ", Toast.LENGTH_SHORT).show();
                 }else if(id==R.id.share){
@@ -93,8 +93,8 @@ public class UserHomePage extends AppCompatActivity {
                 return true;
             }
         });
+        setDrawerProfile();
 
-        //Bottom navigation
         bottomNavigationView=findViewById(R.id.bottom_navigation);
         if (savedInstanceState == null) {
             getFragment(new UserHome());

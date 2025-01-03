@@ -1,5 +1,6 @@
 package com.example.myapplication.ManageEvents.UpdateEvent.addActivity;
 
+import android.app.DatePickerDialog;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -23,6 +24,8 @@ import com.example.myapplication.databinding.FragmentAddSeminarDetailsBinding;
 import com.example.myapplication.fragements.Seminar;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Calendar;
+
 public class addSeminarActivity extends Fragment {
     View view;
     FirebaseFirestore firestore;
@@ -37,7 +40,6 @@ public class addSeminarActivity extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view= inflater.inflate(R.layout.fragment_add_seminar_details, container, false);
 
         firestore = FirebaseFirestore.getInstance();
@@ -85,7 +87,38 @@ public class addSeminarActivity extends Fragment {
             addEventDetails.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#808080")));
             addDetails();
         });
+
+        seminarDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDatePicker();
+            }
+        });
         return view;
+    }
+
+    private void openDatePicker() {
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    Calendar selectedDate = Calendar.getInstance();
+                    selectedDate.set(selectedYear, selectedMonth, selectedDay);
+
+                    String selectedDateString = formatDate(selectedDay, selectedMonth + 1, selectedYear);
+                    seminarDate.setText(selectedDateString);
+                }, year, month, day);
+        datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
+        calendar.add(Calendar.MONTH, 2);
+        datePickerDialog.getDatePicker().setMaxDate(calendar.getTimeInMillis());
+        datePickerDialog.show();
+    }
+
+    private String formatDate(int day, int month, int year) {
+        return String.format("%02d/%02d/%d", day, month,year);
     }
     private void addDetails() {
         String eventId = "";

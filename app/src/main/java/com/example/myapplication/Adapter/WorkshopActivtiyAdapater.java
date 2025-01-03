@@ -16,9 +16,9 @@ import java.util.List;
 
 public class WorkshopActivtiyAdapater extends RecyclerView.Adapter<WorkshopActivtiyAdapater.EventViewHolder> {
     private List<Workshop> eventList;
-    private OnItemClickListener listener; // Declare the listener
+    private OnItemClickListener listener;
 
-    private static final String TAG = "WorkshopActivtiyAdapater";  // Log tag for this adapter
+    private static final String TAG = "WorkshopActivtiyAdapater";
 
     public WorkshopActivtiyAdapater(List<Workshop> eventList) {
         this.eventList = eventList;
@@ -43,11 +43,10 @@ public class WorkshopActivtiyAdapater extends RecyclerView.Adapter<WorkshopActiv
         holder.activityDescription.setText(activity.getWorkshopDescription());
         holder.activityDate.setText(activity.getWorkshopDate());
 
-        // Make the entire item clickable, not just the CardView
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 Log.d(TAG, "Item clicked: " + activity.getActivityId());
-                listener.onItemClick(activity.getActivityId()); // Pass document ID on click
+                listener.onItemClick(activity.getActivityId());
             }
         });
     }
@@ -59,7 +58,7 @@ public class WorkshopActivtiyAdapater extends RecyclerView.Adapter<WorkshopActiv
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener; // Set the listener
+        this.listener = listener;
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
@@ -76,6 +75,6 @@ public class WorkshopActivtiyAdapater extends RecyclerView.Adapter<WorkshopActiv
     }
 
     public interface OnItemClickListener {
-        void onItemClick(String activityId); // Pass eventId when item is clicked
+        void onItemClick(String activityId);
     }
 }

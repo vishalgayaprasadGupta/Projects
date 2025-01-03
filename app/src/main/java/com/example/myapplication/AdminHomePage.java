@@ -38,7 +38,6 @@ public class AdminHomePage extends AppCompatActivity {
     FirebaseUser user;
     FirebaseAuth mAuth;
     BottomNavigationView bottomNavigationView;
-    NavigationView navigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +82,7 @@ public class AdminHomePage extends AppCompatActivity {
                     Toast.makeText(AdminHomePage.this, "Logout Succesfully", Toast.LENGTH_SHORT).show();
                     finish();
                 }else if(id==R.id.setting){
-                    Toast.makeText(AdminHomePage.this, "Settng Page ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminHomePage.this, "Setting Page ", Toast.LENGTH_SHORT).show();
                 }else if(id==R.id.share){
                     Toast.makeText(AdminHomePage.this, "Share Page ", Toast.LENGTH_SHORT).show();
                 }else if(id==R.id.support){
@@ -95,7 +94,6 @@ public class AdminHomePage extends AppCompatActivity {
             }
         });
 
-        //Bottom navigation
         bottomNavigationView=findViewById(R.id.bottom_navigation);
         getFragment(new AdminHome());
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -119,7 +117,10 @@ public class AdminHomePage extends AppCompatActivity {
     }
 
     public void getFragment(Fragment fragment){
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragement_layout,fragment).commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragement_layout,fragment)
+                .commit();
     }
 
     public void onBackPressButton() {
@@ -129,16 +130,15 @@ public class AdminHomePage extends AppCompatActivity {
                     .setTitle("Exit App")
                     .setMessage("Are you sure you want to exit?")
                     .setPositiveButton("Yes", (dialog1, which) -> {
-                        finish(); // Close the app
+                        finish();
                     })
-                    .setNegativeButton("No", (dialog1, which) -> dialog1.dismiss()) // Dismiss dialog
-                    .setCancelable(true) // Optional: Allow dismissing with the back button
+                    .setNegativeButton("No", (dialog1, which) -> dialog1.dismiss())
+                    .setCancelable(true)
                     .create();
 
-            dialog.setCanceledOnTouchOutside(false); // Allow dismissing by touching outside
+            dialog.setCanceledOnTouchOutside(false);
             dialog.show();
         } else {
-            // Navigate back to the UserHome Page
             bottomNavigationView.setSelectedItemId(R.id.Home);
         }
     }

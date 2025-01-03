@@ -46,10 +46,9 @@ public class CollegeEventActivityDetails extends Fragment {
 
         // Get the eventId from the bundle
         if (getArguments() != null) {
-            activityId = getArguments().getString("activityId"); // Retrieve the activityId passed from the previous fragment
+            activityId = getArguments().getString("activityId");
         }
         Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
-        // Fetch event details from your data source (Firestore, Database, etc.)
         fetchEventDetails(activityId);
         return view;
     }

@@ -51,11 +51,9 @@ public class InterCollegeEvents extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                // Custom back button logic
                 if (getParentFragmentManager().getBackStackEntryCount() > 0) {
                     getParentFragmentManager().popBackStack();
                 } else {
-                    // If no fragments in back stack, finish activity or default behavior
                     requireActivity().finish();
                 }
             }
@@ -70,14 +68,13 @@ public class InterCollegeEvents extends Fragment {
                         List<Event> events = task.getResult().toObjects(Event.class);
                         List<Event> filteredEvents = new ArrayList<>();
                         for (Event event : events) {
-                            if (!"delete".equals(event.getEventStatus())) {
+                            if (!"Deleted".equals(event.getEventStatus())) {
                                 filteredEvents.add(event);
                             }
                         }
                         if (filteredEvents.isEmpty()) {
                             showNoEventDialog();
                         } else {
-                            // Update the adapter with filtered events
                             eventAdapter = new EventAdapter(filteredEvents);
                             eventAdapter.setOnItemClickListener(this::onItemClick); // Re-attach the listener
                             recyclerView.setAdapter(eventAdapter);
