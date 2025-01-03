@@ -1,5 +1,6 @@
 package com.example.myapplication.ManageUser;
 
+import android.app.AlertDialog;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -74,8 +75,18 @@ public class fetchUserDetailsAndUpdate extends Fragment {
                 update.setEnabled(false);
                 update.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#808080")));
                 updateProgressbar.setVisibility(View.VISIBLE);
-                updateUserDetails(uid);
-            });
+                AlertDialog dialog = new AlertDialog.Builder(getContext())
+                        .setTitle("Confirm Changes")
+                        .setMessage("Are you sure you want to Update user data?")
+                        .setPositiveButton("Yes", (dialog1, which) -> {
+                            updateUserDetails(uid);
+                        })
+                        .setNegativeButton("No", (dialog1, which) -> dialog1.dismiss()) // Dismiss dialog
+                        .setCancelable(true) // Optional: Allow dismissing with the back button
+                        .create();
+
+                dialog.setCanceledOnTouchOutside(false); // Allow dismissing by touching outside
+                dialog.show();            });
         }else{
             update.setEnabled(false);
             Toast.makeText(getActivity(), "No data found!", Toast.LENGTH_LONG).show();
@@ -84,6 +95,9 @@ public class fetchUserDetailsAndUpdate extends Fragment {
         return view;
     }
 
+    private boolean isValidPhoneNumber(String phone) {
+        return phone.matches("\\d{10}");
+    }
     private void fetchUserDetails(String uid) {
         Log.d("UpdateUser", "User UID: " + uid);
 
@@ -134,6 +148,10 @@ public class fetchUserDetailsAndUpdate extends Fragment {
 
         if (Name.isEmpty() || Gender.isEmpty() || Contact.isEmpty() || Email.isEmpty() || College.isEmpty()) {
             Toast.makeText(getActivity(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(!isValidPhoneNumber(Contact)){
+            Toast.makeText(getActivity(), "Invalid phone number", Toast.LENGTH_SHORT).show();
             return;
         }
 

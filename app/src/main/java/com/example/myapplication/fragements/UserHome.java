@@ -12,16 +12,15 @@ import android.widget.TextView;
 import com.example.myapplication.ManageEvents.SeminarsEvent;
 import com.example.myapplication.R;
 
-public class Home extends Fragment {
+public class UserHome extends Fragment {
     TextView CollegeEvents,InterCollegeEvents,Workshops,Seminars;
     View view;
-    public Home() {
+    public UserHome() {
         // Required empty public constructor
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view= inflater.inflate(R.layout.fragment_user_home, container, false);
 
         CollegeEvents=view.findViewById(R.id.CollegeEvents);

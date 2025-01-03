@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EDEDED"
-    tools:context=".ManageUser.UpdateUser">
+    tools:context=".ManageRole.fetchUserDetails">
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,12 +31,13 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 android:gravity="center"
-                android:text="DeActivate Account"
-                android:textColor="@color/lavender_dark"
+                android:text="UPDATE  ROLE"
                 android:textSize="30dp"
-                android:textStyle="bold" />
+                android:layout_marginBottom="10dp"
+                android:textStyle="bold"
+                android:textColor="@color/lavender_dark"/>
+
             <!-- Card for Email Input -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
@@ -102,7 +103,6 @@
                         android:textStyle="bold" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
         </LinearLayout>
 
         <FrameLayout

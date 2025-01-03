@@ -14,22 +14,18 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.fragements.Announcement;
-import com.example.myapplication.fragements.Home;
+import com.example.myapplication.fragements.UserHome;
 import com.example.myapplication.fragements.UserProfile;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -101,7 +97,7 @@ public class UserHomePage extends AppCompatActivity {
         //Bottom navigation
         bottomNavigationView=findViewById(R.id.bottom_navigation);
         if (savedInstanceState == null) {
-            getFragment(new Home());
+            getFragment(new UserHome());
         }
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -109,7 +105,7 @@ public class UserHomePage extends AppCompatActivity {
                 int id=item.getItemId();
 
                 if(id==R.id.Home){
-                    getFragment(new Home());
+                    getFragment(new UserHome());
                     return true;
                 }else if(id==R.id.User){
                     getFragment(new UserProfile());
@@ -135,7 +131,7 @@ public class UserHomePage extends AppCompatActivity {
 
     public void onBackPressButton() {
         if (bottomNavigationView.getSelectedItemId() == R.id.Home) {
-            // Show exit confirmation dialog when on Home Page
+            // Show exit confirmation dialog when on UserHome Page
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("Exit App")
                     .setMessage("Are you sure you want to exit?")
@@ -149,7 +145,7 @@ public class UserHomePage extends AppCompatActivity {
             dialog.setCanceledOnTouchOutside(true); // Allow dismissing by touching outside
             dialog.show();
         } else {
-            // Navigate back to the Home Page
+            // Navigate back to the UserHome Page
             bottomNavigationView.setSelectedItemId(R.id.Home);
         }
     }
@@ -160,10 +156,7 @@ public class UserHomePage extends AppCompatActivity {
         if (user!=null){
             String name=user.getDisplayName();
             String email=user.getEmail();
-            Log.d("UserHomePage", "UserProfile: " + user.getUid());
-            Log.d("UserHomePage", "userName: " + name);
-            Log.d("UserHomePage", "userEmail: " + email);
-            Log.d("UserHomePage", "Welcome: " + name);
+
             if(name!=null){
                 userName.setText(name);
                 welcomeName.setText("Welcome , "+name);

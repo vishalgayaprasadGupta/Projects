@@ -1,5 +1,6 @@
 package com.example.myapplication.ManageUser;
 
+import android.app.AlertDialog;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -72,7 +73,18 @@ public class DeactivateUser extends Fragment {
                 deactivate.setEnabled(false);
                 deactivate.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#808080")));
                 deactivateProgressbar.setVisibility(View.VISIBLE);
-                deactivateUser(uid);
+                AlertDialog dialog = new AlertDialog.Builder(getContext())
+                        .setTitle("Confirm Changes")
+                        .setMessage("Are you sure you want to Deactivate user?")
+                        .setPositiveButton("Yes", (dialog1, which) -> {
+                            deactivateUser(uid);
+                        })
+                        .setNegativeButton("No", (dialog1, which) -> dialog1.dismiss()) // Dismiss dialog
+                        .setCancelable(true) // Optional: Allow dismissing with the back button
+                        .create();
+
+                dialog.setCanceledOnTouchOutside(false); // Allow dismissing by touching outside
+                dialog.show();
             });
         }else{
             deactivate.setEnabled(false);

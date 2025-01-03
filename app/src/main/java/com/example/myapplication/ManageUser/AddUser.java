@@ -97,10 +97,7 @@ public class AddUser extends Fragment {
             @Override
             public void onClick(View v) {
                 int radioButtonId = radioGroup.getCheckedRadioButtonId();
-                if (radioButtonId == -1) {
-                    Toast.makeText(getActivity(), "Please select your gender", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+
                 selectedRadioButton = view.findViewById(radioButtonId);
                 Role="User";
                 Status="Active";
@@ -110,16 +107,15 @@ public class AddUser extends Fragment {
                 String Contact = phone.getText().toString();
                 String College = college.getText().toString();
                 String Password = password.getText().toString();
-                if(Username.isEmpty()||College.isEmpty()||EmailId.isEmpty()||Contact.isEmpty()||Password.isEmpty()||Gender.isEmpty()){
-                    Toast.makeText(getActivity(), "All fields are mandatory!", Toast.LENGTH_LONG).show();
-                    return;
-                }
 
                 validateInput(Username,College,EmailId,Contact,Password);
             }
         });
 
         return view;
+    }
+    private boolean isValidPhoneNumber(String phone) {
+        return phone.matches("\\d{10}");
     }
     public void getFragment(Fragment fragment){
         getActivity().getSupportFragmentManager()
@@ -135,10 +131,12 @@ public class AddUser extends Fragment {
             Toast.makeText(getActivity(), "Please select your gender", Toast.LENGTH_SHORT).show();
             return;
         }
-
-
         if(TextUtils.isEmpty(Contact) || TextUtils.isEmpty(EmailId) || TextUtils.isEmpty(Username) || TextUtils.isEmpty(College) || TextUtils.isEmpty(Password) || TextUtils.isEmpty(Gender)){
             Toast.makeText(getActivity(), "All fields are mandatory!", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(!isValidPhoneNumber(Contact)){
+            Toast.makeText(getActivity(), "Invalid phone number", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -203,7 +201,6 @@ public class AddUser extends Fragment {
                             if (exception != null) {
                                 String errorMessage = exception.getMessage();
                                 if (errorMessage != null && errorMessage.contains("The email address is already in use")) {
-                                    // Handle email already registered error
                                     Toast.makeText(getActivity(), "User already exists", Toast.LENGTH_LONG).show();
                                 } else {
                                     Log.w(TAG, "createUserWithEmail:failure", exception);

@@ -63,6 +63,9 @@ public class InitialPage extends AppCompatActivity {
                                     }
                                 } else {
                                     Toast.makeText(this, "Redirecting to Login Page", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(InitialPage.this, LoginPage.class);
+                                    startActivity(intent);
+                                    finish();
                                 }
                             }else{
                                 mAuth.signOut();

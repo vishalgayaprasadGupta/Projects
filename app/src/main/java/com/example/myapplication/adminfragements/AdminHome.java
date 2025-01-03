@@ -7,16 +7,19 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.myapplication.ManageRole.fetchUserDetails;
 import com.example.myapplication.R;
 import com.example.myapplication.ManageUser.manageUser;
 import com.example.myapplication.manageEvents;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 
 public class AdminHome extends Fragment {
@@ -26,7 +29,7 @@ public class AdminHome extends Fragment {
         // Required empty public constructor
     }
     FirebaseFirestore firestore;
-    TextView userCount,manageUser,manageEvents;
+    TextView userCount,activeCount,manageUser,manageEvents,manageRole;
     BottomNavigationView bottomNavigationView;
 
 
@@ -35,6 +38,9 @@ public class AdminHome extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_admin_home, container, false);
+
+        userCount=view.findViewById(R.id.UserCount);
+        activeCount=view.findViewById(R.id.activeCount);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),  // Safely attached to view lifecycle
@@ -47,8 +53,8 @@ public class AdminHome extends Fragment {
                 });
 
         firestore=FirebaseFirestore.getInstance();
-        userCount=view.findViewById(R.id.UserCount);
         setUserCount();
+        setActiveCount();
 
         manageUser=view.findViewById(R.id.manageUser);
         manageUser.setOnClickListener(new View.OnClickListener() {
@@ -65,22 +71,30 @@ public class AdminHome extends Fragment {
                 getFragment(new manageEvents());
             }
         });
+
+        manageRole=view.findViewById(R.id.manageRole);
+        manageRole.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragment(new fetchUserDetails());
+            }
+        });
+
         return view;
     }
 
     public void onBackPressButton() {
-            // Show exit confirmation dialog when on Home Page
             AlertDialog dialog = new AlertDialog.Builder(getContext())
                     .setTitle("Exit App")
                     .setMessage("Are you sure you want to exit?")
                     .setPositiveButton("Yes", (dialog1, which) -> {
-                        requireActivity().finish(); // Close the app
+                        requireActivity().finish();
                     })
-                    .setNegativeButton("No", (dialog1, which) -> dialog1.dismiss()) // Dismiss dialog
-                    .setCancelable(true) // Optional: Allow dismissing with the back button
+                    .setNegativeButton("No", (dialog1, which) -> dialog1.dismiss())
+                    .setCancelable(true)
                     .create();
 
-            dialog.setCanceledOnTouchOutside(false); // Allow dismissing by touching outside
+            dialog.setCanceledOnTouchOutside(false);
             dialog.show();
     }
 
@@ -93,6 +107,23 @@ public class AdminHome extends Fragment {
                 userCount.setText("0");
             }
         });
+    }
+    public void setActiveCount(){
+        firestore.collection("User")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        int activeUsers = 0;
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            if ("Active".equals(document.getString("status"))) {
+                                activeUsers++;
+                            }
+                        }
+                        activeCount.setText(String.valueOf(activeUsers));
+                    } else {
+                        Log.e("Firestore Error", "Error getting documents.", task.getException());
+                    }
+                });
     }
 
     public void getFragment(Fragment fragment){

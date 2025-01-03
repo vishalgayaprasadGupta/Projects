@@ -14,18 +14,13 @@ import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.adminfragements.AdminHome;
 import com.example.myapplication.adminfragements.AdminProfile;
 import com.example.myapplication.fragements.Announcement;
-import com.example.myapplication.fragements.Home;
-import com.example.myapplication.fragements.UserProfile;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
@@ -129,7 +124,7 @@ public class AdminHomePage extends AppCompatActivity {
 
     public void onBackPressButton() {
         if (bottomNavigationView.getSelectedItemId() == R.id.Home) {
-            // Show exit confirmation dialog when on Home Page
+            // Show exit confirmation dialog when on UserHome Page
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("Exit App")
                     .setMessage("Are you sure you want to exit?")
@@ -143,7 +138,7 @@ public class AdminHomePage extends AppCompatActivity {
             dialog.setCanceledOnTouchOutside(false); // Allow dismissing by touching outside
             dialog.show();
         } else {
-            // Navigate back to the Home Page
+            // Navigate back to the UserHome Page
             bottomNavigationView.setSelectedItemId(R.id.Home);
         }
     }

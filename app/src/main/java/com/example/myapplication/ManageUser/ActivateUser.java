@@ -1,5 +1,6 @@
 package com.example.myapplication.ManageUser;
 
+import android.app.AlertDialog;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -71,7 +72,18 @@ public class ActivateUser extends Fragment {
                 activate.setEnabled(false);
                 activate.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#808080")));
                 activateProgressbar.setVisibility(View.VISIBLE);
-                activateUser(uid);
+                AlertDialog dialog = new AlertDialog.Builder(getContext())
+                        .setTitle("Confirm Changes")
+                        .setMessage("Are you sure you want to Activate user?")
+                        .setPositiveButton("Yes", (dialog1, which) -> {
+                            activateUser(uid);
+                        })
+                        .setNegativeButton("No", (dialog1, which) -> dialog1.dismiss()) // Dismiss dialog
+                        .setCancelable(true) // Optional: Allow dismissing with the back button
+                        .create();
+
+                dialog.setCanceledOnTouchOutside(false); // Allow dismissing by touching outside
+                dialog.show();
             });
         }else{
             activate.setEnabled(false);

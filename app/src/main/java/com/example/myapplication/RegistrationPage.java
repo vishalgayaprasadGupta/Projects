@@ -108,10 +108,16 @@ public class RegistrationPage extends AppCompatActivity {
                     return;
                 }
 
+                if (!isValidPhoneNumber(Contact)) {
+                    Toast.makeText(RegistrationPage.this, "Invalid phone number", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 if (!Password.equals(CheckPassword)) {
                     Toast.makeText(RegistrationPage.this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
 
                 if(isNetworkAvailable()) {
                     user = new User(Status,Role, Username, Gender, EmailId, Contact, College, Password);
@@ -122,6 +128,10 @@ public class RegistrationPage extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private boolean isValidPhoneNumber(String phone) {
+        return phone.matches("\\d{10}");
     }
 
     private boolean isNetworkAvailable() {
