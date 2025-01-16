@@ -48,16 +48,16 @@ public class SeminarsEvent extends Fragment {
 
         fetchEvents();
 
-        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                if (getParentFragmentManager().getBackStackEntryCount() > 0) {
-                    getParentFragmentManager().popBackStack();
-                } else {
-                    requireActivity().finish();
-                }
-            }
-        });
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (getActivity() != null) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }
+                    }
+                });
         return view;
     }
 
@@ -88,11 +88,12 @@ public class SeminarsEvent extends Fragment {
     private void showNoEventDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("No Event");
-        builder.setMessage("No Event or Activity is Found");
+        builder.setMessage("No activity or event is there");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                getFragment(new UserHome());
             }
         });
         AlertDialog dialog = builder.create();

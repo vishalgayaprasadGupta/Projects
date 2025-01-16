@@ -2,7 +2,9 @@ package com.example.myapplication.fragements;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.manageEvents;
 
 public class UserHome extends Fragment {
     TextView CollegeEvents,InterCollegeEvents,Workshops,Seminars;
@@ -26,6 +29,21 @@ public class UserHome extends Fragment {
         InterCollegeEvents=view.findViewById(R.id.interCollegeEvent);
         Workshops=view.findViewById(R.id.workshopEvent);
         Seminars=view.findViewById(R.id.seminarEvents);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (getActivity() != null && isAdded()) {
+                            getActivity().getSupportFragmentManager().popBackStackImmediate(null,
+                                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            getFragment(new manageEvents());
+                        }
+                    }
+                });
+
+
 
         Workshops.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,11 +74,13 @@ public class UserHome extends Fragment {
         });
         return view;
     }
-    public void getFragment(Fragment fragment){
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragement_layout,fragment)
-                .addToBackStack(null)
-                .commit();
+    public void getFragment(Fragment fragment) {
+        if (getActivity() != null && isAdded()) {
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragement_layout, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 }

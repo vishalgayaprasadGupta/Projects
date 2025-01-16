@@ -14,9 +14,10 @@ import com.example.myapplication.ManageEvents.AddEvent;
 import com.example.myapplication.ManageEvents.DeleteEvent.EventCategory;
 import com.example.myapplication.adminfragements.AdminHome;
 import com.example.myapplication.fragements.UpdateEventDetails;
+import com.example.myapplication.fragements.UserHome;
 
 public class manageEvents extends Fragment {
-    TextView addCollegeEvents,updateEvent,deleteEvent;
+    TextView viewEvents,addCollegeEvents,updateEvent,deleteEvent;
     View view;
     public manageEvents() {
         // Required empty public constructor
@@ -37,6 +38,13 @@ public class manageEvents extends Fragment {
                     }
                 });
 
+        viewEvents=view.findViewById(R.id.viewEvents);
+        viewEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragment(new UserHome());
+            }
+        });
         updateEvent=view.findViewById(R.id.updateEvents);
         updateEvent.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.example.myapplication.ManageRole.fetchUserDetails;
 import com.example.myapplication.R;
 import com.example.myapplication.ManageUser.manageUser;
+import com.example.myapplication.eventOrganiser.ManageEventOrganiser;
 import com.example.myapplication.manageEvents;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,9 +30,7 @@ public class AdminHome extends Fragment {
         // Required empty public constructor
     }
     FirebaseFirestore firestore;
-    TextView userCount,activeCount,manageUser,manageEvents,manageRole;
-    BottomNavigationView bottomNavigationView;
-
+    TextView userCount,activeCount,manageUser,manageEvents,manageRole,manageOrganiser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,7 +76,13 @@ public class AdminHome extends Fragment {
                 getFragment(new fetchUserDetails());
             }
         });
-
+        manageOrganiser=view.findViewById(R.id.manageOrganiser);
+        manageOrganiser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragment(new ManageEventOrganiser());
+            }
+        });
         return view;
     }
 

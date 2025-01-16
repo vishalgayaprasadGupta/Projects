@@ -104,13 +104,12 @@ public class InterCollegeEventList extends Fragment {
     }
 
     public void onItemClick(String eventId,String eventType, String eventName) {
-        db.collection("College Events").document(eventId)
+        db.collection("InterCollegiate Events").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         String status = documentSnapshot.getString("eventStatus");
                         if ("Active".equals(status)) {
-                            Toast.makeText(getActivity(), "Button clicked", Toast.LENGTH_SHORT).show();
                             UpdatePage activitiesFragment = new UpdatePage();
                             Bundle bundle = new Bundle();
                             bundle.putString("eventId", eventId);

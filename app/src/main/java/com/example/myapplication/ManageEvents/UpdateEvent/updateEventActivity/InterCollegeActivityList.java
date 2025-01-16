@@ -118,7 +118,6 @@ public class InterCollegeActivityList extends Fragment {
     }
 
     public void onItemClick(String activtiyId) {
-        Toast.makeText(getActivity(), "Button clicked", Toast.LENGTH_SHORT).show();
         String eventType=getArguments().getString("eventType");
         String eventId=getArguments().getString("eventId");
         updateIntercollegeEventActivity activitiesFragment = new updateIntercollegeEventActivity();

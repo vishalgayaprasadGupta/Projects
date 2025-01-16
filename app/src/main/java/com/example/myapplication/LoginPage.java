@@ -127,7 +127,6 @@ public class LoginPage extends AppCompatActivity {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
-                                // Get user reference from Firebase Realtime Database
                                 FirebaseFirestore firestore = FirebaseFirestore.getInstance();
                                 firestore.collection("User").document(user.getUid()).get().addOnCompleteListener(LoginTask -> {
                                     if (LoginTask.isSuccessful()) {

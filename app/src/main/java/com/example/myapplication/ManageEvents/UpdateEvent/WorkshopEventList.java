@@ -102,7 +102,7 @@ public class WorkshopEventList extends Fragment {
     }
 
     public void onItemClick(String eventId,String eventType,String eventName) {
-        db.collection("College Events").document(eventId)
+        db.collection("Workshops").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {

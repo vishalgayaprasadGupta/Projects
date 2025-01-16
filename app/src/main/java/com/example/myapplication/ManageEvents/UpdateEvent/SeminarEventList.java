@@ -104,7 +104,7 @@ public class SeminarEventList extends Fragment {
     }
 
     public void onItemClick(String eventId,String eventType,String eventName) {
-        db.collection("College Events").document(eventId)
+        db.collection("Seminars").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {

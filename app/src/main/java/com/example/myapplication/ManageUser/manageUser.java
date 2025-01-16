@@ -1,5 +1,7 @@
 package com.example.myapplication.ManageUser;
 
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -8,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +31,7 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.element.Table;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -124,70 +128,79 @@ public class manageUser extends Fragment {
         });
 
     }
-
-
-
     public void generatePDF(List<Map<String, Object>> userList) {
         try {
             File pdfFile;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                // For Android 10 and above (Scoped Storage)
-                pdfFile = new File(requireContext().getExternalFilesDir(null), "UserDetails.pdf");
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Downloads.DISPLAY_NAME, "UserDetails.pdf");
+                values.put(MediaStore.Downloads.MIME_TYPE, "application/pdf");
+                values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+
+                Uri uri = requireContext().getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+                OutputStream outputStream = requireContext().getContentResolver().openOutputStream(uri);
+
+                PdfWriter writer = new PdfWriter(outputStream);
+                PdfDocument pdfDocument = new PdfDocument(writer);
+                Document document = new Document(pdfDocument);
+
+                document.add(new Paragraph("User Details")
+                        .setFontSize(18)
+                        .setBold());
+
+                Table table = createUserTable(userList);
+
+                document.add(table);
+                document.close();
+
+                Toast.makeText(getActivity(), "PDF saved to Downloads!", Toast.LENGTH_LONG).show();
+                getFragment(new AdminHome());
             } else {
-                // For devices below Android 10
                 File downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
                 pdfFile = new File(downloadDir, "UserDetails.pdf");
+
+                PdfWriter writer = new PdfWriter(pdfFile);
+                PdfDocument pdfDocument = new PdfDocument(writer);
+                Document document = new Document(pdfDocument);
+
+                document.add(new Paragraph("User Details").setFontSize(18).setBold());
+                Table table = createUserTable(userList);
+
+                document.add(table);
+                document.close();
+
+                Toast.makeText(getActivity(), "PDF saved to Downloads!", Toast.LENGTH_LONG).show();
+                getFragment(new AdminHome());
             }
-
-            // Create PDF writer
-            PdfWriter writer = new PdfWriter(pdfFile);
-            PdfDocument pdfDocument = new PdfDocument(writer);
-            Document document = new Document(pdfDocument);
-
-            // Add title to PDF
-            document.add(new Paragraph("User Details")
-                    .setFontSize(18)
-                    .setBold());
-
-            // Create table
-            float[] columnWidths = {100, 30,50,50,100,50};
-            Table table = new Table(columnWidths);
-            table.addHeaderCell("Name");
-            table.addHeaderCell("Gender");
-            table.addHeaderCell("Email");
-            table.addHeaderCell("Phone");
-            table.addHeaderCell("College");
-            table.addHeaderCell("Role");
-            table.addHeaderCell("Status");
-
-            // Add rows
-            for (Map<String, Object> User : userList) {
-                table.addCell((String) User.get("name"));
-                table.addCell((String) User.get("gender"));
-                table.addCell((String) User.get("email"));
-                table.addCell((String) User.get("contact"));
-                table.addCell((String) User.get("college"));
-                table.addCell((String) User.get("role"));
-                table.addCell((String) User.get("status"));
-            }
-
-            // Add table to document
-            document.add(table);
-            document.close();
-
-            String message = "PDF saved to: " + pdfFile.getAbsolutePath();
-            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-            Log.d("PDF", message);
-            getFragment(new AdminHome());
         } catch (Exception e) {
             Log.e("PDF", "Error generating PDF: ", e);
-            Toast.makeText(getActivity(), "Error downloading Pdf!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Error downloading PDF!", Toast.LENGTH_SHORT).show();
         }
     }
 
+    private Table createUserTable(List<Map<String, Object>> userList) {
+        float[] columnWidths = {100, 30, 50, 50, 100, 50, 50};
+        Table table = new Table(columnWidths);
 
+        table.addHeaderCell("Name");
+        table.addHeaderCell("Gender");
+        table.addHeaderCell("Email");
+        table.addHeaderCell("Phone");
+        table.addHeaderCell("College");
+        table.addHeaderCell("Role");
+        table.addHeaderCell("Status");
 
-
+        for (Map<String, Object> user : userList) {
+            table.addCell((String) user.getOrDefault("name", "N/A"));
+            table.addCell((String) user.getOrDefault("gender", "N/A"));
+            table.addCell((String) user.getOrDefault("email", "N/A"));
+            table.addCell((String) user.getOrDefault("contact", "N/A"));
+            table.addCell((String) user.getOrDefault("college", "N/A"));
+            table.addCell((String) user.getOrDefault("role", "N/A"));
+            table.addCell((String) user.getOrDefault("status", "N/A"));
+        }
+        return table;
+    }
 
     public void getFragment(Fragment fragment){
         requireActivity().getSupportFragmentManager()

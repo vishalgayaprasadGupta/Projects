@@ -48,16 +48,16 @@ public class WorkshopsEvents extends Fragment {
 
         fetchEvents();
 
-        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                if (getParentFragmentManager().getBackStackEntryCount() > 0) {
-                    getParentFragmentManager().popBackStack();
-                } else {
-                    requireActivity().finish();
-                }
-            }
-        });
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (getActivity() != null) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }
+                    }
+                });
         return view;
     }
 
@@ -92,6 +92,7 @@ public class WorkshopsEvents extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                getFragment(new UserHome());
             }
         });
         AlertDialog dialog = builder.create();

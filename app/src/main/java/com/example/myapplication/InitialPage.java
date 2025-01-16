@@ -83,7 +83,7 @@ public class InitialPage extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 }
-            }, 500);
+            }, 0);
         });
     }
 }

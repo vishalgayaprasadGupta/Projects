@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="#EDEDED"
     android:padding="16dp"
-    tools:context=".fragments.Home">
+    tools:context=".fragements.UserHome">
 
     <!-- Header Section -->
     <TextView
