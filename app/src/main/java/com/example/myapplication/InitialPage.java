@@ -61,12 +61,26 @@ public class InitialPage extends AppCompatActivity {
                                     } else {
                                         mAuth.signOut();
                                     }
-                                } else {
+                                } else if("Event Organiser".equals(Role)){
+                                    if (user.isEmailVerified()) {
+                                        Intent intent = new Intent(InitialPage.this, OrganiserHomePage.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        mAuth.signOut();
+                                    }
+                                }else{
                                     Toast.makeText(this, "Redirecting to Login Page", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(InitialPage.this, LoginPage.class);
                                     startActivity(intent);
                                     finish();
                                 }
+                            }else if("Pending".equals(Status)){
+                                mAuth.signOut();
+                                Toast.makeText(this, "Verify your Email!", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(InitialPage.this, LoginPage.class);
+                                startActivity(intent);
+                                finish();
                             }else{
                                 mAuth.signOut();
                                 Toast.makeText(this, "Your Account has been Deactivated,Contact Admin!", Toast.LENGTH_SHORT).show();

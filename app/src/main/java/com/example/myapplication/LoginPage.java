@@ -4,7 +4,6 @@ import static com.example.myapplication.RegistrationPage.TAG;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 
@@ -15,7 +14,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,10 +21,8 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import com.example.myapplication.fragements.EventOrganiserHome;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -35,8 +31,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginPage extends AppCompatActivity {
@@ -46,6 +40,7 @@ public class LoginPage extends AppCompatActivity {
     Button Signin;
     FirebaseAuth mAuth;
     FirebaseFirestore firestore;
+    String role,status,EmailId,Password;
     ProgressBar LoginProgressbar,RegisterProgressbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +85,8 @@ public class LoginPage extends AppCompatActivity {
             public void onClick(View view) {
                 if (isNetworkAvailable()){
                     Log.d(TAG, "Signin button clicked");
-                    String EmailId = Email.getText().toString().trim();
-                    String Password = UserPassword.getText().toString().trim();
+                     EmailId = Email.getText().toString().trim();
+                     Password = UserPassword.getText().toString().trim();
 
                     if (TextUtils.isEmpty(EmailId)) {
                         Toast.makeText(LoginPage.this, "Enter Email!", Toast.LENGTH_LONG).show();
@@ -126,27 +121,31 @@ public class LoginPage extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+
                             if (user != null) {
                                 FirebaseFirestore firestore = FirebaseFirestore.getInstance();
                                 firestore.collection("User").document(user.getUid()).get().addOnCompleteListener(LoginTask -> {
                                     if (LoginTask.isSuccessful()) {
-                                        String role = LoginTask.getResult().getString("role");
-                                        String status = LoginTask.getResult().getString("status");
+                                        role = LoginTask.getResult().getString("role");
+                                        status = LoginTask.getResult().getString("status");
                                         Log.d(TAG, "Role fetched: " + role);
-                                        if ("Active".equals(status)) {
+                                        if(status.equals("Pending")){
+                                             if(user.isEmailVerified()){
+                                                 updateUserStatus(user.getUid());
+                                             }else{
+                                                 Toast.makeText(LoginPage.this, "Verify your email to activate your account", Toast.LENGTH_SHORT).show();
+                                                 redirectToVerificationPage();
+                                                 finish();
+                                             }
+                                        }else if ("Active".equals(status)) {
                                             if ("User".equals(role)) {
-                                                if (user.isEmailVerified()) {
-                                                    userUpdateUI(user);
-                                                } else {
-                                                    Toast.makeText(LoginPage.this, "Verify your email to activate your account", Toast.LENGTH_SHORT).show();
-                                                    redirectToVerificationPage();
-                                                    finish();
-                                                }
+                                                userUpdateUI(user);
                                             } else if ("Admin".equals(role)) {
                                                 adminUpdateUI(user);
-                                            } else {
-                                                Toast.makeText(LoginPage.this, "Enter Registered EmailID and Password",
-                                                        Toast.LENGTH_SHORT).show();
+                                            } else if("Event Organiser".equals(role)){
+                                                eventOrganiserUpdateUI(user);
+                                            }else{
+                                                Toast.makeText(LoginPage.this, "Enter Registered EmailID and Password", Toast.LENGTH_SHORT).show();
                                                 mAuth.signOut();
                                             }
                                         }else{
@@ -161,7 +160,6 @@ public class LoginPage extends AppCompatActivity {
                                     }
                                 });
                             }else{
-                                // If sign in fails, display a message to the user.
                                 Log.w(TAG, "signInWithEmail:failure", task.getException());
                                 Toast.makeText(LoginPage.this, "Authenticiation failed..!", Toast.LENGTH_SHORT).show();
                             }
@@ -179,6 +177,31 @@ public class LoginPage extends AppCompatActivity {
                     }
                 });
     }
+    public void eventOrganiserUpdateUI(FirebaseUser user){
+        if(user!=null){
+            Intent intent = new Intent(LoginPage.this, OrganiserHomePage.class);
+            startActivity(intent);
+            Toast.makeText(LoginPage.this, "Login Succesfully .", Toast.LENGTH_SHORT).show();
+            finish();
+        }else{
+            Toast.makeText(LoginPage.this, "UserProfile not authenticated.", Toast.LENGTH_SHORT).show();
+            finish();
+            mAuth.signOut();
+        }
+    }
+    public void updateUserStatus(String userId) {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        firestore.collection("User").document(userId)
+                .update("status", "Active")
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "User status updated to active.");
+                    userLogin(EmailId,Password);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error updating user status", e);
+                });
+    }
+
     public void userUpdateUI(FirebaseUser user){
         if (user != null) {
             Intent intent = new Intent(LoginPage.this, UserHomePage.class);
@@ -204,7 +227,6 @@ public class LoginPage extends AppCompatActivity {
             mAuth.signOut();
         }
     }
-
     public void redirectToVerificationPage(){
         Intent intent = new Intent(this, AccountActivation.class);
         startActivity(intent);

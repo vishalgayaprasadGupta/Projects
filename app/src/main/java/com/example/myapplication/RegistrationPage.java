@@ -94,7 +94,7 @@ public class RegistrationPage extends AppCompatActivity {
                 }
                 selectedRadioButton = findViewById(radioButtonId);
                 Role="User";
-                Status="Active";
+                Status="Pending";
                 String Username = UserName.getText().toString();
                 Gender=selectedRadioButton.getText().toString();
                 String EmailId = EmailAddress.getText().toString();
@@ -117,7 +117,6 @@ public class RegistrationPage extends AppCompatActivity {
                     Toast.makeText(RegistrationPage.this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
 
                 if(isNetworkAvailable()) {
                     user = new User(Status,Role, Username, Gender, EmailId, Contact, College, Password);

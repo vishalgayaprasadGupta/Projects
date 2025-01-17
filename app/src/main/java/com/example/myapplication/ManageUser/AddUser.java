@@ -100,9 +100,15 @@ public class AddUser extends Fragment {
 
                 selectedRadioButton = view.findViewById(radioButtonId);
                 Role="User";
-                Status="Active";
+                Status="Pending";
                 String Username = name.getText().toString();
-                Gender=selectedRadioButton.getText().toString();
+                try {
+                    Gender = selectedRadioButton.getText().toString();
+                }catch(Exception ex){
+                    Toast.makeText(getActivity(), "error :  "+ex.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.d("error",ex.getMessage());
+                    return;
+                }
                 String EmailId = email.getText().toString();
                 String Contact = phone.getText().toString();
                 String College = college.getText().toString();
