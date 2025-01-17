@@ -189,6 +189,7 @@ public class AddUser extends Fragment {
                         addUserProgressbar.setEnabled(true);
                         addUser.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1E3C72")));
                         if (task.isSuccessful()) {
+                            sendVerificationEmail();
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             if(user!=null){
@@ -218,6 +219,21 @@ public class AddUser extends Fragment {
                 });
     }
 
+    public void sendVerificationEmail() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            user.sendEmailVerification()
+                    .addOnCompleteListener(requireActivity(), task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getContext(), " Activation link has been sent to organiser email", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(requireActivity(), "Error sending verification email", Toast.LENGTH_LONG).show();
+                            Log.e("EmailVerification", "Error sending verification email: " + task.getException());
+                        }
+                    });
+        }
+    }
+
     public void updateUI(FirebaseUser user){
         if (user != null) {
             if(isNetworkAvailable()) {
@@ -238,7 +254,7 @@ public class AddUser extends Fragment {
         } else {
             Toast.makeText(getActivity(), "User not authenticated.", Toast.LENGTH_SHORT).show();
             if (mAuth.getCurrentUser() != null) {
-                mAuth.getCurrentUser().delete(); // This will only be called if the user is authenticated
+                mAuth.getCurrentUser().delete();
                 requireActivity().finish();
             }
         }

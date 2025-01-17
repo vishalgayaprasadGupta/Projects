@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -9,7 +8,6 @@
     android:background="@drawable/gradient_background">
 
     <!-- CardView for modern styling -->
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="310dp"
@@ -59,11 +57,11 @@
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
+            <!-- Name Field -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Name">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editName"
                     android:layout_width="match_parent"
@@ -77,33 +75,26 @@
                 android:id="@+id/radioGroupGender"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
                 android:orientation="horizontal">
-
                 <RadioButton
                     android:id="@+id/radioMale"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Male"
                     android:textColor="@color/black" />
-
                 <RadioButton
                     android:id="@+id/radioFemale"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
                     android:text="Female"
                     android:textColor="@color/black" />
             </RadioGroup>
 
-
-            <!-- Input Field: College -->
+            <!-- College Field -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="College">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editCollege"
                     android:layout_width="match_parent"
@@ -112,16 +103,12 @@
                     android:inputType="textPersonName" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Input Field: Name -->
-
-
-            <!-- Input Field: Email -->
+            <!-- Email Field -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:hint="Email">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editEmailAddress"
                     android:layout_width="match_parent"
@@ -130,13 +117,12 @@
                     android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Input Field: Phone -->
+            <!-- Phone Field -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:hint="Phone Number">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editPhone"
                     android:layout_width="match_parent"
@@ -145,14 +131,13 @@
                     android:inputType="phone" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Input Field: Password -->
+            <!-- Password Field -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:hint="Password"
                 app:endIconMode="password_toggle">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editPassword"
                     android:layout_width="match_parent"
@@ -161,13 +146,13 @@
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Confirm Password Field -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="Password"
+                android:hint="Confirm Password"
                 app:endIconMode="password_toggle">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editConfirmPassword"
                     android:layout_width="match_parent"
@@ -176,12 +161,10 @@
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
             <!-- Sign Up Button -->
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/SignupButton"
                     android:layout_width="match_parent"
@@ -191,14 +174,13 @@
                     android:text="Sign Up"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
-
                 <ProgressBar
                     android:id="@+id/SignupProgressbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"></ProgressBar>
-
+                    android:layout_marginTop="15dp" />
             </FrameLayout>
+
             <!-- Redirect to Login -->
             <TextView
                 android:id="@+id/SigninButton"

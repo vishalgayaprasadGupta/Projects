@@ -11,6 +11,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -113,6 +114,20 @@ public class RegistrationPage extends AppCompatActivity {
                     return;
                 }
 
+                if(!College.matches("[a-zA-Z ]+")){
+                    Toast.makeText(RegistrationPage.this, "Invalid college name", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if(!Username.matches("[a-zA-Z ]+")){
+                    Toast.makeText(RegistrationPage.this, "Invalid username", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!Patterns.EMAIL_ADDRESS.matcher(EmailId).matches()) {
+                    Toast.makeText(RegistrationPage.this, "Invalid email format!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (!Password.equals(CheckPassword)) {
                     Toast.makeText(RegistrationPage.this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
                     return;
