@@ -11,9 +11,10 @@ public class EventOrganiser {
     private String stream;
     private String department;
     private String isVerificationEmailsend;
+    private String isEmailverified;
 
     public EventOrganiser(String status, String role, String name, String gender, String email,
-                          String phone, String college, String password, String stream, String department,String isVerificationEmailsend) {
+                          String phone, String college, String password, String stream, String department,String isVerificationEmailsend,String isEmailverified) {
         this.status = status;
         this.role = role;
         this.name = name;
@@ -25,8 +26,17 @@ public class EventOrganiser {
         this.stream = stream;
         this.department = department;
         this.isVerificationEmailsend=isVerificationEmailsend;
+        this.isEmailverified=isEmailverified;
     }
     public EventOrganiser() {
+    }
+
+    public String getIsEmailverified() {
+        return isEmailverified;
+    }
+
+    public void setIsEmailverified(String isEmailverified) {
+        this.isEmailverified = isEmailverified;
     }
 
     public String getIsVerificationEmailsend() {

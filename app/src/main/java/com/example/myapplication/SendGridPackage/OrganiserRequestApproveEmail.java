@@ -21,11 +21,11 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class EventOrganiserAccountVerificationEmail {
+public class OrganiserRequestApproveEmail {
 
     private static final String SENDGRID_API_KEY = BuildConfig.SENDGRID_API_KEY;
 
-    public static void sendEventOrganiserAccountVerificationEmail(String toEmail, String Name) {
+    public static void sendOrganiserAccountApprovalEmail(String toEmail, String organiserName, String adminUID, String adminName) {
         try {
             Log.d(TAG, "SendGrid API Key: " + SENDGRID_API_KEY);
 
@@ -33,20 +33,22 @@ public class EventOrganiserAccountVerificationEmail {
 
             String timestamp = new SimpleDateFormat("dd MMMM yyyy, HH:mm:ss", Locale.getDefault()).format(new Date());
 
-            String subject = "Account Activation Successful";
+            String subject = "Your Request for Event Organizer Role Has Been Approved!";
             String message = "<html><body>" +
-                    "<h1>Welcome to Campus Connect! 🎉</h1>" +
-                    "<p>Dear " + Name + ",</p>" +
-                    "<p>UserName: " + toEmail + "</p>" +
-                    "<p>Congratulations! Your account has been successfully verified.</p>" +
-                    "<p>We are thrilled to inform you that your registration has been submitted to our admin for review.</p>" +
-                    "<p>Once the admin approves your request, you will gain full access as Event Organiser that Campus Connect has to offer.</p>" +
-                    "<p>If you have any questions or need assistance, feel free to reach out to our support team at hub.campusconnect@gmail.com.</p>" +
-                    "<p>Thank you for your patience, and we look forward to having you as an active part of Campus Connect!</p>" +
-                    "<p><strong>Submitted On: </strong> " + timestamp + "</p>" +  // Add timestamp here
+                    "<h1>Welcome to Campus Connect!</h1>" +
+                    "<p>Dear " + organiserName + ",</p>" +
+                    "<p>Congratulations! Your request to become an Event Organizer has been approved by our admin team.</p>" +
+                    "<p><strong>Approved By:</strong></p>" +
+                    "<ul>" +
+                    "<li><strong>Name:</strong> " + adminName + "</li>" +
+                    "<li><strong>UID:</strong> " + adminUID + "</li>" +
+                    "</ul>" +
+                    "<p><strong>Request Processed On: </strong> " + timestamp + "</p>" +
+                    "<p>You now have access to all the tools and features needed to plan and manage events successfully on Campus Connect. Welcome aboard!</p>" +
+                    "<p>Thank you for joining us, and we look forward to your contributions!</p>" +
                     "<p>Best regards,<br>The Campus Connect Team</p>" +
-                    "<p>&#169; 2025 Campus Connect. All rights reserved.</p>" +
                     "</body></html>";
+
 
 
             JsonObject jsonBody = new JsonObject();

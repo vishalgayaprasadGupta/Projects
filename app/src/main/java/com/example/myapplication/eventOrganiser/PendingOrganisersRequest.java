@@ -59,6 +59,7 @@ public class PendingOrganisersRequest extends Fragment {
         db.collection("User")
                 .whereEqualTo("role", "Event Organiser")
                 .whereEqualTo("status", "Pending")
+                .whereEqualTo("isEmailverified", "true")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -75,6 +76,7 @@ public class PendingOrganisersRequest extends Fragment {
                     }
                 });
     }
+
 
 
     private void showNoEventDialog() {

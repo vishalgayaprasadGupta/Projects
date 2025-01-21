@@ -9,6 +9,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -28,17 +31,19 @@ public class UserAccountActivationEmail {
 
             OkHttpClient client = new OkHttpClient();
 
+            String timestamp = new SimpleDateFormat("dd MMMM yyyy, HH:mm:ss", Locale.getDefault()).format(new Date());
+
             String subject = "Account Activation Successful";
             String message = "<html><body>" +
                     "<h1>Welcome to Campus Connect! 🎉</h1>" +
-                    "<p>Dear "+Name+",</p>" +
-                    "<p>UserName : "+toEmail+"</p>" +
+                    "<p>Dear " + Name + ",</p>" +
+                    "<p>UserName: " + toEmail + "</p>" +
                     "<p>Congratulations! Your account has been successfully activated. We’re thrilled to have you on board!</p>" +
                     "<p>You can now explore all the exciting features and benefits Campus Connect has to offer.</p>" +
-                    "<p>If you have any questions or need assistance, feel free to reach out to our support team at hub.campusconnect@gmail.com " +
-                    "</p>" +
-                    "<p>Explore Events and many more ,<br>The Campus Connect Team</p>" +
-                    "<p>&#169; 2025 Campus Connect. All rights reserved.</p>"+
+                    "<p>If you have any questions or need assistance, feel free to reach out to our support team at hub.campusconnect@gmail.com</p>" +
+                    "<p>Explore Events and many more,<br>The Campus Connect Team</p>" +
+                    "<p><strong>Activated on:</strong> " + timestamp + "</p>" +
+                    "<p>&#169; 2025 Campus Connect. All rights reserved.</p>" +
                     "</body></html>";
 
             JsonObject jsonBody = new JsonObject();
@@ -47,7 +52,7 @@ public class UserAccountActivationEmail {
             JsonObject personalization = new JsonObject();
             JsonArray toEmails = new JsonArray();
             JsonObject toEmailObj = new JsonObject();
-            toEmailObj.addProperty("email", toEmail);  // User email
+            toEmailObj.addProperty("email", toEmail);
             toEmails.add(toEmailObj);
             personalization.add("to", toEmails);
             personalization.addProperty("subject", subject);

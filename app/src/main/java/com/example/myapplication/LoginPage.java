@@ -41,7 +41,7 @@ public class LoginPage extends AppCompatActivity {
     Button Signin;
     FirebaseAuth mAuth;
     FirebaseFirestore firestore;
-    String role,status,name,EmailId,Password,emailId,isVerificationEmailsend;
+    String role,status,name,EmailId,Password,emailId,isVerificationEmailsend,isEmailverified;
     ProgressBar LoginProgressbar,RegisterProgressbar;
     UserAccountActivationEmail registrationEmail;
     EventOrganiserAccountVerificationEmail organiserAccountVerificationEmail;
@@ -133,6 +133,8 @@ public class LoginPage extends AppCompatActivity {
                                         status = LoginTask.getResult().getString("status");
                                         name = LoginTask.getResult().getString("name");
                                         emailId = LoginTask.getResult().getString("email");
+                                        isEmailverified=LoginTask.getResult().getString("isEmailverified");
+                                        Log.d(TAG, "Email verify ? : " + isEmailverified);
                                         isVerificationEmailsend = LoginTask.getResult().getString("isVerificationEmailsend");
                                         Log.d(TAG, "Email Send: " + isVerificationEmailsend);
 
@@ -141,20 +143,15 @@ public class LoginPage extends AppCompatActivity {
                                                 if ("Admin".equals(role) || "User".equals(role)) {
                                                     updateUserStatus(user.getUid(), emailId);
                                                 } else if ("Event Organiser".equals(role)) {
+                                                    if("false".equals(isEmailverified)) {
+                                                        isEmailverified(user.getUid());
+                                                    }
                                                     if ("false".equals(isVerificationEmailsend)) {
                                                         organiserAccountVerificationEmail.sendEventOrganiserAccountVerificationEmail(emailId, name);
-                                                        FirebaseFirestore.getInstance()
-                                                                .collection("User")
-                                                                .document(user.getUid())
-                                                                .update("isVerificationEmailsend", "true")
-                                                                .addOnSuccessListener(aVoid -> {
-                                                                    Log.d(TAG, "Email verification status updated to true");
-                                                                    Toast.makeText(LoginPage.this, "Your account is under review. Please wait for admin approval.", Toast.LENGTH_SHORT).show();
-                                                                })
-                                                                .addOnFailureListener(e -> Log.e(TAG, "Failed to update email verification status", e));
+                                                        updateEmailSendStatus(user.getUid());
                                                         return;
                                                     } else {
-                                                        Toast.makeText(LoginPage.this, "Your account is under review. Please wait for admin approval.", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(LoginPage.this, "Your account is under review. Please wait for admin approval.", Toast.LENGTH_LONG).show();
                                                         return;
                                                     }
                                                 }
@@ -168,7 +165,15 @@ public class LoginPage extends AppCompatActivity {
                                             } else if ("Admin".equals(role)) {
                                                 adminUpdateUI(user);
                                             } else if ("Event Organiser".equals(role)) {
-                                                eventOrganiserUpdateUI(user);
+                                                if("false".equals(isEmailverified)){
+                                                    isEmailverified(user.getUid());
+                                                }
+                                                if("false".equals(isVerificationEmailsend)){
+                                                    updateEmailSendStatus(user.getUid());
+                                                    Toast.makeText(LoginPage.this, "Internal error occured , Try again", Toast.LENGTH_SHORT).show();
+                                                }else {
+                                                    eventOrganiserUpdateUI(user);
+                                                }
                                             } else {
                                                 Toast.makeText(LoginPage.this, "Enter Registered EmailID and Password", Toast.LENGTH_SHORT).show();
                                                 mAuth.signOut();
@@ -202,6 +207,27 @@ public class LoginPage extends AppCompatActivity {
                 });
     }
 
+    public void isEmailverified(String uid){
+        FirebaseFirestore.getInstance()
+                .collection("User")
+                .document(uid)
+                .update("isEmailverified", "true")
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Email verification status updated to true");
+                })
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to update email verification status", e));
+    }
+    public void updateEmailSendStatus(String uid){
+        FirebaseFirestore.getInstance()
+                .collection("User")
+                .document(uid)
+                .update("isVerificationEmailsend", "true")
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Email verification status updated to true");
+                    Toast.makeText(LoginPage.this, "Your account is under review. Please wait for admin approval.", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to update email verification status", e));
+    }
     public void eventOrganiserUpdateUI(FirebaseUser user){
         if(user!=null){
             Intent intent = new Intent(LoginPage.this, OrganiserHomePage.class);

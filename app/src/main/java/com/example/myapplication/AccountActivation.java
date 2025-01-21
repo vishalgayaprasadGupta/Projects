@@ -38,12 +38,20 @@ public class AccountActivation extends AppCompatActivity {
         setContentView(R.layout.activity_account_activation);
 
         activateAccount=findViewById(R.id.verifyEmail);
-        backbutton=findViewById(R.id.backbutton);
+        backbutton=findViewById(R.id.backButton);
         editEmailAddress=findViewById(R.id.editEmailAddress);
         VerificationProgressbar=findViewById(R.id.emailVerificationProgressbar);
         user = FirebaseAuth.getInstance().getCurrentUser();
         mAuth=FirebaseAuth.getInstance();
 
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AccountActivation.this, LoginPage.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         if(user!=null){
             editEmailAddress.setText(user.getEmail());
         }else{

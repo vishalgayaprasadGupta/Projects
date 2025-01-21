@@ -53,7 +53,7 @@ public class RegistrationPage extends AppCompatActivity {
     CollectionReference userData;
     RadioGroup radioGroup;
     RadioButton selectedRadioButton;
-    String Gender,Role,Status,selectedCollege,selectedStream,selectedDepartment,selectedRole,isVerificationEmailsend;
+    String Gender,Role,Status,selectedCollege,selectedStream,selectedDepartment,selectedRole,isVerificationEmailsend,isEmailVerified;
     ProgressBar RegisterProgressbar;
     Spinner collegeSpinner,departmentSpinner, streamSpinner;
     static final String USER = "User";
@@ -87,6 +87,7 @@ public class RegistrationPage extends AppCompatActivity {
         departmentSpinner = findViewById(R.id.departmentSpinner);
         streamSpinner = findViewById(R.id.streamSpinner);
         isVerificationEmailsend="false";
+        isEmailVerified="false";
 
         //role spinner
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -163,7 +164,7 @@ public class RegistrationPage extends AppCompatActivity {
                             userClass = new User(Status, selectedRole, Username, Gender, EmailId, Contact, College, Password,isVerificationEmailsend);
                             registerUser(EmailId, Password);
                         }else if(selectedRole.equals("Event Organiser")){
-                            organiserClass = new EventOrganiser(Status, selectedRole, Username, Gender, EmailId, Contact, College, Password, selectedStream, selectedDepartment,isVerificationEmailsend);
+                            organiserClass = new EventOrganiser(Status, selectedRole, Username, Gender, EmailId, Contact, College, Password, selectedStream, selectedDepartment,isVerificationEmailsend,isEmailVerified);
                             showConfirmationDialog(EmailId, Password);
                         }
                     } else {
@@ -489,7 +490,7 @@ public class RegistrationPage extends AppCompatActivity {
                     Log.d("loadColleges", "Role Fetchehd 2: " + selectedRole);
                     Log.d("loadColleges", "isVerificationEmailsend: " + isVerificationEmailsend);
                     organiserClass = new EventOrganiser(Status, selectedRole, UserName.getText().toString(), Gender, EmailAddress.getText().toString(),
-                            Phone.getText().toString(), selectedCollege, UserPassword.getText().toString(), selectedStream, selectedDepartment,isVerificationEmailsend);
+                            Phone.getText().toString(), selectedCollege, UserPassword.getText().toString(), selectedStream, selectedDepartment,isVerificationEmailsend,isEmailVerified);
                     userData.document(uid).set(organiserClass).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Intent intent = new Intent(RegistrationPage.this, LoginPage.class);
