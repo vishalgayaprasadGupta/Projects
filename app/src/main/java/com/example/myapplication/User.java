@@ -9,8 +9,9 @@ public class User {
     private String college;
     private String password;
     private  String status;
+    private String isVerificationEmailsend;
 
-    public User(String status,String role, String name, String gender, String email, String contact, String college, String password) {
+    public User(String status,String role, String name, String gender, String email, String contact, String college, String password,String isVerificationEmailsend) {
         this.status=status;
         this.role = role;
         this.name = name;
@@ -19,6 +20,15 @@ public class User {
         this.contact = contact;
         this.college = college;
         this.password = password;
+        this.isVerificationEmailsend=isVerificationEmailsend;
+    }
+
+    public String getIsVerificationEmailsend() {
+        return isVerificationEmailsend;
+    }
+
+    public void setIsVerificationEmailsend(String isVerificationEmailsend) {
+        this.isVerificationEmailsend = isVerificationEmailsend;
     }
 
     public String getStatus() {

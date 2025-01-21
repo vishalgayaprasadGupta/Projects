@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -22,7 +23,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class AccountActivation extends AppCompatActivity {
-    Button activateAccount,backbutton;
+    Button activateAccount;
+    TextView backbutton;
 
     EditText editEmailAddress;
     String Email;
@@ -41,6 +43,7 @@ public class AccountActivation extends AppCompatActivity {
         VerificationProgressbar=findViewById(R.id.emailVerificationProgressbar);
         user = FirebaseAuth.getInstance().getCurrentUser();
         mAuth=FirebaseAuth.getInstance();
+
         if(user!=null){
             editEmailAddress.setText(user.getEmail());
         }else{
@@ -80,6 +83,8 @@ public class AccountActivation extends AppCompatActivity {
                             Toast.makeText(this, "Email verifiaction failed!", Toast.LENGTH_LONG).show();
                             Log.e("EmailVerification", "Error sending verification email: " + task.getException());
                             mAuth.signOut();
+                            Intent intent = new Intent(this, LoginPage.class);
+                            startActivity(intent);
                             finish();
                         }
                     });

@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -50,7 +51,7 @@ import java.util.List;
 
 public class addEventOrganiser extends Fragment {
     View view;
-    private String  selectedStream, selectedDepartment;
+    private String  selectedStream, selectedDepartment,emailSend;
     private Spinner  departmentSpinner, streamSpinner;
     TextInputEditText Phone,EmailAddress,UserName,CollegeName,UserPassword,ConfirmPassword;
     RadioGroup radioGroup;
@@ -62,6 +63,7 @@ public class addEventOrganiser extends Fragment {
     CollectionReference userData;
     ProgressBar progressBar;
     User user;
+    EventOrganiser organiser;
     String username,email,phone,college,password,confirmPassword;
     static final String USER = "User";
     static final String TAG="RegistrationPage";
@@ -85,6 +87,17 @@ public class addEventOrganiser extends Fragment {
         departmentSpinner = view.findViewById(R.id.departmentSpinner);
         streamSpinner = view.findViewById(R.id.streamSpinner);
 
+        emailSend="null";
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        getFragment(new ManageEventOrganiser());
+                    }
+                });
+
         mAuth = FirebaseAuth.getInstance();
 
         db = FirebaseFirestore.getInstance();
@@ -104,7 +117,7 @@ public class addEventOrganiser extends Fragment {
 
                 if(validateUserInput()) {
                     if (isNetworkAvailable()) {
-                        user = new User(Status, Role, username, Gender, email, phone, college, password);
+                        organiser = new EventOrganiser(Status, Role, username, Gender, email, phone, college, password,selectedStream,selectedDepartment,emailSend);
                         registerUser(email, password);
                     } else {
                         Toast.makeText(requireActivity(), "Network error", Toast.LENGTH_SHORT).show();
@@ -251,6 +264,27 @@ public class addEventOrganiser extends Fragment {
         });
     }
 
+    private void resetStreamsAndDepartments() {
+        streamSpinner.setAdapter(null);
+        departmentSpinner.setAdapter(null);
+
+        List<String> streams = new ArrayList<>();
+        List<String> departments = new ArrayList<>();
+
+        streams.add("Select Stream");
+        departments.add("Select Department");
+
+        ArrayAdapter<String> streamAdapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_spinner_item, streams);
+        streamAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        streamSpinner.setAdapter(streamAdapter);
+
+        ArrayAdapter<String> departmentAdapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_spinner_item, departments);
+        departmentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        departmentSpinner.setAdapter(departmentAdapter);
+    }
+
     public void registerUser(String EmailId,String Password) {
         progressBar.setVisibility(View.VISIBLE);
         Signup.setEnabled(false);
@@ -264,6 +298,7 @@ public class addEventOrganiser extends Fragment {
                         Signup.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1E3C72")));
                         if (task.isSuccessful()) {
                             sendVerificationEmail();
+                            emailSend="Email Verification";
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
@@ -331,7 +366,7 @@ public class addEventOrganiser extends Fragment {
         if (user != null) {
             if(isNetworkAvailable()) {
                 String uid = user.getUid();
-                EventOrganiser userdata = new EventOrganiser(Status,Role, username, Gender, email, phone, college, password,selectedStream,selectedDepartment);
+                EventOrganiser userdata = new EventOrganiser(Status,Role, username, Gender, email, phone, college, password,selectedStream,selectedDepartment,emailSend);
                 userData.document(uid).set(userdata).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                        getFragment(new ManageEventOrganiser());

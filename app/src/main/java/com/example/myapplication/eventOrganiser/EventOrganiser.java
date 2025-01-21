@@ -2,20 +2,21 @@ package com.example.myapplication.eventOrganiser;
 public class EventOrganiser {
     private String status;
     private String role;
-    private String username;
+    private String name;
     private String gender;
     private String email;
     private String phone;
     private String college;
     private String password;
-    private String stream;      // Add stream field
-    private String department;  // Add department field
+    private String stream;
+    private String department;
+    private String isVerificationEmailsend;
 
-    public EventOrganiser(String status, String role, String username, String gender, String email,
-                          String phone, String college, String password, String stream, String department) {
+    public EventOrganiser(String status, String role, String name, String gender, String email,
+                          String phone, String college, String password, String stream, String department,String isVerificationEmailsend) {
         this.status = status;
         this.role = role;
-        this.username = username;
+        this.name = name;
         this.gender = gender;
         this.email = email;
         this.phone = phone;
@@ -23,14 +24,40 @@ public class EventOrganiser {
         this.password = password;
         this.stream = stream;
         this.department = department;
+        this.isVerificationEmailsend=isVerificationEmailsend;
+    }
+    public EventOrganiser() {
     }
 
-    public String getUsername() {
-        return username;
+    public String getIsVerificationEmailsend() {
+        return isVerificationEmailsend;
+    }
+    public void setIsVerificationEmailsend(String isVerificationEmailsend) {
+        this.isVerificationEmailsend = isVerificationEmailsend;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getGender() {
@@ -87,21 +114,5 @@ public class EventOrganiser {
 
     public void setDepartment(String department) {
         this.department = department;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 }

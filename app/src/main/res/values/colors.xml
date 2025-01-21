@@ -16,5 +16,6 @@
     <color name="spinner_text">#000000</color> <!-- Dark text -->
     <color name="colorAccent">#FF4081</color> <!-- Your app's accent color -->
     <color name="card_background">#F5F5F5</color> <!-- Light background for cards -->
+    <color name="red">#FF0000</color>
 </resources>
 

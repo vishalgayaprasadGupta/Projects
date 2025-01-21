@@ -30,5 +30,10 @@
         <item>BSC</item>
         <item>BA</item>
     </string-array>
+    <string-array name="role_options">
+        <item>Select Role</item>
+        <item>User</item>
+        <item>Event Organiser</item>
+    </string-array>
 
 </resources>

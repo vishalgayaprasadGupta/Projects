@@ -76,7 +76,7 @@ public class InterCollegeEvents extends Fragment {
                             showNoEventDialog();
                         } else {
                             eventAdapter = new EventAdapter(filteredEvents);
-                            eventAdapter.setOnItemClickListener(this::onItemClick); // Re-attach the listener
+                            eventAdapter.setOnItemClickListener(this::onItemClick);
                             recyclerView.setAdapter(eventAdapter);
                         }
                     } else {

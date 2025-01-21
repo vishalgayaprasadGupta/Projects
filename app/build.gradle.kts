@@ -1,6 +1,16 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
+}
+
+val localprops= Properties()
+val file=file("secret.properties")
+if (file.exists()) {
+    localprops.load(file.inputStream())
+} else {
+    println("Properties file not found!")
 }
 
 android {
@@ -13,7 +23,7 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
+        buildConfigField("String", "SENDGRID_API_KEY", localprops.getProperty("SENDGRID_API_KEY"))
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -32,6 +42,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig=true
     }
 }
 
@@ -54,4 +65,8 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.itext)
+    //Email sending
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
+    implementation("com.google.code.gson:gson:2.8.8")
+
 }
