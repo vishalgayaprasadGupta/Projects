@@ -4,6 +4,7 @@ package com.example.myapplication.fragements;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,9 +23,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class CollegeEventActivityDetails extends Fragment {
     View view;
-    private TextView activityName, activityDescription, activityDate, activityVenue,activityRules,registrationFee;
-    private Button registerButton;
+    private TextView activityName, activityDescription, activityDate, activityVenue,activityRules,registrationFee,registrationFull;
+    private Button checkAvailabilityButton, registerButton;
     FirebaseFirestore firestore;
+    String availability;
+    String activityId="";
+    ProgressBar availabilityProgressbar;
 
     public CollegeEventActivityDetails() {
         // Required empty public constructor
@@ -33,23 +38,44 @@ public class CollegeEventActivityDetails extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view= inflater.inflate(R.layout.fragment_event_college_activity_details, container, false);
-        String activityId="";
         activityName = view.findViewById(R.id.activityName);
         activityDescription = view.findViewById(R.id.activityDescription);
         activityDate = view.findViewById(R.id.activityDate);
         activityVenue = view.findViewById(R.id.activityVenue);
         activityRules=view.findViewById(R.id.activityRules);
         registrationFee=view.findViewById(R.id.registrationFee);
-        registerButton = view.findViewById(R.id.checkAvailabilityButton);
+        checkAvailabilityButton = view.findViewById(R.id.checkAvailabilityButton);
+        registerButton = view.findViewById(R.id.registerButton);
+        registrationFull=view.findViewById(R.id.registrationFull);
+        availabilityProgressbar=view.findViewById(R.id.availabilityProgressbar);
+        availabilityProgressbar.setVisibility(View.INVISIBLE);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (getActivity() != null) {
+                            getFragment(new CollegeEvents());
+                        }
+                    }
+                });
 
         firestore = FirebaseFirestore.getInstance();
 
-        // Get the eventId from the bundle
         if (getArguments() != null) {
             activityId = getArguments().getString("activityId");
         }
         Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
         fetchEventDetails(activityId);
+
+        checkAvailabilityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                availabilityProgressbar.setVisibility(View.VISIBLE);
+                checkAvailability(activityId);
+            }
+        });
         return view;
     }
     private void fetchEventDetails(String activityId) {
@@ -91,6 +117,48 @@ public class CollegeEventActivityDetails extends Fragment {
                     getFragment(new CollegeEvents());
                 });
     }
+
+    public void checkAvailability(String activityId){
+        firestore.collection("EventActivities")
+                .document(activityId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Log.d("CollegeEventActivityDetails", "Received activityId 2: " + activityId);
+
+                    if (documentSnapshot.exists()) {
+                        Activity activity = documentSnapshot.toObject(Activity.class);
+                        Log.d("CollegeEventActivityDetails", "Activity Name: " + activity.getName());
+                        Log.d("CollegeEventActivityDetails", "Activity Avaialability: " + activity.getAvailability());
+                        availability=activity.getAvailability().toString();
+                        int Availability=Integer.parseInt(availability);
+                        if(Availability>0){
+                            availabilityProgressbar.setVisibility(View.GONE);
+                            checkAvailabilityButton.setVisibility(View.GONE);
+                            registerButton.setVisibility(View.VISIBLE);
+                        }else{
+                            availabilityProgressbar.setVisibility(View.GONE);
+                            checkAvailabilityButton.setVisibility(View.GONE);
+                            registerButton.setVisibility(View.GONE);
+                            registrationFull.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        availabilityProgressbar.setVisibility(View.GONE);
+                        checkAvailabilityButton.setVisibility(View.VISIBLE);
+                        registerButton.setVisibility(View.GONE);
+                        registrationFull.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "No Event or Activity Found", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    availabilityProgressbar.setVisibility(View.GONE);
+                    checkAvailabilityButton.setVisibility(View.VISIBLE);
+                    registerButton.setVisibility(View.GONE);
+                    registrationFull.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), "Error fetching event details", Toast.LENGTH_SHORT).show();
+                    getFragment(new CollegeEvents()); // Navigate to the CollegeEvents fragment on failure
+                });
+    }
+
     private void showNoEventDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("No Event");
@@ -105,6 +173,7 @@ public class CollegeEventActivityDetails extends Fragment {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
+
     public void getFragment(Fragment fragment) {
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()

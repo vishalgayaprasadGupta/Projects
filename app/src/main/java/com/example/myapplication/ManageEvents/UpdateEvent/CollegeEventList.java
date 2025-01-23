@@ -53,11 +53,10 @@ public class CollegeEventList extends Fragment {
         fetchEvents();
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                // Custom back button logic
                 getFragment(new UpdateEventDetails());
             }
         });

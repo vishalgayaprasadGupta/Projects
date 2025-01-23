@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +29,8 @@ public class UpdatePendingRequest extends Fragment {
     OrganiserRequestApproveEmail organiserApprovalRequestEmail;
     OrganiserRequestRejectEmail organiserRejectionRequestEmail;
     String OrganiserName,OrganiserEmail,adminUID,adminName;
-    ProgressBar progressBar;
+    ProgressBar progressBar,approveProgressbar,rejectProgressbar;
+    Button approveButton, rejectButton;
 
     public UpdatePendingRequest() {
         // Required empty public constructor
@@ -51,6 +53,10 @@ public class UpdatePendingRequest extends Fragment {
         db = FirebaseFirestore.getInstance();
         progressBar=view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
+        approveProgressbar=view.findViewById(R.id.approveProgressbar);
+        approveProgressbar.setVisibility(View.INVISIBLE);
+        rejectProgressbar=view.findViewById(R.id.rejectProgressbar);
+        rejectProgressbar.setVisibility(View.INVISIBLE);
 
          organiserName = view.findViewById(R.id.organiserName);
          organiserGender = view.findViewById(R.id.organiserGender);
@@ -60,8 +66,8 @@ public class UpdatePendingRequest extends Fragment {
          organiserBranch = view.findViewById(R.id.organiserBranch);
          organiserDepartment = view.findViewById(R.id.organiserDepartment);
 
-        MaterialButton approveButton = view.findViewById(R.id.approveButton);
-        MaterialButton rejectButton = view.findViewById(R.id.rejectButton);
+         approveButton = view.findViewById(R.id.approveButton);
+         rejectButton = view.findViewById(R.id.rejectButton);
 
         if (getArguments() != null) {
             email = getArguments().getString("emailId");
@@ -75,10 +81,14 @@ public class UpdatePendingRequest extends Fragment {
         fetchCurrentAdminDetails();
 
         approveButton.setOnClickListener(v -> {
+            approveProgressbar.setVisibility(View.VISIBLE);
+            approveButton.setEnabled(false);
             approveOrganiserRequest();
         });
 
         rejectButton.setOnClickListener(v -> {
+            rejectProgressbar.setVisibility(View.VISIBLE);
+            rejectButton.setEnabled(false);
             rejectOrganiserRequest();
         });
 
@@ -102,18 +112,18 @@ public class UpdatePendingRequest extends Fragment {
                             organiserPhone.setText(documentSnapshot.getString("phone"));
                             organiserBranch.setText(documentSnapshot.getString("stream"));
                             organiserDepartment.setText(documentSnapshot.getString("department"));
-                            progressBar.setVisibility(View.INVISIBLE);
+                            progressBar.setVisibility(View.GONE);
                         } else {
-                            progressBar.setVisibility(View.INVISIBLE);
+                            progressBar.setVisibility(View.GONE);
                             Toast.makeText(getContext(), "User not found!", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(e -> {
-                        progressBar.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Failed to fetch data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         } else{
-            progressBar.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.GONE);
             Toast.makeText(getContext(), "Error fetching organiser details", Toast.LENGTH_SHORT).show();
         }
     }
@@ -132,20 +142,29 @@ public class UpdatePendingRequest extends Fragment {
                             db.collection("User").document(document.getId())
                                     .update("status", "Active")
                                     .addOnSuccessListener(aVoid -> {
+                                        progressBar.setVisibility(View.INVISIBLE);
                                         Toast.makeText(getContext(), "Event organiser Request approved successfully!", Toast.LENGTH_SHORT).show();
                                         OrganiserRequestApproveEmail.sendOrganiserAccountApprovalEmail(OrganiserEmail,OrganiserName,adminUID,adminName);
                                         getFragment(new ManageEventOrganiser());
                                     })
                                     .addOnFailureListener(e -> {
+                                        approveButton.setEnabled(true);
+                                        progressBar.setVisibility(View.INVISIBLE);
                                         Toast.makeText(getContext(), "Failed to approve Event organiser, Try again!: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                         getFragment(new ManageEventOrganiser());
                                     });
                         }
                     })
                     .addOnFailureListener(e -> {
+                        approveButton.setEnabled(true);
+                        progressBar.setVisibility(View.INVISIBLE);
                         Toast.makeText(getContext(), "Error finding user: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         getFragment(new ManageEventOrganiser());
                     });
+        }else {
+            approveButton.setEnabled(true);
+            approveProgressbar.setVisibility(View.INVISIBLE);
+            Toast.makeText(getContext(), "Error fetching organiser details", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -160,20 +179,29 @@ public class UpdatePendingRequest extends Fragment {
                             db.collection("User").document(document.getId())
                                     .update("status", "User")
                                     .addOnSuccessListener(aVoid -> {
+                                        progressBar.setVisibility(View.INVISIBLE);
                                         Toast.makeText(getContext(), "Event organsier request rejected successfully!", Toast.LENGTH_SHORT).show();
                                         OrganiserRequestRejectEmail.sendOrganiserAccountApprovalEmail(OrganiserEmail,OrganiserName,adminUID,adminName);
                                         getFragment(new ManageEventOrganiser());
                                     })
                                     .addOnFailureListener(e -> {
+                                        rejectButton.setEnabled(true);
+                                        progressBar.setVisibility(View.INVISIBLE);
                                         Toast.makeText(getContext(), "Failed to reject Event organsier: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                         getFragment(new ManageEventOrganiser());
                                     });
                         }
                     })
                     .addOnFailureListener(e -> {
+                        rejectButton.setEnabled(true);
+                        progressBar.setVisibility(View.INVISIBLE);
                         Toast.makeText(getContext(), "Error finding user: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         getFragment(new ManageEventOrganiser());
                     });
+        }else{
+            rejectButton.setEnabled(true);
+            rejectProgressbar.setVisibility(View.INVISIBLE);
+            Toast.makeText(getContext(), "Error fetching organiser details", Toast.LENGTH_SHORT).show();
         }
     }
 

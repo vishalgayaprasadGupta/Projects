@@ -9,17 +9,19 @@
 
     <!-- ScrollView to allow scrolling of event details -->
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
-        app:layout_constraintBottom_toTopOf="@id/checkAvailabilityButton"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/buttonLayout"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="16dp">
 
         <!-- A LinearLayout to hold all the CardViews -->
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <!-- Event Name Card -->
             <androidx.cardview.widget.CardView
@@ -192,6 +194,7 @@
                         android:textSize="16sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/registrationfee"
                 android:layout_width="match_parent"
@@ -229,18 +232,56 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Check Availability Button -->
-    <Button
-        android:id="@+id/checkAvailabilityButton"
-        android:layout_width="0dp"
+    <!-- Buttons layout -->
+    <LinearLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Check Availability"
-        android:textColor="@android:color/white"
-        android:textSize="15sp"
-        android:backgroundTint="@color/teal_700"
-        android:padding="10dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scrollView2"
+        android:gravity="center">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/checkAvailabilityButton"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/teal_700"
+            android:padding="10dp"
+            android:text="Check Availability"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
+            <ProgressBar
+                android:id="@+id/availabilityProgressbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/registerButton"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/teal_700"
+            android:padding="10dp"
+            android:text="Register"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/registrationFull"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Registrations full!!"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:textColor="@color/red"
+            android:textSize="25sp" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
