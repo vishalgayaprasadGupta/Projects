@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -11,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.TextView;
 
 import com.example.myapplication.ManageRole.fetchUserDetails;
@@ -24,8 +27,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 
 public class AdminHome extends Fragment {
-
-
+    private CardView ManageUser,ManageEvents,ManageRole,ManageOrganiser,EventReport,TrackEventRegistration;
     public AdminHome() {
         // Required empty public constructor
     }
@@ -36,6 +38,21 @@ public class AdminHome extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_admin_home, container, false);
+
+        ManageUser=view.findViewById(R.id.ManageUser);
+        ManageEvents=view.findViewById(R.id.Managevents);
+        ManageRole=view.findViewById(R.id.ManageRole);
+        ManageOrganiser=view.findViewById(R.id.ManageOrganiser);
+        EventReport=view.findViewById(R.id.EventReport);
+        TrackEventRegistration=view.findViewById(R.id.TrackEventRegistration);
+
+        //start animation
+        animateCardView(ManageUser,0);
+        animateCardView(ManageEvents,500);
+        animateCardView(ManageRole,1000);
+        animateCardView(ManageOrganiser,1500);
+        animateCardView(EventReport,2000);
+        animateCardView(TrackEventRegistration,2500);
 
         userCount=view.findViewById(R.id.UserCount);
         activeCount=view.findViewById(R.id.activeCount);
@@ -61,7 +78,7 @@ public class AdminHome extends Fragment {
             }
         });
 
-        manageEvents=view.findViewById(R.id.ManageEvents);
+        manageEvents=view.findViewById(R.id.manageEvents);
         manageEvents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,6 +102,34 @@ public class AdminHome extends Fragment {
         });
         return view;
     }
+
+    private void animateCardView(final CardView cardView, long delay) {
+        cardView.setVisibility(View.INVISIBLE);
+
+        AlphaAnimation fadeIn = new AlphaAnimation(0f, 1f);
+        fadeIn.setDuration(1000);
+        fadeIn.setStartOffset(delay);
+
+        fadeIn.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                cardView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // Optional: You can add additional behavior after the animation ends
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // Not needed in this case
+            }
+        });
+
+        cardView.startAnimation(fadeIn);
+    }
+
 
     public void onBackPressButton() {
             AlertDialog dialog = new AlertDialog.Builder(getContext())

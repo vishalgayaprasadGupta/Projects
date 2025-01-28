@@ -41,7 +41,7 @@ public class SeminarActivtiyAdapater extends RecyclerView.Adapter<SeminarActivti
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onItemClick(activity.getEventId());
+                listener.onItemClick(activity.getActivityId());
             }
         });
     }
@@ -66,6 +66,6 @@ public class SeminarActivtiyAdapater extends RecyclerView.Adapter<SeminarActivti
     }
 
     public interface OnItemClickListener {
-        void onItemClick(String eventId);
+        void onItemClick(String activityId);
     }
 }

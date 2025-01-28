@@ -5,9 +5,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.R;
@@ -20,6 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class EventOrganiserHome extends Fragment {
 
     private TextView branchName, departmentName;
+    CardView manageEvents, cancelEvent, eventRegistrations;
     private FirebaseFirestore firestore;
     private FirebaseAuth auth;
 
@@ -32,6 +36,14 @@ public class EventOrganiserHome extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_event_organiser_home_, container, false);
 
+        manageEvents = view.findViewById(R.id.ManageEvents);
+        cancelEvent = view.findViewById(R.id.CancelEvent);
+        eventRegistrations = view.findViewById(R.id.EventRegistrations);
+
+        animateCardView(manageEvents, 500);
+        animateCardView(cancelEvent, 1000);
+        animateCardView(eventRegistrations, 1500);
+
         firestore = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
 
@@ -43,6 +55,32 @@ public class EventOrganiserHome extends Fragment {
         return view;
     }
 
+    private void animateCardView(final CardView cardView, long delay) {
+        cardView.setVisibility(View.INVISIBLE);
+
+        AlphaAnimation fadeIn = new AlphaAnimation(0f, 1f);
+        fadeIn.setDuration(1000);
+        fadeIn.setStartOffset(delay);
+
+        fadeIn.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                cardView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // Optional: You can add additional behavior after the animation ends
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // Not needed in this case
+            }
+        });
+
+        cardView.startAnimation(fadeIn);
+    }
     private void fetchUserDetails() {
         String userId = auth.getCurrentUser().getUid();
 

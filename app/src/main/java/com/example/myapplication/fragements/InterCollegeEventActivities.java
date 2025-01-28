@@ -3,6 +3,7 @@ package com.example.myapplication.fragements;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,6 +44,17 @@ public class InterCollegeEventActivities extends Fragment {
             eventId = getArguments().getString("eventId");
             Log.d("CollegeEventActivities", "Received eventId: " + eventId);
         }
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (getActivity() != null) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }
+                    }
+                });
 
         activityRecyclerView = view.findViewById(R.id.activityRecyclerView);
         activityRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -85,6 +97,7 @@ public class InterCollegeEventActivities extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
         AlertDialog dialog = builder.create();

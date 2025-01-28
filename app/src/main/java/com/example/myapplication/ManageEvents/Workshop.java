@@ -2,14 +2,14 @@ package com.example.myapplication.ManageEvents;
 
 public class Workshop {
     String workshopTitle,workshopDescription,workshopDate;
-    String workshopVenue,maxParticipants,registrationFees,specialRequirements,activityId,eventId,eventType;
+    String workshopVenue,availability,registrationFees,specialRequirements,activityId,eventId,eventType;
 
-    public Workshop(String workshopTitle, String workshopDescription, String workshopDate, String workshopVenue, String maxParticipants, String registrationFees, String specialRequirements,String eventId,String eventType) {
+    public Workshop(String workshopTitle, String workshopDescription, String workshopDate, String workshopVenue, String availability, String registrationFees, String specialRequirements,String eventId,String eventType) {
         this.workshopTitle = workshopTitle;
         this.workshopDescription = workshopDescription;
         this.workshopDate = workshopDate;
         this.workshopVenue = workshopVenue;
-        this.maxParticipants = maxParticipants;
+        this.availability = availability;
         this.registrationFees = registrationFees;
         this.specialRequirements = specialRequirements;
         this.eventId=eventId;
@@ -77,12 +77,12 @@ public class Workshop {
         this.workshopVenue = workshopVenue;
     }
 
-    public String getMaxParticipants() {
-        return maxParticipants;
+    public String getavailability() {
+        return availability;
     }
 
-    public void setMaxParticipants(String maxParticipants) {
-        this.maxParticipants = maxParticipants;
+    public void setavailability(String availability) {
+        this.availability = availability;
     }
 
     public String getRegistrationFees() {

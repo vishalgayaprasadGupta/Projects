@@ -20,6 +20,7 @@
 
             <!-- Manage Users Card -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/ViewEvents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -56,6 +57,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/AddCollegeEvents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -93,6 +95,7 @@
 
             <!-- Manage Event Organizers Card -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/UpdateEvents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -127,7 +130,9 @@
                         android:gravity="center" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+
             <androidx.cardview.widget.CardView
+                android:id="@+id/DeleteEvents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"

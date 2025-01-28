@@ -3,12 +3,15 @@ package com.example.myapplication.ManageEvents.UpdateEvent;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +31,7 @@ public class UpdatePage extends Fragment {
     View view;
     String eventType,eventId,eventName;
     FirebaseFirestore db;
+    CardView AddEventActivtiy,UpdateCollegeEvent,UpdateIntercollegeEvent,UpdateEventDetails,UpdateEventsActivity,DeleteEventActivities,DeleteEvent;
     TextView addEventActivity,updateEventDetails,updateEventsActivities,deleteEventActivities,deleteEvent,EventName;
     public UpdatePage() {
         // Required empty public constructor
@@ -35,8 +39,23 @@ public class UpdatePage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view= inflater.inflate(R.layout.fragment_update_page, container, false);
+
+        AddEventActivtiy=view.findViewById(R.id.AddEventActivtiy);
+        UpdateCollegeEvent=view.findViewById(R.id.UpdateCollegeEvent);
+        UpdateIntercollegeEvent=view.findViewById(R.id.UpdateIntercollegeEvent);
+        UpdateEventDetails=view.findViewById(R.id.UpdateEventDetails);
+        UpdateEventsActivity=view.findViewById(R.id.UpdateEventsActivity);
+        DeleteEventActivities=view.findViewById(R.id.DeleteEventActivities);
+        DeleteEvent=view.findViewById(R.id.DeleteEvent);
+
+        animateCardView(AddEventActivtiy, 0);
+        animateCardView(UpdateCollegeEvent, 500);
+        animateCardView(UpdateIntercollegeEvent, 1000);
+        animateCardView(UpdateEventDetails, 1500);
+        animateCardView(UpdateEventsActivity, 2000);
+        animateCardView(DeleteEventActivities, 2500);
+        animateCardView(DeleteEvent, 3000);
 
         if(getArguments()!=null){
             eventId=getArguments().getString("eventId");
@@ -192,6 +211,32 @@ public class UpdatePage extends Fragment {
                 });
     }
 
+    private void animateCardView(final CardView cardView, long delay) {
+        cardView.setVisibility(View.INVISIBLE);
+
+        AlphaAnimation fadeIn = new AlphaAnimation(0f, 1f);
+        fadeIn.setDuration(1000);
+        fadeIn.setStartOffset(delay);
+
+        fadeIn.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                cardView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // Optional: You can add additional behavior after the animation ends
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // Not needed in this case
+            }
+        });
+
+        cardView.startAnimation(fadeIn);
+    }
 
     public void getFragment(Fragment fragment){
         getActivity().getSupportFragmentManager()

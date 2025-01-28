@@ -1,8 +1,11 @@
 package com.example.myapplication.fragements;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -19,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class UserProfile extends Fragment {
     View view;
     FirebaseAuth mAuth;
+    CardView PersonalDetails,UpdateProfile,ChangePassword,SignOut;
     TextView userName,userEmail,logout;
     public UserProfile() {
         // Required empty public constructor
@@ -27,6 +31,16 @@ public class UserProfile extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view= inflater.inflate(R.layout.fragment_user_profile, container, false);
+
+        PersonalDetails=view.findViewById(R.id.PersonalDetails);
+        UpdateProfile=view.findViewById(R.id.UpdateProfile);
+        ChangePassword=view.findViewById(R.id.ChangePassword);
+        SignOut=view.findViewById(R.id.SignOut);
+
+        applyFadeInAnimation(PersonalDetails);
+        applyFadeInAnimation(UpdateProfile);
+        applyFadeInAnimation(ChangePassword);
+        applyFadeInAnimation(SignOut);
 
         userName=view.findViewById(R.id.userName);
         userEmail=view.findViewById(R.id.userEmail);
@@ -44,6 +58,15 @@ public class UserProfile extends Fragment {
         });
 
         return view;
+    }
+
+    private void applyFadeInAnimation(View view) {
+        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f);
+        fadeIn.setDuration(1000);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.play(fadeIn);
+        animatorSet.start();
     }
 
     public void setProfile(){

@@ -79,10 +79,10 @@ public class ActivateUser extends Fragment {
                             activateUser(uid);
                         })
                         .setNegativeButton("No", (dialog1, which) -> dialog1.dismiss()) // Dismiss dialog
-                        .setCancelable(true) // Optional: Allow dismissing with the back button
+                        .setCancelable(true)
                         .create();
 
-                dialog.setCanceledOnTouchOutside(false); // Allow dismissing by touching outside
+                dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
             });
         }else{
@@ -104,31 +104,39 @@ public class ActivateUser extends Fragment {
                 String Role=documentSnapshot.getString("role");
                 String Status=documentSnapshot.getString("status");
 
-                if ("Active".equals(Status)) {
-                    activate.setEnabled(false);
-                    activate.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#808080")));
-                    Toast.makeText(getActivity(), "User is already Active!", Toast.LENGTH_LONG).show();
+                if("User".equals(Role)) {
+                    if ("Active".equals(Status)) {
+                        activate.setEnabled(false);
+                        activate.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#808080")));
+                        Toast.makeText(getActivity(), "User is already Active!", Toast.LENGTH_LONG).show();
+                        requireActivity().getSupportFragmentManager().popBackStack();
+                        return;
+                    }
+
+
+                    if (Gender != null) {
+                        switch (Gender) {
+                            case "Male":
+                                radioGroup.check(R.id.radioMale);
+                                break;
+                            case "Female":
+                                radioGroup.check(R.id.radioFemale);
+                            default:
+                                radioGroup.clearCheck();
+                                Toast.makeText(getActivity(), "Select Your gender", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+
+                    name.setText(Name);
+                    email.setText(Email);
+                    contact.setText(Contact);
+                    college.setText(College);
+                }else{
+                    Toast.makeText(getActivity(), "Please enter valid user email", Toast.LENGTH_LONG).show();
                     requireActivity().getSupportFragmentManager().popBackStack();
                     return;
                 }
-
-                if(Gender!=null) {
-                    switch (Gender) {
-                        case "Male":
-                            radioGroup.check(R.id.radioMale);
-                            break;
-                        case "Female":
-                            radioGroup.check(R.id.radioFemale);
-                        default:
-                            radioGroup.clearCheck();
-                            Toast.makeText(getActivity()   , "Select Your gender", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                name.setText(Name);
-                email.setText(Email);
-                contact.setText(Contact);
-                college.setText(College);
             } else {
                 Toast.makeText(getActivity(), "No data found!", Toast.LENGTH_SHORT).show();
             }

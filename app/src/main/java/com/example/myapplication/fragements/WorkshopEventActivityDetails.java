@@ -4,6 +4,7 @@ package com.example.myapplication.fragements;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,8 +25,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class WorkshopEventActivityDetails extends Fragment {
     View view;
-    private TextView activityTitle, activityDescription, activityDate, activityVenue,requirments,registrationFee;
-    private Button registerButton;
+    private TextView activityTitle, activityDescription, activityDate, activityVenue,requirments,registrationFee,registrationFull;
+    private Button registerButton,checkAvailabilityButton;
+    ProgressBar dataloadProgressbar,availabilityProgressbar;
+    String activityId="",availability;
     FirebaseFirestore firestore;
 
     public WorkshopEventActivityDetails() {
@@ -34,14 +38,29 @@ public class WorkshopEventActivityDetails extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view= inflater.inflate(R.layout.fragment_workshop_event_activity_details, container, false);
-        String activityId="";
         activityTitle = view.findViewById(R.id.workshopTitle);
         activityDescription = view.findViewById(R.id.workshopDescription);
         activityDate = view.findViewById(R.id.workshopDate);
         activityVenue = view.findViewById(R.id.workshopVenue);
-        requirments=view.findViewById(R.id.specialRequirements);
-        registrationFee=view.findViewById(R.id.registrationFees);
-        registerButton = view.findViewById(R.id.checkAvailabilityButton);
+        requirments=view.findViewById(R.id.workshopRequirements);
+        registrationFee=view.findViewById(R.id.workshopFees);
+        registerButton = view.findViewById(R.id.registerButton);
+        dataloadProgressbar = view.findViewById(R.id.dataloadProgressbar);
+        availabilityProgressbar = view.findViewById(R.id.checkAvailabilityProgressBar);
+        dataloadProgressbar.setVisibility(View.GONE);
+        availabilityProgressbar.setVisibility(View.GONE);
+        checkAvailabilityButton = view.findViewById(R.id.checkAvailabilityButton);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (getActivity() != null) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }
+                    }
+                });
 
         firestore = FirebaseFirestore.getInstance();
 
@@ -49,7 +68,17 @@ public class WorkshopEventActivityDetails extends Fragment {
             activityId = getArguments().getString("activityId");
         }
         Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
+        dataloadProgressbar.setVisibility(View.VISIBLE);
         fetchEventDetails(activityId);
+
+        checkAvailabilityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                availabilityProgressbar.setVisibility(View.VISIBLE);
+                checkAvailability(activityId);
+            }
+        });
+
         return view;
     }
     private void fetchEventDetails(String activityId) {
@@ -81,6 +110,7 @@ public class WorkshopEventActivityDetails extends Fragment {
                             activityVenue.setText(activity.getWorkshopVenue());
                             requirments.setText(activity.getSpecialRequirements());
                             registrationFee.setText(activity.getRegistrationFees());
+                            dataloadProgressbar.setVisibility(View.GONE);
                         } else {
                             showNoEventDialog();
                         }
@@ -89,10 +119,53 @@ public class WorkshopEventActivityDetails extends Fragment {
                     }
                 })
                 .addOnFailureListener(e -> {
+                    dataloadProgressbar.setVisibility(View.GONE);
                     Toast.makeText(getContext(), "Error fetching event details", Toast.LENGTH_SHORT).show();
                     getFragment(new WorkshopsEvents());
                 });
     }
+
+    public void checkAvailability(String activityId){
+        firestore.collection("EventActivities")
+                .document(activityId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Log.d("CollegeEventActivityDetails", "Received activityId 2: " + activityId);
+
+                    if (documentSnapshot.exists()) {
+                        Workshop activity = documentSnapshot.toObject(Workshop.class);
+                        Log.d("CollegeEventActivityDetails", "Activity Name: " + activity.getWorkshopTitle());
+                        Log.d("CollegeEventActivityDetails", "Activity Avaialability: " + activity.getavailability());
+                        availability=activity.getavailability().toString();
+                        int Availability=Integer.parseInt(availability);
+                        if(Availability>0){
+                            availabilityProgressbar.setVisibility(View.GONE);
+                            checkAvailabilityButton.setVisibility(View.GONE);
+                            registerButton.setVisibility(View.VISIBLE);
+                        }else{
+                            availabilityProgressbar.setVisibility(View.GONE);
+                            checkAvailabilityButton.setVisibility(View.GONE);
+                            registerButton.setVisibility(View.GONE);
+                            registrationFull.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        availabilityProgressbar.setVisibility(View.GONE);
+                        checkAvailabilityButton.setVisibility(View.VISIBLE);
+                        registerButton.setVisibility(View.GONE);
+                        registrationFull.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "No Event or Activity Found", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    availabilityProgressbar.setVisibility(View.GONE);
+                    checkAvailabilityButton.setVisibility(View.VISIBLE);
+                    registerButton.setVisibility(View.GONE);
+                    registrationFull.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), "Error fetching event details", Toast.LENGTH_SHORT).show();
+                    getFragment(new CollegeEvents());
+                });
+    }
+
     private void showNoEventDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("No Event");
@@ -101,6 +174,7 @@ public class WorkshopEventActivityDetails extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                getFragment(new WorkshopsEvents());
             }
         });
         AlertDialog dialog = builder.create();

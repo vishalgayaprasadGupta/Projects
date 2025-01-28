@@ -43,7 +43,7 @@ public class InterCollegeEvents extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         eventAdapter = new EventAdapter(new ArrayList<>());
-        eventAdapter.setOnItemClickListener(this::onItemClick); // Set the listener
+        eventAdapter.setOnItemClickListener(this::onItemClick);
         recyclerView.setAdapter(eventAdapter);
 
         fetchEvents();

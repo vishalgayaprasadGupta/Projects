@@ -4,6 +4,7 @@ package com.example.myapplication.fragements;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,9 +25,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SeminarEventActivityDetails extends Fragment {
     View view;
-    private TextView activityTitle, activityDescription, activityDate, activityVenue,activityDuration,activitySpeakerName,activitySpeakerBio,activityAgenda,requirments,registrationFee;
-    private Button registerButton;
+    private TextView activityTitle, activityDescription, activityDate, activityVenue,activityDuration,activitySpeakerName,activitySpeakerBio,activityAgenda,requirments,registrationFee,registrationFull;
+    private Button registerButton,checkAvailabilityButton;
     FirebaseFirestore firestore;
+    ProgressBar checkAvailabilityProgressbar,dataloadProgressbar;
+    String activityId="",availability;
 
     public SeminarEventActivityDetails() {
         // Required empty public constructor
@@ -34,7 +38,7 @@ public class SeminarEventActivityDetails extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view= inflater.inflate(R.layout.fragment_seminar_event_activity_details, container, false);
-        String activityId="";
+
         activityTitle = view.findViewById(R.id.seminarTitle);
         activityDescription = view.findViewById(R.id.seminarDescription);
         activityDate = view.findViewById(R.id.seminarDate);
@@ -44,7 +48,25 @@ public class SeminarEventActivityDetails extends Fragment {
         activitySpeakerBio = view.findViewById(R.id.speakerBio);
         activityAgenda = view.findViewById(R.id.seminarAgenda);
         requirments = view.findViewById(R.id.specialRequirements);
-        registrationFee = view.findViewById(R.id.registrationFees);
+        registrationFee = view.findViewById(R.id.seminarFee);
+        checkAvailabilityButton = view.findViewById(R.id.checkAvailabilityButton);
+        registerButton = view.findViewById(R.id.registerButton);
+        registrationFull=view.findViewById(R.id.registrationFull);
+        checkAvailabilityProgressbar=view.findViewById(R.id.checkAvailabilityProgressBar);
+        checkAvailabilityProgressbar.setVisibility(View.GONE);
+        dataloadProgressbar=view.findViewById(R.id.dataloadProgressbar);
+        dataloadProgressbar.setVisibility(View.GONE);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (getActivity() != null) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }
+                    }
+                });
 
         firestore = FirebaseFirestore.getInstance();
 
@@ -52,7 +74,17 @@ public class SeminarEventActivityDetails extends Fragment {
             activityId = getArguments().getString("activityId");
         }
         Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
+        dataloadProgressbar.setVisibility(View.VISIBLE);
         fetchEventDetails(activityId);
+
+        checkAvailabilityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkAvailabilityProgressbar.setVisibility(View.VISIBLE);
+                checkAvailability(activityId);
+            }
+        });
+
         return view;
     }
     private void fetchEventDetails(String activityId) {
@@ -73,9 +105,11 @@ public class SeminarEventActivityDetails extends Fragment {
                     Log.d("CollegeEventActivityDetails", "Received activityId 2: " + activityId);
 
                     if (documentSnapshot.exists()) {
+                        String title = documentSnapshot.getString("seminarTitle");
+                        String description = documentSnapshot.getString("seminarDescription");
+                        Log.d("SeminarEventActivityDetails", "Title: " + title);
+                        Log.d("SeminarEventActivityDetails", "Description: " + description);
                         Seminar activity = documentSnapshot.toObject(Seminar.class);
-                        Log.d("CollegeEventActivityDetails", "Activity Name: " + activity.getSeminarTitle());
-                        Log.d("CollegeEventActivityDetails", "Activity Description: " + activity.getSeminarDescription());
 
                         if (activity != null) {
                             activityTitle.setText(activity.getSeminarTitle());
@@ -86,8 +120,13 @@ public class SeminarEventActivityDetails extends Fragment {
                             activitySpeakerName.setText(activity.getSpeakerName());
                             activitySpeakerBio.setText(activity.getSpeakerBio());
                             activityAgenda.setText(activity.getSeminarAgenda());
-                            requirments.setText(activity.getSpecialRequirements());
+                            if(activity.getSpecialRequirements()==null){
+                                requirments.setText("N/A");
+                            }else{
+                                requirments.setText(activity.getSpecialRequirements());
+                            }
                             registrationFee.setText(activity.getRegistrationFeeSeminar());
+                            dataloadProgressbar.setVisibility(View.GONE);
 
                         } else {
                             showNoEventDialog();
@@ -97,10 +136,53 @@ public class SeminarEventActivityDetails extends Fragment {
                     }
                 })
                 .addOnFailureListener(e -> {
+                    dataloadProgressbar.setVisibility(View.GONE);
                     Toast.makeText(getContext(), "Error fetching event details", Toast.LENGTH_SHORT).show();
                     getFragment(new WorkshopsEvents());
                 });
     }
+
+    public void checkAvailability(String activityId){
+        firestore.collection("EventActivities")
+                .document(activityId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Log.d("CollegeEventActivityDetails", "Received activityId 2: " + activityId);
+
+                    if (documentSnapshot.exists()) {
+                        Seminar activity = documentSnapshot.toObject(Seminar.class);
+                        Log.d("CollegeEventActivityDetails", "Activity Name: " + activity.getSeminarTitle());
+                        Log.d("CollegeEventActivityDetails", "Activity Avaialability: " + activity.getAvailability());
+                        availability=activity.getAvailability().toString();
+                        int Availability=Integer.parseInt(availability);
+                        if(Availability>0){
+                            checkAvailabilityProgressbar.setVisibility(View.GONE);
+                            checkAvailabilityButton.setVisibility(View.GONE);
+                            registerButton.setVisibility(View.VISIBLE);
+                        }else{
+                            checkAvailabilityProgressbar.setVisibility(View.GONE);
+                            checkAvailabilityButton.setVisibility(View.GONE);
+                            registerButton.setVisibility(View.GONE);
+                            registrationFull.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        checkAvailabilityProgressbar.setVisibility(View.GONE);
+                        checkAvailabilityButton.setVisibility(View.VISIBLE);
+                        registerButton.setVisibility(View.GONE);
+                        registrationFull.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "No Event or Activity Found", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    checkAvailabilityProgressbar.setVisibility(View.GONE);
+                    checkAvailabilityButton.setVisibility(View.VISIBLE);
+                    registerButton.setVisibility(View.GONE);
+                    registrationFull.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), "Error fetching event details", Toast.LENGTH_SHORT).show();
+                    getFragment(new CollegeEvents()); // Navigate to the CollegeEvents fragment on failure
+                });
+    }
+
     private void showNoEventDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("No Event");
@@ -109,6 +191,7 @@ public class SeminarEventActivityDetails extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                getFragment(new SeminarsEvent());
             }
         });
         AlertDialog dialog = builder.create();

@@ -70,8 +70,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Option for Details -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/PersonalDetails"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
@@ -109,8 +109,8 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- Additional Options Section -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/UpdateProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
@@ -149,6 +149,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/ChangePassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
@@ -187,6 +188,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/SignOut"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"

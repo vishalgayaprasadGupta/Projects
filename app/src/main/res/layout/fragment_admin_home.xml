@@ -91,6 +91,7 @@
 
             <!-- Manage Users Card -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/ManageUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -127,6 +128,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/Managevents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -152,7 +154,7 @@
                         android:gravity="center_vertical" />
 
                     <TextView
-                        android:id="@+id/ManageEvents"
+                        android:id="@+id/manageEvents"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="➔"
@@ -164,6 +166,7 @@
 
             <!-- Manage Event Organizers Card -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/ManageRole"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -199,6 +202,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
             <androidx.cardview.widget.CardView
+                android:id="@+id/ManageOrganiser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -234,6 +238,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
             <androidx.cardview.widget.CardView
+                android:id="@+id/EventReport"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -269,6 +274,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/TrackEventRegistration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"

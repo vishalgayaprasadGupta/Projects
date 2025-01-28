@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -15,6 +16,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,10 +44,23 @@ public class manageUser extends Fragment {
         // Required empty public constructor
     }
     TextView addUser,updateUser,deactivateUser,activate,export;
+    CardView AddUser,UpdateUser,DeactivateUser,Activate,Export;
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_manage_user, container, false);
+
+        AddUser=view.findViewById(R.id.AddUser);
+        UpdateUser=view.findViewById(R.id.UpdateUser);
+        DeactivateUser=view.findViewById(R.id.DeactivateUser);
+        Activate=view.findViewById(R.id.ActivateUser);
+        Export=view.findViewById(R.id.Export);
+
+        animateCardView(AddUser,0);
+        animateCardView(UpdateUser,300);
+        animateCardView(DeactivateUser,600);
+        animateCardView(Activate,900);
+        animateCardView(Export,1200);
 
         addUser=view.findViewById(R.id.addUser);
         updateUser=view.findViewById(R.id.updateUser);
@@ -53,7 +69,7 @@ public class manageUser extends Fragment {
         export=view.findViewById(R.id.export);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
@@ -94,6 +110,33 @@ public class manageUser extends Fragment {
             }
         });
         return view;
+    }
+
+    private void animateCardView(final CardView cardView, long delay) {
+        cardView.setVisibility(View.INVISIBLE);
+
+        AlphaAnimation fadeIn = new AlphaAnimation(0f, 1f);
+        fadeIn.setDuration(1000);
+        fadeIn.setStartOffset(delay);
+
+        fadeIn.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                cardView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // Optional: You can add additional behavior after the animation ends
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // Not needed in this case
+            }
+        });
+
+        cardView.startAnimation(fadeIn);
     }
 
     private void showDownloadDialog() {

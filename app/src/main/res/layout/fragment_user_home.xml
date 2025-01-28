@@ -21,6 +21,7 @@
 
     <!-- Event Block 1 - College Events -->
     <androidx.cardview.widget.CardView
+        android:id="@+id/collegeEventsCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -57,6 +58,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/interCollegeEventCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -94,6 +96,7 @@
 
     <!-- Manage Event Organizers Card -->
     <androidx.cardview.widget.CardView
+        android:id="@+id/workshopEventCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -128,7 +131,9 @@
                 android:gravity="center" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
     <androidx.cardview.widget.CardView
+        android:id="@+id/seminarEventCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

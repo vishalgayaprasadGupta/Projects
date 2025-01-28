@@ -9,13 +9,16 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class NetworkChangeReceiver extends BroadcastReceiver {
-    private static final int DELAY_MS = 2000;
+    private static final int DELAY_MS = 8000;
+    private static final int SLOW_CONNECTION_THRESHOLD_MS = 8000;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // Adding a delay to handle connection fluctuations
+
         Handler handler = new Handler();
         handler.postDelayed(() -> checkNetworkConnection(context), DELAY_MS);
     }
@@ -25,18 +28,23 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
         if (activeNetworkInfo == null || !activeNetworkInfo.isConnected()) {
-            Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(context, NoInternetConnection.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
+            showNoInternetScreen(context);
         } else {
-            if (!isInternetAvailable()) {
-                Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(context, NoInternetConnection.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-            }
+            new Thread(() -> {
+                if (!isInternetAvailable()) {
+                    new Handler(context.getMainLooper()).post(() -> showNoInternetScreen(context));
+                } else if (isInternetSlow()) {
+                    new Handler(context.getMainLooper()).post(() -> showNoInternetScreen(context));
+                }
+            }).start();
         }
+    }
+
+    private void showNoInternetScreen(Context context) {
+        Toast.makeText(context, "No internet or slow connection", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(context, NoInternetConnection.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     private boolean isInternetAvailable() {
@@ -48,5 +56,23 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private boolean isInternetSlow() {
+        try {
+            long startTime = System.currentTimeMillis();
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://www.google.com").openConnection();
+            connection.setConnectTimeout(8000);
+            connection.connect();
+            long endTime = System.currentTimeMillis();
+
+            long responseTime = endTime - startTime;
+            connection.disconnect();
+
+            return responseTime > SLOW_CONNECTION_THRESHOLD_MS;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 }

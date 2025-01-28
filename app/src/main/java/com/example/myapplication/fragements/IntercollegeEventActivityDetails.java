@@ -4,6 +4,7 @@ package com.example.myapplication.fragements;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,9 +24,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class IntercollegeEventActivityDetails extends Fragment {
     View view;
-    private TextView activityName, activityDescription, activityDate, activityVenue,activityRules,registrationFee;
-    private Button registerButton;
+    private TextView activityName, activityDescription, activityDate, activityVenue,activityRules,registrationFee,registrationFull;
+    private Button registerButton,checkAvailabilityButton;
     FirebaseFirestore firestore;
+    String availability;
+    String activityId="";
+    ProgressBar checkAvailabilityProgressbar,dataLoadProgressbar;
 
     public IntercollegeEventActivityDetails() {
         // Required empty public constructor
@@ -33,23 +38,102 @@ public class IntercollegeEventActivityDetails extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view= inflater.inflate(R.layout.fragment_event_college_activity_details, container, false);
-        String activityId="";
         activityName = view.findViewById(R.id.activityName);
         activityDescription = view.findViewById(R.id.activityDescription);
-        activityDate = view.findViewById(R.id.activityDate);
+        activityDate = view.findViewById(R.id.activitySchedule);
         activityVenue = view.findViewById(R.id.activityVenue);
         activityRules=view.findViewById(R.id.activityRules);
-        registrationFee=view.findViewById(R.id.registrationFee);
-        registerButton = view.findViewById(R.id.checkAvailabilityButton);
+        registrationFee=view.findViewById(R.id.activityFee);
+        registerButton = view.findViewById(R.id.registerButton);
+        checkAvailabilityButton = view.findViewById(R.id.checkAvailabilityButton);
+        registrationFull=view.findViewById(R.id.registrationFull);
+        checkAvailabilityProgressbar=view.findViewById(R.id.checkAvailabilityProgressBar);
+        registerButton.setVisibility(View.GONE);
+        registrationFull.setVisibility(View.GONE);
+        checkAvailabilityProgressbar.setVisibility(View.GONE);
+        dataLoadProgressbar=view.findViewById(R.id.dataloadProgressbar);
+        dataLoadProgressbar.setVisibility(View.GONE);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (getActivity() != null) {
+                            getFragment(new InterCollegeEvents());
+                        }
+                    }
+                });
 
         firestore = FirebaseFirestore.getInstance();
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (getActivity() != null) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }
+                    }
+                });
+
         if (getArguments() != null) {
-            activityId = getArguments().getString("activityId"); // Retrieve the activityId passed from the previous fragment
+            activityId = getArguments().getString("activityId");
         }
         Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
+        dataLoadProgressbar.setVisibility(View.VISIBLE);
         fetchEventDetails(activityId);
+
+        checkAvailabilityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkAvailabilityProgressbar.setVisibility(View.VISIBLE);
+                checkAvailability(activityId);
+            }
+        });
         return view;
+    }
+
+    public void checkAvailability(String activityId){
+        firestore.collection("EventActivities")
+                .document(activityId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Log.d("CollegeEventActivityDetails", "Received activityId 2: " + activityId);
+
+                    if (documentSnapshot.exists()) {
+                        Activity activity = documentSnapshot.toObject(Activity.class);
+                        Log.d("CollegeEventActivityDetails", "Activity Name: " + activity.getName());
+                        Log.d("CollegeEventActivityDetails", "Activity Avaialability: " + activity.getAvailability());
+                        availability=activity.getAvailability().toString();
+                        int Availability=Integer.parseInt(availability);
+                        if(Availability>0){
+                            checkAvailabilityProgressbar.setVisibility(View.GONE);
+                            checkAvailabilityButton.setVisibility(View.GONE);
+                            registerButton.setVisibility(View.VISIBLE);
+                        }else{
+                            checkAvailabilityProgressbar.setVisibility(View.GONE);
+                            checkAvailabilityButton.setVisibility(View.GONE);
+                            registerButton.setVisibility(View.GONE);
+                            registrationFull.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        checkAvailabilityProgressbar.setVisibility(View.GONE);
+                        checkAvailabilityButton.setVisibility(View.VISIBLE);
+                        registerButton.setVisibility(View.GONE);
+                        registrationFull.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "No Event or Activity Found", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    checkAvailabilityProgressbar.setVisibility(View.GONE);
+                    checkAvailabilityButton.setVisibility(View.VISIBLE);
+                    registerButton.setVisibility(View.GONE);
+                    registrationFull.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), "Error fetching event details", Toast.LENGTH_SHORT).show();
+                    getFragment(new InterCollegeEvents());
+                });
     }
     private void fetchEventDetails(String activityId) {
         Log.d("CollegeEventActivityDetails", "Received activityId on fetchEventDetails : " + activityId);
@@ -80,6 +164,7 @@ public class IntercollegeEventActivityDetails extends Fragment {
                             activityVenue.setText(activity.getActivityVenue());
                             activityRules.setText(activity.getActivityRules());
                             registrationFee.setText(activity.getRegistrationFee());
+                            dataLoadProgressbar.setVisibility(View.GONE);
                         } else {
                             showNoEventDialog();
                         }
@@ -88,6 +173,7 @@ public class IntercollegeEventActivityDetails extends Fragment {
                     }
                 })
                 .addOnFailureListener(e -> {
+                    dataLoadProgressbar.setVisibility(View.GONE);
                     Toast.makeText(getContext(), "Error fetching event details", Toast.LENGTH_SHORT).show();
                     getFragment(new InterCollegeEvents());
                 });
@@ -100,6 +186,7 @@ public class IntercollegeEventActivityDetails extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                getFragment(new InterCollegeEvents());
             }
         });
         AlertDialog dialog = builder.create();

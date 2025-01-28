@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +16,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.myapplication.Event;
-import com.example.myapplication.Adapter.EventAdapter;
+import com.example.myapplication.ManageEvents.UpdateEvent.updateEventDetails.UpdateEventDetails;
 import com.example.myapplication.R;
-import com.example.myapplication.fragements.InterCollegeEventActivities;
-import com.example.myapplication.fragements.UpdateEventDetails;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;

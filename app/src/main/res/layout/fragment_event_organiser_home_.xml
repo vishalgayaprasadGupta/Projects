@@ -99,6 +99,7 @@
 
         <!-- Manage Events Section -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/ManageEvents"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -136,6 +137,7 @@
 
         <!-- Cancel Event Section -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/CancelEvent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -173,6 +175,7 @@
 
         <!-- Event Registration Section -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/EventRegistrations"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"

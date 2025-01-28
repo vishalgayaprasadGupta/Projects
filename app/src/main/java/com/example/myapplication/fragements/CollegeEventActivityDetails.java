@@ -28,7 +28,7 @@ public class CollegeEventActivityDetails extends Fragment {
     FirebaseFirestore firestore;
     String availability;
     String activityId="";
-    ProgressBar availabilityProgressbar;
+    ProgressBar availabilityProgressbar,dataloadProgressbar;
 
     public CollegeEventActivityDetails() {
         // Required empty public constructor
@@ -36,19 +36,20 @@ public class CollegeEventActivityDetails extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view= inflater.inflate(R.layout.fragment_event_college_activity_details, container, false);
         activityName = view.findViewById(R.id.activityName);
         activityDescription = view.findViewById(R.id.activityDescription);
-        activityDate = view.findViewById(R.id.activityDate);
+        activityDate = view.findViewById(R.id.activitySchedule);
         activityVenue = view.findViewById(R.id.activityVenue);
         activityRules=view.findViewById(R.id.activityRules);
-        registrationFee=view.findViewById(R.id.registrationFee);
+        registrationFee=view.findViewById(R.id.activityFee);
         checkAvailabilityButton = view.findViewById(R.id.checkAvailabilityButton);
         registerButton = view.findViewById(R.id.registerButton);
         registrationFull=view.findViewById(R.id.registrationFull);
-        availabilityProgressbar=view.findViewById(R.id.availabilityProgressbar);
+        availabilityProgressbar=view.findViewById(R.id.checkAvailabilityProgressBar);
         availabilityProgressbar.setVisibility(View.INVISIBLE);
+        dataloadProgressbar=view.findViewById(R.id.dataloadProgressbar);
+        dataloadProgressbar.setVisibility(View.GONE);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
@@ -56,7 +57,7 @@ public class CollegeEventActivityDetails extends Fragment {
                     @Override
                     public void handleOnBackPressed() {
                         if (getActivity() != null) {
-                            getFragment(new CollegeEvents());
+                            getActivity().getSupportFragmentManager().popBackStack();
                         }
                     }
                 });
@@ -67,6 +68,7 @@ public class CollegeEventActivityDetails extends Fragment {
             activityId = getArguments().getString("activityId");
         }
         Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
+        dataloadProgressbar.setVisibility(View.VISIBLE);
         fetchEventDetails(activityId);
 
         checkAvailabilityButton.setOnClickListener(new View.OnClickListener() {
@@ -105,14 +107,17 @@ public class CollegeEventActivityDetails extends Fragment {
                             activityVenue.setText(activity.getVenue());
                             activityRules.setText(activity.getRules());
                             registrationFee.setText(activity.getRegistrationFee());
+                            dataloadProgressbar.setVisibility(View.GONE);
                         } else {
                             showNoEventDialog();
                         }
                     } else {
                         showNoEventDialog();
                     }
+
                 })
                 .addOnFailureListener(e -> {
+                    dataloadProgressbar.setVisibility(View.GONE);
                     Toast.makeText(getContext(), "Error fetching event details", Toast.LENGTH_SHORT).show();
                     getFragment(new CollegeEvents());
                 });
@@ -167,6 +172,7 @@ public class CollegeEventActivityDetails extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                getFragment(new CollegeEvents());
             }
         });
         AlertDialog dialog = builder.create();

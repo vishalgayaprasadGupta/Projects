@@ -28,7 +28,6 @@ public class InitialPage extends AppCompatActivity {
 
         videoView = findViewById(R.id.videoView);
 
-        // Set the video path from the raw folder
         String path = "android.resource://" + getPackageName() + "/" + R.raw.logo;
         videoView.setVideoPath(path);  // Set the video source
         videoView.setOnPreparedListener(mp -> videoView.start());

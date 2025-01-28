@@ -3,6 +3,7 @@ package com.example.myapplication.fragements;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -44,6 +45,17 @@ public class WorkshopEventActivtiy extends Fragment {
             Log.d("CollegeEventActivities", "Received eventId: " + eventId);
         }
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (getActivity() != null) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }
+                    }
+                });
+
         activityRecyclerView = view.findViewById(R.id.activityRecyclerView);
         activityRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
@@ -84,6 +96,7 @@ public class WorkshopEventActivtiy extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
         AlertDialog dialog = builder.create();
@@ -92,7 +105,6 @@ public class WorkshopEventActivtiy extends Fragment {
     }
 
     public void onItemClick(String activtiyId) {
-        Toast.makeText(getActivity(), "Button clicked", Toast.LENGTH_SHORT).show();
         WorkshopEventActivityDetails activitiesFragment = new WorkshopEventActivityDetails();
         Bundle bundle = new Bundle();
         bundle.putString("activityId", activtiyId);

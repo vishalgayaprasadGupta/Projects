@@ -3,12 +3,15 @@ package com.example.myapplication.ManageEvents.DeleteEvent;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.TextView;
 
 import com.example.myapplication.ManageEvents.UpdateEvent.InterCollegeEventList;
@@ -19,6 +22,7 @@ import com.example.myapplication.manageEvents;
 
 public class EventCategory extends Fragment {
     View view;
+    CardView CollegeEvents,InterCollegeEvents,Workshop,Seminar;
     TextView deleteCollegeEvents,deleteInterCollegeEvent,deleteWorkshopEvent,deleteSeminarEvent;
     public EventCategory() {
         // Required empty public constructor
@@ -26,11 +30,20 @@ public class EventCategory extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view= inflater.inflate(R.layout.fragment_event_category, container, false);
 
+        CollegeEvents=view.findViewById(R.id.CollegeEvents);
+        InterCollegeEvents=view.findViewById(R.id.InterCollegeEvents);
+        Workshop=view.findViewById(R.id.Workshop);
+        Seminar=view.findViewById(R.id.Seminar);
+
+        animateCardView(CollegeEvents,500);
+        animateCardView(InterCollegeEvents,1000);
+        animateCardView(Workshop,1500);
+        animateCardView(Seminar,2000);
+
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
@@ -74,6 +87,34 @@ public class EventCategory extends Fragment {
 
         return view;
     }
+
+    private void animateCardView(final CardView cardView, long delay) {
+        cardView.setVisibility(View.INVISIBLE);
+
+        AlphaAnimation fadeIn = new AlphaAnimation(0f, 1f);
+        fadeIn.setDuration(1000);
+        fadeIn.setStartOffset(delay);
+
+        fadeIn.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                cardView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // Optional: You can add additional behavior after the animation ends
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // Not needed in this case
+            }
+        });
+
+        cardView.startAnimation(fadeIn);
+    }
+
     public void getFragment(Fragment fragment) {
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()

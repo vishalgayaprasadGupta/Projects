@@ -121,7 +121,7 @@ public class updateWorkshopEventActivity extends Fragment {
                             activityDate.setText(activity.getWorkshopDate());
                             activityVenue.setText(activity.getWorkshopVenue());
                             requirments.setText(activity.getSpecialRequirements());
-                            availability.setText(activity.getMaxParticipants());
+                            availability.setText(activity.getavailability());
                             registrationFee.setText(activity.getRegistrationFees());
                         } else {
                             showNoEventDialog();
@@ -181,6 +181,7 @@ public class updateWorkshopEventActivity extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                getFragment(new UpdatePage());
             }
         });
         AlertDialog dialog = builder.create();

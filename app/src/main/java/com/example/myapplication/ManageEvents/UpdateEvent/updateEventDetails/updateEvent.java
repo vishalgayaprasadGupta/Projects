@@ -37,10 +37,8 @@ public class updateEvent extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_update_event, container, false);
 
-        // Initialize UI components
         headerText = view.findViewById(R.id.headerText);
         eventName = view.findViewById(R.id.eventName);
         mySpinner = view.findViewById(R.id.mySpinner);
@@ -48,14 +46,13 @@ public class updateEvent extends Fragment {
         progressBar = view.findViewById(R.id.addCollegeProgressbaar);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
                         if (getArguments() != null && getArguments().containsKey("activityId")) {
                             String activityId = getArguments().getString("activityId");
 
-                            // Pass activityId to the previous fragment
                             Bundle bundle = new Bundle();
                             bundle.putString("activityId", activityId);
 
@@ -71,14 +68,11 @@ public class updateEvent extends Fragment {
 
         firestore = FirebaseFirestore.getInstance();
 
-        // Retrieve the eventId from the previous fragment
         String eventId = getArguments().getString("eventId");
         String eventType = getArguments().getString("eventType");
 
-        // Fetch event details from Firestore
         fetchEventDetails(eventId,eventType);
 
-        // Handle the update button click
         updateEventButton.setOnClickListener(v -> updateEventDetails(eventId));
 
         return view;
@@ -113,34 +107,28 @@ public class updateEvent extends Fragment {
     }
 
     private void updateEventDetails(String eventId) {
-        // Get the updated event details from the form fields
         String updatedName = eventName.getText().toString();
 
-        // Validate the inputs (you can add your own validation logic here)
         if (updatedName.isEmpty()) {
             Toast.makeText(getContext(), "Event name cannot be empty", Toast.LENGTH_SHORT).show();
             return;
         }
         String eventType=getArguments().getString("eventType");
-        // Show progress bar while updating
         progressBar.setVisibility(View.VISIBLE);
         updateEventButton.setVisibility(View.INVISIBLE);
 
-        // Prepare the data to update the event
         firestore.collection(eventType)
                 .document(eventId)
                 .update(
                         "name", updatedName
                 )
                 .addOnSuccessListener(aVoid -> {
-                    // Hide progress bar
                     progressBar.setVisibility(View.INVISIBLE);
                     updateEventButton.setVisibility(View.VISIBLE);
 
                     Toast.makeText(getContext(), "Event details updated successfully", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    // Hide progress bar
                     progressBar.setVisibility(View.INVISIBLE);
                     updateEventButton.setVisibility(View.VISIBLE);
 

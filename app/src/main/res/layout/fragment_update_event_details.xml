@@ -6,9 +6,8 @@
     android:orientation="vertical"
     android:background="#EDEDED"
     android:padding="16dp"
-    tools:context=".fragements.UpdateEventDetails">
+    tools:context=".ManageEvents.UpdateEvent.updateEventDetails.UpdateEventDetails">
 
-    <!-- Header Section -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,8 +18,8 @@
         android:textColor="#00224D"
         android:textStyle="bold"/>
 
-    <!-- Event Block 1 - College Events -->
     <androidx.cardview.widget.CardView
+        android:id="@+id/UpdateCollegeEvent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -57,6 +56,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/UpdateIntercollegeEvent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -92,8 +92,8 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Manage Event Organizers Card -->
     <androidx.cardview.widget.CardView
+        android:id="@+id/UpdateWorkshop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -128,7 +128,9 @@
                 android:gravity="center" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
     <androidx.cardview.widget.CardView
+        android:id="@+id/UpdateSeminar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

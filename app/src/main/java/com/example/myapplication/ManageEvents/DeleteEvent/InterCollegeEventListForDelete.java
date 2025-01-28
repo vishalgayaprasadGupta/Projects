@@ -17,11 +17,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.myapplication.Event;
-import com.example.myapplication.Adapter.EventAdapter;
 import com.example.myapplication.ManageEvents.UpdateEvent.EventListAdapter;
 import com.example.myapplication.R;
-import com.example.myapplication.fragements.InterCollegeEventActivities;
-import com.example.myapplication.fragements.UpdateEventDetails;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;

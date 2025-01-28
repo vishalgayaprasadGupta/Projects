@@ -1,8 +1,11 @@
 package com.example.myapplication.adminfragements;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -19,8 +22,9 @@ import com.google.firebase.auth.FirebaseUser;
 public class AdminProfile extends Fragment {
 
     View view;
+    CardView PersonalDetails,UpdateProfile,ChangePassword,SignOut;
     FirebaseAuth mAuth;
-    TextView adminName,adminEmail,SignOut;
+    TextView adminName,adminEmail,signOut;
     public AdminProfile() {
         // Required empty public constructor
     }
@@ -30,11 +34,21 @@ public class AdminProfile extends Fragment {
                              Bundle savedInstanceState) {
         view= inflater.inflate(R.layout.fragment_admin_profile, container, false);
 
+        PersonalDetails=view.findViewById(R.id.PersonalDetails);
+        UpdateProfile=view.findViewById(R.id.UpdateProfile);
+        ChangePassword=view.findViewById(R.id.ChangePassword);
+        SignOut=view.findViewById(R.id.SignOut);
+
+        applyFadeInAnimation(PersonalDetails);
+        applyFadeInAnimation(UpdateProfile);
+        applyFadeInAnimation(ChangePassword);
+        applyFadeInAnimation(SignOut);
+
         adminName=view.findViewById(R.id.adminName);
         adminEmail=view.findViewById(R.id.adminEmail);
         setProfile();
-        SignOut=view.findViewById(R.id.signOut);
-        SignOut.setOnClickListener(new View.OnClickListener() {
+        signOut=view.findViewById(R.id.signOut);
+        signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mAuth.signOut();
@@ -45,6 +59,15 @@ public class AdminProfile extends Fragment {
         });
 
         return view;
+    }
+
+    private void applyFadeInAnimation(View view) {
+        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f);
+        fadeIn.setDuration(1000);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.play(fadeIn);
+        animatorSet.start();
     }
 
     public void setProfile(){

@@ -33,8 +33,8 @@
             android:paddingBottom="16dp">
 
 
-            <!-- Manage Users Card -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/AddEventActivtiy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -71,6 +71,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/UpdateEventDetails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -106,8 +107,8 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Manage Event Organizers Card -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/UpdateEventsActivity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -143,6 +144,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
             <androidx.cardview.widget.CardView
+                android:id="@+id/DeleteEventActivities"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -179,6 +181,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/DeleteEvent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"

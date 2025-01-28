@@ -19,7 +19,6 @@ import com.example.myapplication.Event;
 import com.example.myapplication.ManageEvents.UpdateEvent.EventListAdapter;
 import com.example.myapplication.R;
 import com.example.myapplication.fragements.CollegeEvents;
-import com.example.myapplication.fragements.UpdateEventDetails;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;

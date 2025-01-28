@@ -51,11 +51,10 @@ public class CollegeEventActivities extends Fragment {
                     @Override
                     public void handleOnBackPressed() {
                         if (getActivity() != null) {
-                            getFragment(new CollegeEvents());
+                            getActivity().getSupportFragmentManager().popBackStack();
                         }
                     }
                 });
-
 
         activityRecyclerView = view.findViewById(R.id.activityRecyclerView);
         activityRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -98,6 +97,9 @@ public class CollegeEventActivities extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                if (getActivity() != null) {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
             }
         });
         AlertDialog dialog = builder.create();
@@ -106,7 +108,6 @@ public class CollegeEventActivities extends Fragment {
     }
 
     public void onItemClick(String activtiyId) {
-        // Navigate to the next fragment
         Toast.makeText(getActivity(), "Button clicked", Toast.LENGTH_SHORT).show();
         CollegeEventActivityDetails activitiesFragment = new CollegeEventActivityDetails();
         Bundle bundle = new Bundle();
