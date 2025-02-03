@@ -44,8 +44,9 @@ public class CollegeActivityList extends Fragment {
         if (getArguments() != null) {
             eventId = getArguments().getString("eventId");
             eventType=getArguments().getString("eventType");
-            Log.d("CollegeEventActivities", "Received activityId: " + activityId);
             Log.d("CollegeEventActivities", "Received eventId: " + eventId);
+            Log.d("CollegeEventActivities", "Received eventId: " + eventId);
+            Log.d("CollegeEventActivities", "Received eventType: " + eventType);
         }
 
         activityRecyclerView = view.findViewById(R.id.activityRecyclerView);
@@ -64,7 +65,7 @@ public class CollegeActivityList extends Fragment {
                             String activityId = getArguments().getString("activityId");
                             String eventId=getArguments().getString("eventId");
                             String eventType=getArguments().getString("eventType");
-                            // Pass activityId to the previous fragment
+
                             Bundle bundle = new Bundle();
                             bundle.putString("activityId", activityId);
                             bundle.putString("eventId",eventId);
@@ -76,10 +77,7 @@ public class CollegeActivityList extends Fragment {
                             requireActivity().getSupportFragmentManager().popBackStack();
                         }
                     }
-                }
-        );
-
-        // Set the click listener
+                });
         activityAdapter.setOnItemClickListener(this::onItemClick);
 
         fetchActivities(eventId);
@@ -87,8 +85,8 @@ public class CollegeActivityList extends Fragment {
     }
 
     private void fetchActivities(String eventId) {
-        db.collection("EventActivities") // Assuming your Firestore collection is named "activity"
-                .whereEqualTo("eventId", eventId) // Match the eventId field in Firestore
+        db.collection("EventActivities")
+                .whereEqualTo("eventId", eventId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -97,7 +95,7 @@ public class CollegeActivityList extends Fragment {
                             showNoEventDialog();
                         } else {
                             activityAdapter = new CollegeActivityListAdapter(activity);
-                            activityAdapter.setOnItemClickListener(this::onItemClick); // Re-attach the listener
+                            activityAdapter.setOnItemClickListener(this::onItemClick);
                             activityRecyclerView.setAdapter(activityAdapter);
                         }
                     } else {
@@ -122,9 +120,9 @@ public class CollegeActivityList extends Fragment {
     }
 
     public void onItemClick(String activtiyId) {
-        // Navigate to the next fragment
         Toast.makeText(getActivity(), "Button clicked", Toast.LENGTH_SHORT).show();
         String eventType=getArguments().getString("eventType");
+        Log.d("CollegeEventActivities", "Received eventType 2 : " + eventType);
         String eventId=getArguments().getString("eventId");
         updateCollegeEventActivity activitiesFragment = new updateCollegeEventActivity();
         Bundle bundle = new Bundle();

@@ -12,11 +12,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.myapplication.Event;
 import com.example.myapplication.ManageEvents.UpdateEvent.UpdatePage;
 import com.example.myapplication.ManageEvents.Workshop;
 import com.example.myapplication.adminfragements.AdminHome;
@@ -33,6 +37,8 @@ public class addWorkshopActivity extends Fragment {
     private EditText workshopTitle,workshopDescription,workshopDate,workshopVenue,maxParticipants,registrationFees,specialRequirements;
     private Button addEventButton;
     ProgressBar addEventDetails;
+    Spinner activityTypeSpinner;
+    String activityType,EventName="";
     public addWorkshopActivity() {
         // Required empty public constructor
     }
@@ -40,7 +46,7 @@ public class addWorkshopActivity extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view= inflater.inflate(R.layout.fragment_add_workshop_details, container, false);
+        view= inflater.inflate(R.layout.fragment_add_workshop_activity, container, false);
 
         db = FirebaseFirestore.getInstance();
 
@@ -53,6 +59,30 @@ public class addWorkshopActivity extends Fragment {
         specialRequirements=view.findViewById(R.id.specialRequirements);
         addEventDetails=view.findViewById(R.id.workshopProgressbar);
         addEventDetails.setVisibility(View.INVISIBLE);
+
+        activityTypeSpinner = view.findViewById(R.id.eventTypeSpinner);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.activtiy_type,
+                android.R.layout.simple_spinner_dropdown_item
+        );
+        activityTypeSpinner.setAdapter(adapter);
+
+        activityTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                activityType = parent.getItemAtPosition(position).toString();
+
+                if (activityType.equals("Activtiy Type")) {
+                    activityType = null;
+                }
+                Toast.makeText(requireContext(), "Selected: " + activityType, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 requireActivity(),
@@ -122,9 +152,9 @@ public class addWorkshopActivity extends Fragment {
             eventId = getArguments().getString("eventId"); // Retrieve eventId passed from previous fragment
             Log.d("addEvent", "Event ID (Passed): " + eventId);
             eventType=getArguments().getString("eventType");
+            EventName=getArguments().getString("eventName");
         }
 
-        // Retrieve input fields
         String name = workshopTitle.getText().toString();
         String description = workshopDescription.getText().toString();
         String date = workshopDate.getText().toString();
@@ -139,10 +169,9 @@ public class addWorkshopActivity extends Fragment {
             Toast.makeText(getActivity(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
         }
 
-        // Log the retrieved values
         Log.d("addEvent", "Event ID (Passed): " + eventId);
 
-        Workshop activity = new Workshop(name, description, date, venue,  availability, registrationFee,requirements,eventId,eventType);
+        Workshop activity = new Workshop(EventName,name, description, date, venue,  availability, registrationFee,requirements,eventId,eventType,activityType);
 
         db.collection("EventActivities")
                 .add(activity)

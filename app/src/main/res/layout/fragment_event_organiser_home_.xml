@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#EDEDED"
     android:padding="16dp"
-    tools:context=".fragements.EventOrganiserHome">
+    tools:context=".eventOrganiser.EventOrganiserHome">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -125,45 +125,7 @@
                     android:gravity="center_vertical" />
 
                 <TextView
-                    android:id="@+id/manageCollegeEvents"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="➔"
-                    android:textSize="24sp"
-                    android:textColor="@color/colorAccent"
-                    android:gravity="center" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Cancel Event Section -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/CancelEvent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:focusable="true"
-            android:backgroundTint="@color/card_background"
-            android:clickable="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Cancel Event"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:gravity="center_vertical" />
-
-                <TextView
-                    android:id="@+id/cancelEvent"
+                    android:id="@+id/manageEvents"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="➔"
@@ -194,14 +156,51 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Event Registrations"
+                    android:text="Track Event Registrations"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
                     android:gravity="center_vertical" />
 
                 <TextView
-                    android:id="@+id/eventRegistrations"
+                    android:id="@+id/trackEventRegistrations"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="➔"
+                    android:textSize="24sp"
+                    android:textColor="@color/colorAccent"
+                    android:gravity="center" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/CancelEvent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:focusable="true"
+            android:backgroundTint="@color/card_background"
+            android:clickable="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Event Report"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:gravity="center_vertical" />
+
+                <TextView
+                    android:id="@+id/cancelEvent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="➔"

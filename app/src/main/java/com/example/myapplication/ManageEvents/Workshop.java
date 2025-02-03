@@ -1,10 +1,10 @@
 package com.example.myapplication.ManageEvents;
 
 public class Workshop {
-    String workshopTitle,workshopDescription,workshopDate;
-    String workshopVenue,availability,registrationFees,specialRequirements,activityId,eventId,eventType;
+    String eventName,workshopTitle,workshopDescription,workshopDate;
+    String workshopVenue,availability,registrationFees,specialRequirements,activityId,eventId,eventType,activityType;
 
-    public Workshop(String workshopTitle, String workshopDescription, String workshopDate, String workshopVenue, String availability, String registrationFees, String specialRequirements,String eventId,String eventType) {
+    public Workshop(String eventName,String workshopTitle, String workshopDescription, String workshopDate, String workshopVenue, String availability, String registrationFees, String specialRequirements,String eventId,String eventType,String activityType) {
         this.workshopTitle = workshopTitle;
         this.workshopDescription = workshopDescription;
         this.workshopDate = workshopDate;
@@ -14,8 +14,23 @@ public class Workshop {
         this.specialRequirements = specialRequirements;
         this.eventId=eventId;
         this.eventType=eventType;
+        this.activityType=activityType;
+        this.eventName=eventName;
     }
 
+    public String getEventName() {
+        return eventName;
+    }
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+    public String getActivityType() {
+        return activityType;
+    }
+
+    public void setActivityType(String activityType) {
+        this.activityType = activityType;
+    }
 
     public String getEventId() {
         return eventId;
@@ -77,11 +92,11 @@ public class Workshop {
         this.workshopVenue = workshopVenue;
     }
 
-    public String getavailability() {
+    public String getAvailability() {
         return availability;
     }
 
-    public void setavailability(String availability) {
+    public void setAvailability(String availability) {
         this.availability = availability;
     }
 

@@ -44,17 +44,17 @@ public class CollegeEventListForDelete extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         eventAdapter = new EventListAdapter(new ArrayList<>());
-        eventAdapter.setOnItemClickListener(this::onItemClick); // Set the listener
+        eventAdapter.setOnItemClickListener(this::onItemClick);
         recyclerView.setAdapter(eventAdapter);
 
         fetchEvents();
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        // Custom back button logic
+                        getActivity().getSupportFragmentManager().popBackStack();
                         getFragment(new EventCategory());
                     }
                 });

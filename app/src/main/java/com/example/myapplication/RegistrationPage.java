@@ -53,7 +53,7 @@ public class RegistrationPage extends AppCompatActivity {
     CollectionReference userData;
     RadioGroup radioGroup;
     RadioButton selectedRadioButton;
-    String Gender,Role,Status,selectedCollege,selectedStream,selectedDepartment,selectedRole,isVerificationEmailsend,isEmailVerified;
+    String uid,Gender,Role,Status,selectedCollege,selectedStream,selectedDepartment,selectedRole,isVerificationEmailsend,isEmailVerified;
     ProgressBar RegisterProgressbar;
     Spinner collegeSpinner,departmentSpinner, streamSpinner;
     static final String USER = "User";
@@ -161,10 +161,10 @@ public class RegistrationPage extends AppCompatActivity {
                 if(validateInput(Contact,EmailId,Username,College,Password,CheckPassword)) {
                     if (isNetworkAvailable()) {
                         if(selectedRole.equals("User")) {
-                            userClass = new User(Status, selectedRole, Username, Gender, EmailId, Contact, College, Password,isVerificationEmailsend);
+                            userClass = new User(uid,Status, selectedRole, Username, Gender, EmailId, Contact, College, Password,isVerificationEmailsend,isEmailVerified);
                             registerUser(EmailId, Password);
                         }else if(selectedRole.equals("Event Organiser")){
-                            organiserClass = new EventOrganiser(Status, selectedRole, Username, Gender, EmailId, Contact, College, Password, selectedStream, selectedDepartment,isVerificationEmailsend,isEmailVerified);
+                            organiserClass = new EventOrganiser(uid,Status, selectedRole, Username, Gender, EmailId, Contact, College, Password, selectedStream, selectedDepartment,isVerificationEmailsend,isEmailVerified);
                             showConfirmationDialog(EmailId, Password);
                         }
                     } else {
@@ -479,7 +479,7 @@ public class RegistrationPage extends AppCompatActivity {
     public void updateUI(FirebaseUser user) {
         if (user != null) {
             if (isNetworkAvailable()) {
-                String uid = user.getUid();
+                uid = user.getUid();
 
                 String selectedRole = ((Spinner) findViewById(R.id.spinnerRole)).getSelectedItem().toString();
                 Log.d("loadColleges", "Role Fetchehd: " + selectedRole);
@@ -489,7 +489,7 @@ public class RegistrationPage extends AppCompatActivity {
                     Log.d("Registration", "Department: " + selectedDepartment);
                     Log.d("loadColleges", "Role Fetchehd 2: " + selectedRole);
                     Log.d("loadColleges", "isVerificationEmailsend: " + isVerificationEmailsend);
-                    organiserClass = new EventOrganiser(Status, selectedRole, UserName.getText().toString(), Gender, EmailAddress.getText().toString(),
+                    organiserClass = new EventOrganiser(uid,Status, selectedRole, UserName.getText().toString(), Gender, EmailAddress.getText().toString(),
                             Phone.getText().toString(), selectedCollege, UserPassword.getText().toString(), selectedStream, selectedDepartment,isVerificationEmailsend,isEmailVerified);
                     userData.document(uid).set(organiserClass).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
@@ -505,8 +505,8 @@ public class RegistrationPage extends AppCompatActivity {
                     Log.d("loadColleges", "Role Fetched: " + selectedRole);
                     Log.d("loadColleges", "isVerificationEmailsend: " + isVerificationEmailsend);
 
-                    userClass = new User(Status, selectedRole, UserName.getText().toString(), Gender, EmailAddress.getText().toString(),
-                            Phone.getText().toString(), CollegeName.getText().toString(), UserPassword.getText().toString(),isVerificationEmailsend);
+                    userClass = new User(uid,Status, selectedRole, UserName.getText().toString(), Gender, EmailAddress.getText().toString(),
+                            Phone.getText().toString(), CollegeName.getText().toString(), UserPassword.getText().toString(),isVerificationEmailsend,isEmailVerified);
 
                     userData.document(uid).set(userClass).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {

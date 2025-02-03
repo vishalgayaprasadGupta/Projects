@@ -1,5 +1,7 @@
 package com.example.myapplication.ManageEvents;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +22,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.myapplication.Event;
+import com.example.myapplication.ManageEvents.UpdateEvent.addActivity.addCollegeActivity;
+import com.example.myapplication.ManageEvents.UpdateEvent.addActivity.addInterCollegiateActivity;
+import com.example.myapplication.ManageEvents.UpdateEvent.addActivity.addSeminarActivity;
+import com.example.myapplication.ManageEvents.UpdateEvent.addActivity.addWorkshopActivity;
+import com.example.myapplication.ManageUser.manageUser;
 import com.example.myapplication.R;
 import com.example.myapplication.manageEvents;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -30,9 +37,10 @@ import java.util.List;
 
 public class AddEvent extends Fragment {
     private View view;
-    private String eventType, selectedStream, selectedDepartment;
+    private String name,eventType, selectedStream, selectedDepartment;
     private FirebaseFirestore db;
     private EditText eventName;
+    String documentId;
     private Button addEventButton;
     private ProgressBar addEvent;
     private Spinner spinner, departmentSpinner, streamSpinner;
@@ -57,13 +65,14 @@ public class AddEvent extends Fragment {
         loadEventTypes();
         loadStreams();
 
-        // Handle back press
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        getFragment(new manageEvents());
+                        if (getActivity() != null) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }
                     }
                 });
 
@@ -220,19 +229,19 @@ public class AddEvent extends Fragment {
     }
 
     private void addEventToFirestore(String collectionName) {
-        String name = eventName.getText().toString();
+        name = eventName.getText().toString();
         String status = "Active";
 
         Event event = new Event(name, eventType, status,selectedStream, selectedDepartment);
 
         db.collection(collectionName).add(event)
                 .addOnSuccessListener(documentReference -> {
-                    String documentId = documentReference.getId();
+                    documentId = documentReference.getId();
                     event.setEventId(documentId);
                     db.collection(collectionName).document(documentId).set(event)
                             .addOnSuccessListener(aVoid -> {
                                 Toast.makeText(getActivity(), "Event Added to " + collectionName, Toast.LENGTH_SHORT).show();
-                                addDetails(documentId, eventType);
+                                addActivityDialog();
                             })
                             .addOnFailureListener(e -> {
                                 Toast.makeText(getActivity(), "Error updating event ID", Toast.LENGTH_SHORT).show();
@@ -243,21 +252,21 @@ public class AddEvent extends Fragment {
                 });
     }
 
-    private void addDetails(String documentId, String eventType) {
+    private void addDetails(String documentId, String eventType,String eventName) {
         Fragment targetFragment;
 
         switch (eventType) {
             case "College Events":
-                targetFragment = new addCollegeEventdetails();
+                targetFragment = new addCollegeActivity();
                 break;
             case "InterCollegiate Events":
-                targetFragment = new addIntercollegeDetails();
+                targetFragment = new addInterCollegiateActivity();
                 break;
             case "Seminars":
-                targetFragment = new addSeminarDetails();
+                targetFragment = new addSeminarActivity();
                 break;
             case "Workshops":
-                targetFragment = new addWorkshopDetails();
+                targetFragment = new addWorkshopActivity();
                 break;
             default:
                 Toast.makeText(requireContext(), "Invalid event type", Toast.LENGTH_SHORT).show();
@@ -265,8 +274,9 @@ public class AddEvent extends Fragment {
         }
 
         Bundle bundle = new Bundle();
-        bundle.putString("documentId", documentId);
+        bundle.putString("eventId", documentId);
         bundle.putString("eventType", eventType);
+        bundle.putString("eventName", eventName);
         targetFragment.setArguments(bundle);
 
         addEvent.setVisibility(View.INVISIBLE);
@@ -274,6 +284,33 @@ public class AddEvent extends Fragment {
 
         getFragment(targetFragment);
     }
+
+    private void addActivityDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
+        builder.setTitle("No Event");
+        builder.setMessage("Do you want to Add Event Activities");
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                addDetails(documentId, eventType,name);
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                getFragment(new manageUser());
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+
 
     private void getFragment(Fragment fragment) {
         getActivity().getSupportFragmentManager()

@@ -13,9 +13,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.myapplication.ManageEvents.Activity;
@@ -25,6 +28,7 @@ import com.example.myapplication.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
+import java.util.List;
 
 
 public class addCollegeActivity extends Fragment {
@@ -34,6 +38,8 @@ public class addCollegeActivity extends Fragment {
     private EditText eventName, eventDescription, eventVenue,eventRules,availability,registrationFee;
     EditText eventDate;
     ProgressBar addEventDetails;
+    Spinner activityTypeSpinner;
+    String activityType,EventName=" ";
     private Button addEventButton;
     public addCollegeActivity() {
         // Required empty public constructor
@@ -42,10 +48,37 @@ public class addCollegeActivity extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        view= inflater.inflate(R.layout.fragment_add_college_event_details, container, false);
+        view= inflater.inflate(R.layout.fragment_add_college_activity, container, false);
 
         db = FirebaseFirestore.getInstance();
+        activityTypeSpinner = view.findViewById(R.id.eventTypeSpinner);
+
+        if(getArguments()!=null) {
+            EventName = getArguments().getString("eventName");
+            Log.d("addEvent", "Event Name (Passed): " + EventName);
+        }
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.activtiy_type,
+                android.R.layout.simple_spinner_dropdown_item
+        );
+        activityTypeSpinner.setAdapter(adapter);
+
+        activityTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                activityType = parent.getItemAtPosition(position).toString();
+
+                if (activityType.equals("Activtiy Type")) {
+                    activityType = null;
+                }
+                Toast.makeText(requireContext(), "Selected: " + activityType, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         eventName =view.findViewById(R.id.eventName);
         eventDescription =view.findViewById(R.id.eventDescription);
@@ -54,7 +87,7 @@ public class addCollegeActivity extends Fragment {
         eventRules =view.findViewById(R.id.rules);
         availability=view.findViewById(R.id.availability);
         registrationFee=view.findViewById(R.id.registrationfees);
-        addEventDetails=view.findViewById(R.id.addCollegeProgressbaar);
+        addEventDetails=view.findViewById(R.id.addCollegeActivityProgressbaar);
         addEventDetails.setVisibility(View.INVISIBLE);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
@@ -123,7 +156,7 @@ public class addCollegeActivity extends Fragment {
         String eventId = "";
         String eventType="";
         if (getArguments() != null) {
-            eventId = getArguments().getString("eventId"); // Retrieve eventId passed from previous fragment
+            eventId = getArguments().getString("eventId");
             Log.d("addEvent", "Event ID (Passed): " + eventId);
             eventType=getArguments().getString("eventType");
         }
@@ -144,10 +177,9 @@ public class addCollegeActivity extends Fragment {
             return;
         }
 
-        // Log the retrieved values
         Log.d("addEvent", "Event ID (Passed): " + eventId);
 
-        Activity activity = new Activity(name, description,  venue,date, rules,  availability,eventId,registrationFee,eventType);
+        Activity activity = new Activity(EventName,name, description,  venue,date, rules,  availability,eventId,registrationFee,eventType,activityType);
 
         db.collection("EventActivities")
                 .add(activity)

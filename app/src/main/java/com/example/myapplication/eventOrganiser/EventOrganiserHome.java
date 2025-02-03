@@ -1,4 +1,4 @@
-package com.example.myapplication.fragements;
+package com.example.myapplication.eventOrganiser;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +14,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.R;
+import com.example.myapplication.eventOrganiser.registration.trackOrganiserEventRegistration;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,6 +25,7 @@ public class EventOrganiserHome extends Fragment {
 
     private TextView branchName, departmentName;
     CardView manageEvents, cancelEvent, eventRegistrations;
+    TextView manageEvent, eventReport, eventRegistration;
     private FirebaseFirestore firestore;
     private FirebaseAuth auth;
 
@@ -36,21 +38,49 @@ public class EventOrganiserHome extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_event_organiser_home_, container, false);
 
-        manageEvents = view.findViewById(R.id.ManageEvents);
-        cancelEvent = view.findViewById(R.id.CancelEvent);
-        eventRegistrations = view.findViewById(R.id.EventRegistrations);
-
-        animateCardView(manageEvents, 500);
-        animateCardView(cancelEvent, 1000);
-        animateCardView(eventRegistrations, 1500);
-
-        firestore = FirebaseFirestore.getInstance();
-        auth = FirebaseAuth.getInstance();
+        manageEvent=view.findViewById(R.id.manageEvents);
+        eventReport=view.findViewById(R.id.cancelEvent);
+        eventRegistration=view.findViewById(R.id.trackEventRegistrations);
 
         branchName = view.findViewById(R.id.branchName);
         departmentName = view.findViewById(R.id.departmentName);
 
-        fetchUserDetails();
+        manageEvents = view.findViewById(R.id.ManageEvents);
+        cancelEvent = view.findViewById(R.id.CancelEvent);
+        eventRegistrations = view.findViewById(R.id.EventRegistrations);
+
+        animateCardView(manageEvents, 400);
+        animateCardView(eventRegistrations, 800);
+        animateCardView(cancelEvent, 1200);
+
+
+        firestore = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+        fetchOrganiserDetails();
+
+        manageEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment=new ManageOrganiserEvents();
+                Bundle bundle = new Bundle();
+                bundle.putString("stream", branchName.getText().toString());
+                bundle.putString("department", departmentName.getText().toString());
+                fragment.setArguments(bundle);
+                getFragment(fragment);
+            }
+        });
+
+        eventRegistration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new trackOrganiserEventRegistration();
+                Bundle bundle = new Bundle();
+                bundle.putString("stream", branchName.getText().toString());
+                bundle.putString("department", departmentName.getText().toString());
+                fragment.setArguments(bundle);
+                getFragment(fragment);
+            }
+        });
 
         return view;
     }
@@ -81,7 +111,7 @@ public class EventOrganiserHome extends Fragment {
 
         cardView.startAnimation(fadeIn);
     }
-    private void fetchUserDetails() {
+    private void fetchOrganiserDetails() {
         String userId = auth.getCurrentUser().getUid();
 
         firestore.collection("User").document(userId).get()
@@ -105,5 +135,13 @@ public class EventOrganiserHome extends Fragment {
                         }
                     }
                 });
+    }
+
+    public void getFragment(Fragment fragment){
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragement_layout,fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

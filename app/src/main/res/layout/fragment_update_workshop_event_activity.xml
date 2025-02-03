@@ -172,11 +172,13 @@
                         android:id="@+id/workshopProgressbar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:visibility="gone"
                         />
                 </FrameLayout>
 
                 <!-- Back to Dashboard -->
                 <TextView
+                    android:id="@+id/back"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Back to Dashboard"

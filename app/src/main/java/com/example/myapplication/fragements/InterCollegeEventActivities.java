@@ -111,6 +111,7 @@ public class InterCollegeEventActivities extends Fragment {
         IntercollegeEventActivityDetails activitiesFragment = new IntercollegeEventActivityDetails();
         Bundle bundle = new Bundle();
         bundle.putString("activityId", activtiyId);
+        bundle.putString("eventId", eventId);
         activitiesFragment.setArguments(bundle);
         getFragment(activitiesFragment);
     }

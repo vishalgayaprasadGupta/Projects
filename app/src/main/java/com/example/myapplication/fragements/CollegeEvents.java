@@ -24,13 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CollegeEvents extends Fragment {
-
     private View view;
     private RecyclerView recyclerView;
     private FirebaseFirestore db;
     private EventAdapter eventAdapter;
-    private Button explore;
-
     public CollegeEvents() {
         // Required empty public constructor
     }
@@ -45,6 +42,8 @@ public class CollegeEvents extends Fragment {
         eventAdapter = new EventAdapter(new ArrayList<>());
         eventAdapter.setOnItemClickListener(this::onItemClick);
         recyclerView.setAdapter(eventAdapter);
+
+
 
         fetchEvents();
 

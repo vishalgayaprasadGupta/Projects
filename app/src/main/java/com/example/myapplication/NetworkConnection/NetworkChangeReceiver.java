@@ -13,8 +13,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class NetworkChangeReceiver extends BroadcastReceiver {
-    private static final int DELAY_MS = 8000;
-    private static final int SLOW_CONNECTION_THRESHOLD_MS = 8000;
+    private static final int DELAY_MS = 4000;
+    private static final int SLOW_CONNECTION_THRESHOLD_MS = 3000;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -62,7 +62,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         try {
             long startTime = System.currentTimeMillis();
             HttpURLConnection connection = (HttpURLConnection) new URL("https://www.google.com").openConnection();
-            connection.setConnectTimeout(8000);
+            connection.setConnectTimeout(4000);
             connection.connect();
             long endTime = System.currentTimeMillis();
 

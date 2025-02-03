@@ -31,7 +31,7 @@ public class UpdatePage extends Fragment {
     View view;
     String eventType,eventId,eventName;
     FirebaseFirestore db;
-    CardView AddEventActivtiy,UpdateCollegeEvent,UpdateIntercollegeEvent,UpdateEventDetails,UpdateEventsActivity,DeleteEventActivities,DeleteEvent;
+    CardView addEventActivtiy,UpdateEventDetails,UpdateEventsActivity,DeleteEventActivities,DeleteEvent;
     TextView addEventActivity,updateEventDetails,updateEventsActivities,deleteEventActivities,deleteEvent,EventName;
     public UpdatePage() {
         // Required empty public constructor
@@ -41,21 +41,17 @@ public class UpdatePage extends Fragment {
                              Bundle savedInstanceState) {
         view= inflater.inflate(R.layout.fragment_update_page, container, false);
 
-        AddEventActivtiy=view.findViewById(R.id.AddEventActivtiy);
-        UpdateCollegeEvent=view.findViewById(R.id.UpdateCollegeEvent);
-        UpdateIntercollegeEvent=view.findViewById(R.id.UpdateIntercollegeEvent);
+        addEventActivtiy=view.findViewById(R.id.AddEventActivtiy);
         UpdateEventDetails=view.findViewById(R.id.UpdateEventDetails);
         UpdateEventsActivity=view.findViewById(R.id.UpdateEventsActivity);
         DeleteEventActivities=view.findViewById(R.id.DeleteEventActivities);
         DeleteEvent=view.findViewById(R.id.DeleteEvent);
 
-        animateCardView(AddEventActivtiy, 0);
-        animateCardView(UpdateCollegeEvent, 500);
-        animateCardView(UpdateIntercollegeEvent, 1000);
-        animateCardView(UpdateEventDetails, 1500);
-        animateCardView(UpdateEventsActivity, 2000);
-        animateCardView(DeleteEventActivities, 2500);
-        animateCardView(DeleteEvent, 3000);
+        animateCardView(addEventActivtiy, 0);
+        animateCardView(UpdateEventDetails, 400);
+        animateCardView(UpdateEventsActivity, 800);
+        animateCardView(DeleteEventActivities, 1200);
+        animateCardView(DeleteEvent, 1600);
 
         if(getArguments()!=null){
             eventId=getArguments().getString("eventId");
@@ -138,6 +134,7 @@ public class UpdatePage extends Fragment {
                 Bundle bundle=new Bundle();
                 bundle.putString("eventType",eventType);
                 bundle.putString("eventId",eventId);
+                bundle.putString("eventName",eventName);
                 targetFragment.setArguments(bundle);
                 getFragment(targetFragment);
             }
@@ -178,6 +175,7 @@ public class UpdatePage extends Fragment {
                 }
                 Bundle bundle=new Bundle();
                 bundle.putString("eventType",eventType);
+                Log.d("UpdatePage", "Event Type 4: " + eventType);
                 bundle.putString("eventId",eventId);
                 targetFragment.setArguments(bundle);
                 getFragment(targetFragment);
@@ -194,10 +192,8 @@ public class UpdatePage extends Fragment {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        // Assuming the event name is stored in the field "name" in the event document
                         String eventName = documentSnapshot.getString("name");
                         if (eventName != null) {
-                            // Update your UI with the event name
                             EventName.setText(eventName);
                         } else {
                             Toast.makeText(getContext(), "Event name not found", Toast.LENGTH_SHORT).show();

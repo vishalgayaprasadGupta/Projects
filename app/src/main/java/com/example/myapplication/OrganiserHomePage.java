@@ -19,9 +19,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.eventOrganiser.OrganiserProfile;
 import com.example.myapplication.fragements.Announcement;
-import com.example.myapplication.fragements.EventOrganiserHome;
-import com.example.myapplication.fragements.UserHome;
-import com.example.myapplication.fragements.UserProfile;
+import com.example.myapplication.eventOrganiser.EventOrganiserHome;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;

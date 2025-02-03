@@ -1,161 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EDEDED"
+    android:fitsSystemWindows="true"
     tools:context=".ManageUser.ActivateUser">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".RegistrationPage"
-        android:background="#EDEDED">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardContainer"
-            android:layout_width="0dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="10dp"
-            android:background="@color/white"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_bias="0.5">
-
+            android:text="Activate User"
+            android:textSize="26dp"
+            android:layout_marginBottom="10dp"
+            android:textStyle="bold"
+            android:textColor="@color/teal_700"
+            android:gravity="center"/>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="15dp"
-                android:background="@color/white">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <!-- Name (Non-editable) -->
-                <com.google.android.material.textfield.TextInputLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/activateRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Name">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/editName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="#E5E5E5"
-                        android:inputType="none"
-                        android:textColor="@color/black"
-                        android:focusable="false"
-                        android:enabled="false" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Gender (Non-editable) -->
-                <RadioGroup
-                    android:id="@+id/radioGroupGender"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:enabled="false">
-
-                    <RadioButton
-                        android:id="@+id/radioMale"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Male"
-                        android:textColor="@color/black"
-                        android:focusable="false"
-                        android:enabled="false" />
-
-                    <RadioButton
-                        android:id="@+id/radioFemale"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:text="Female"
-                        android:textColor="@color/black"
-                        android:focusable="false"
-                        android:enabled="false" />
-                </RadioGroup>
-
-                <!-- College (Non-editable) -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="College">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/editCollege"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="#E5E5E5"
-                        android:inputType="none"
-                        android:textColor="@color/black"
-                        android:focusable="false"
-                        android:enabled="false" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Email (Non-editable) -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:hint="Email">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/editEmailAddress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="#E5E5E5"
-                        android:inputType="none"
-                        android:textColor="@color/black"
-                        android:focusable="false"
-                        android:enabled="false" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Phone (Non-editable) -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:hint="Phone Number">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/editPhone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="#E5E5E5"
-                        android:inputType="none"
-                        android:textColor="@color/black"
-                        android:focusable="false"
-                        android:enabled="false" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/activate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:backgroundTint="@color/teal_700"
-                        android:text="Activate User"
-                        android:textColor="@color/white"
-                        android:textStyle="bold" />
-
-                    <ProgressBar
-                        android:id="@+id/progressbar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"/>
-                </FrameLayout>
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:focusable="false" />
 
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </ScrollView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

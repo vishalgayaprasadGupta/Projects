@@ -35,8 +35,7 @@
                     android:textColor="#00224D"
                     android:textSize="25sp"
                     android:textStyle="bold"
-                    android:padding="16dp"
-                    />
+                    android:padding="16dp" />
 
 
                 <!-- Event Name Input -->
@@ -49,9 +48,11 @@
                         android:id="@+id/eventName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Event Name"
+                        android:hint="Activtiy Name"
                         android:textColor="@android:color/black"
                         android:textColorHint="@android:color/darker_gray"
+                        android:inputType="textPersonName"
+                        android:maxLines="1"
                         android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -65,7 +66,7 @@
                         android:id="@+id/eventDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Event Description"
+                        android:hint="Activity Description"
                         android:inputType="textMultiLine"
                         android:textColor="@android:color/black"
                         android:textColorHint="@android:color/darker_gray"
@@ -81,12 +82,27 @@
                         android:id="@+id/eventDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Event Schedule"
+                        android:hint="Activity Schedule"
                         android:inputType="date"
+                        android:maxLines="1"
                         android:textColor="@android:color/black"
                         android:textColorHint="@android:color/darker_gray"
                         android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp">
+
+                    <Spinner
+                        android:id="@+id/eventTypeSpinner"
+                        android:layout_width="match_parent"
+                        android:background="#D3D3D3"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
 
                 <!-- Venue Input -->
                 <com.google.android.material.textfield.TextInputLayout
@@ -98,8 +114,10 @@
                         android:id="@+id/venue"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Event Venue"
+                        android:hint="Activity Venue"
                         android:textColor="@android:color/black"
+                        android:inputType="textPersonName"
+                        android:maxLines="1"
                         android:textColorHint="@android:color/darker_gray"
                         android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -116,6 +134,8 @@
                         android:layout_height="wrap_content"
                         android:hint="Max Participant Capacity"
                         android:textColor="@android:color/black"
+                        android:inputType="number"
+                        android:maxLines="1"
                         android:textColorHint="@android:color/darker_gray"
                         android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -130,6 +150,8 @@
                         android:layout_height="wrap_content"
                         android:hint="Registration Fee (In Rupees)"
                         android:textColor="@android:color/black"
+                        android:maxLines="1"
+                        android:inputType="number"
                         android:textColorHint="@android:color/darker_gray"
                         android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -145,7 +167,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
                         android:gravity="top"
-                        android:hint="Event Rules "
+                        android:hint="Activity Rules "
                         android:inputType="textMultiLine"
                         android:overScrollMode="always"
                         android:scrollbars="vertical"
@@ -168,7 +190,7 @@
                         android:textColor="@android:color/white"
                         android:textStyle="bold" />
                     <ProgressBar
-                        android:id="@+id/addCollegeProgressbaar"
+                        android:id="@+id/addCollegeActivityProgressbaar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         />

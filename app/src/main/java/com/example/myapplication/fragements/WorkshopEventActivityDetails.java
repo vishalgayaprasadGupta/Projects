@@ -21,14 +21,15 @@ import com.example.myapplication.ManageEvents.Activity;
 import com.example.myapplication.ManageEvents.InterCollege;
 import com.example.myapplication.ManageEvents.Workshop;
 import com.example.myapplication.R;
+import com.example.myapplication.Registration.EventRegistration;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class WorkshopEventActivityDetails extends Fragment {
     View view;
-    private TextView activityTitle, activityDescription, activityDate, activityVenue,requirments,registrationFee,registrationFull;
+    private TextView activityTitle, activityDescription, activityDate, activityVenue,requirments,registrationFee,registrationFull,eventName,activityType;
     private Button registerButton,checkAvailabilityButton;
-    ProgressBar dataloadProgressbar,availabilityProgressbar;
-    String activityId="",availability;
+    ProgressBar dataloadProgressbar,availabilityProgressbar,registrationProgressbar;
+    String activityId="",availability,eventId;
     FirebaseFirestore firestore;
 
     public WorkshopEventActivityDetails() {
@@ -50,6 +51,11 @@ public class WorkshopEventActivityDetails extends Fragment {
         dataloadProgressbar.setVisibility(View.GONE);
         availabilityProgressbar.setVisibility(View.GONE);
         checkAvailabilityButton = view.findViewById(R.id.checkAvailabilityButton);
+        eventName=view.findViewById(R.id.eventName);
+        registrationFull=view.findViewById(R.id.registrationFull);
+        registrationProgressbar=view.findViewById(R.id.registrationProgressbar);
+        registrationProgressbar.setVisibility(View.GONE);
+        activityType=view.findViewById(R.id.activityType);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
@@ -66,6 +72,7 @@ public class WorkshopEventActivityDetails extends Fragment {
 
         if (getArguments() != null) {
             activityId = getArguments().getString("activityId");
+            eventId = getArguments().getString("eventId");
         }
         Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
         dataloadProgressbar.setVisibility(View.VISIBLE);
@@ -78,6 +85,27 @@ public class WorkshopEventActivityDetails extends Fragment {
                 checkAvailability(activityId);
             }
         });
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registrationProgressbar.setVisibility(View.VISIBLE);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("activityName", activityTitle.getText().toString());
+                bundle.putString("eventName", eventName.getText().toString());
+                bundle.putString("eventSchedule", activityDate.getText().toString());
+                bundle.putString("activityType", activityType.getText().toString());
+                bundle.putString("registrationFee", registrationFee.getText().toString());
+                bundle.putString("activityId", activityId);
+                bundle.putString("eventId", eventId);
+                EventRegistration eventRegistration = new EventRegistration();
+                eventRegistration.setArguments(bundle);
+                registrationProgressbar.setVisibility(View.GONE);
+                getFragment(eventRegistration);
+            }
+        });
+
 
         return view;
     }
@@ -104,9 +132,11 @@ public class WorkshopEventActivityDetails extends Fragment {
                         Log.d("CollegeEventActivityDetails", "Activity Description: " + activity.getWorkshopDescription());
 
                         if (activity != null) {
+                            eventName.setText(activity.getEventName());
                             activityTitle.setText(activity.getWorkshopTitle());
                             activityDescription.setText(activity.getWorkshopDescription());
                             activityDate.setText(activity.getWorkshopDate());
+                            activityType.setText(activity.getActivityType());
                             activityVenue.setText(activity.getWorkshopVenue());
                             requirments.setText(activity.getSpecialRequirements());
                             registrationFee.setText(activity.getRegistrationFees());
@@ -135,8 +165,8 @@ public class WorkshopEventActivityDetails extends Fragment {
                     if (documentSnapshot.exists()) {
                         Workshop activity = documentSnapshot.toObject(Workshop.class);
                         Log.d("CollegeEventActivityDetails", "Activity Name: " + activity.getWorkshopTitle());
-                        Log.d("CollegeEventActivityDetails", "Activity Avaialability: " + activity.getavailability());
-                        availability=activity.getavailability().toString();
+                        Log.d("CollegeEventActivityDetails", "Activity Avaialability: " + activity.getAvailability());
+                        availability=activity.getAvailability().toString();
                         int Availability=Integer.parseInt(availability);
                         if(Availability>0){
                             availabilityProgressbar.setVisibility(View.GONE);

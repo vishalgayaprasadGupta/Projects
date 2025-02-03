@@ -1,8 +1,8 @@
 package com.example.myapplication.fragements;
 
 public class Seminar {
-    String seminarTitle,seminarDescription,seminarDate,seminarVenue,seminarDuration;
-    String speakerName,speakerBio,registrationFeeSeminar,seminarAgenda,activityId,eventType,eventId,specialRequirements,availability;
+    String activityName,activtyDescription,activtiyDate,activtiyVenue,availability,eventId,activtiyDuration,eventName;
+    String speakerName,speakerBio,registrationFee,seminarAgenda,activityId,eventType,specialRequirements,activityType;
 
     public String getActivityId() {
         return activityId;
@@ -20,22 +20,40 @@ public class Seminar {
         this.eventType = eventType;
     }
 
-    public Seminar(String seminarTitle, String seminarDescription, String seminarDate, String seminarVenue, String seminarDuration, String speakerName, String speakerBio, String registrationFeeSeminar, String seminarAgenda,String eventId,String eventType,String specialRequirements,String availability) {
-        this.seminarTitle = seminarTitle;
-        this.seminarDescription = seminarDescription;
-        this.seminarDate = seminarDate;
-        this.seminarVenue = seminarVenue;
-        this.seminarDuration = seminarDuration;
+    public Seminar(String eventName,String activityName, String activtyDescription, String activtiyDate, String activtiyVenue, String activtiyDuration, String speakerName, String speakerBio, String registrationFee, String seminarAgenda,String eventId,String eventType,String specialRequirements,String availability,String activityType) {
+        this.activityName = activityName;
+        this.activtyDescription = activtyDescription;
+        this.activtiyDate = activtiyDate;
+        this.activtiyVenue = activtiyVenue;
+        this.activtiyDuration = activtiyDuration;
         this.speakerName = speakerName;
         this.speakerBio = speakerBio;
-        this.registrationFeeSeminar = registrationFeeSeminar;
+        this.registrationFee = registrationFee;
         this.seminarAgenda = seminarAgenda;
         this.eventId=eventId;
         this.eventType=eventType;
         this.specialRequirements=specialRequirements;
         this.availability=availability;
+        this.activityType=activityType;
+        this.eventName=eventName;
     }
     public Seminar() {
+    }
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
+    public String getActivityType() {
+        return activityType;
+    }
+
+    public void setActivityType(String activityType) {
+        this.activityType = activityType;
     }
 
     public String getAvailability() {
@@ -63,43 +81,43 @@ public class Seminar {
     }
 
     public String getSeminarTitle() {
-        return seminarTitle;
+        return activityName;
     }
 
-    public void setSeminarTitle(String seminarTitle) {
-        this.seminarTitle = seminarTitle;
+    public void setSeminarTitle(String activityName) {
+        this.activityName = activityName;
     }
 
     public String getSeminarDescription() {
-        return seminarDescription;
+        return activtyDescription;
     }
 
-    public void setSeminarDescription(String seminarDescription) {
-        this.seminarDescription = seminarDescription;
+    public void setSeminarDescription(String activtyDescription) {
+        this.activtyDescription = activtyDescription;
     }
 
     public String getSeminarDate() {
-        return seminarDate;
+        return activtiyDate;
     }
 
-    public void setSeminarDate(String seminarDate) {
-        this.seminarDate = seminarDate;
+    public void setSeminarDate(String activtiyDate) {
+        this.activtiyDate = activtiyDate;
     }
 
     public String getSeminarVenue() {
-        return seminarVenue;
+        return activtiyVenue;
     }
 
-    public void setSeminarVenue(String seminarVenue) {
-        this.seminarVenue = seminarVenue;
+    public void setSeminarVenue(String activtiyVenue) {
+        this.activtiyVenue = activtiyVenue;
     }
 
     public String getSeminarDuration() {
-        return seminarDuration;
+        return activtiyDuration;
     }
 
-    public void setSeminarDuration(String seminarDuration) {
-        this.seminarDuration = seminarDuration;
+    public void setSeminarDuration(String activtiyDuration) {
+        this.activtiyDuration = activtiyDuration;
     }
 
     public String getSpeakerName() {
@@ -119,11 +137,11 @@ public class Seminar {
     }
 
     public String getRegistrationFeeSeminar() {
-        return registrationFeeSeminar;
+        return registrationFee;
     }
 
     public void setRegistrationFeeSeminar(String registrationFeeSeminar) {
-        this.registrationFeeSeminar = registrationFeeSeminar;
+        this.registrationFee = registrationFee;
     }
 
     public String getSeminarAgenda() {

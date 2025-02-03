@@ -55,7 +55,7 @@ public class WorkshopActivityList extends Fragment {
         activityRecyclerView.setAdapter(activityAdapter);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
@@ -63,7 +63,6 @@ public class WorkshopActivityList extends Fragment {
                             String activityId = getArguments().getString("activityId");
                             String eventId=getArguments().getString("eventId");
                             String eventType=getArguments().getString("eventType");
-                            // Pass activityId to the previous fragment
                             Bundle bundle = new Bundle();
                             bundle.putString("activityId", activityId);
                             bundle.putString("eventId",eventId);
@@ -78,7 +77,6 @@ public class WorkshopActivityList extends Fragment {
                 }
         );
 
-        // Set the click listener
         activityAdapter.setOnItemClickListener(this::onItemClick);
 
         fetchActivities(eventId);
@@ -86,8 +84,8 @@ public class WorkshopActivityList extends Fragment {
     }
 
     private void fetchActivities(String eventId) {
-        db.collection("EventActivities") // Assuming your Firestore collection is named "activity"
-                .whereEqualTo("eventId", eventId) // Match the eventId field in Firestore
+        db.collection("EventActivities")
+                .whereEqualTo("eventId", eventId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -96,7 +94,7 @@ public class WorkshopActivityList extends Fragment {
                             showNoEventDialog();
                         } else {
                             activityAdapter = new WorkshopActivtiyListAdapater(activity);
-                            activityAdapter.setOnItemClickListener(this::onItemClick); // Re-attach the listener
+                            activityAdapter.setOnItemClickListener(this::onItemClick);
                             activityRecyclerView.setAdapter(activityAdapter);
                         }
                     } else {
@@ -120,7 +118,6 @@ public class WorkshopActivityList extends Fragment {
     }
 
     public void onItemClick(String activtiyId) {
-        // Navigate to the next fragment
         Toast.makeText(getActivity(), "Button clicked", Toast.LENGTH_SHORT).show();
         String eventType=getArguments().getString("eventType");
         String eventId=getArguments().getString("eventId");

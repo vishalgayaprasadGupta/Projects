@@ -12,9 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.myapplication.ManageEvents.InterCollege;
@@ -32,6 +35,8 @@ public class addInterCollegiateActivity extends Fragment {
     private FirebaseFirestore db;
     private EditText eventName, eventDescription, eventVenue,eventRules,availability,registrationFee,eventDate;;
     private Button addEventButton;
+    Spinner activityTypeSpinner;
+    String activityType,EventName;
     ProgressBar addEventDetails;
     public addInterCollegiateActivity() {
         // Required empty public constructor
@@ -55,6 +60,30 @@ public class addInterCollegiateActivity extends Fragment {
         addEventDetails=view.findViewById(R.id.intercollegeProgressbar);
         addEventDetails.setVisibility(View.INVISIBLE);
 
+        activityTypeSpinner = view.findViewById(R.id.eventTypeSpinner);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.activtiy_type,
+                android.R.layout.simple_spinner_dropdown_item
+        );
+        activityTypeSpinner.setAdapter(adapter);
+
+        activityTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                activityType = parent.getItemAtPosition(position).toString();
+
+                if (activityType.equals("Activtiy Type")) {
+                    activityType = null;
+                }
+                Toast.makeText(requireContext(), "Selected: " + activityType, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 requireActivity(),
                 new OnBackPressedCallback(true) {
@@ -63,7 +92,6 @@ public class addInterCollegiateActivity extends Fragment {
                         if (getArguments() != null && getArguments().containsKey("activityId")) {
                             String activityId = getArguments().getString("activityId");
 
-                            // Pass activityId to the previous fragment
                             Bundle bundle = new Bundle();
                             bundle.putString("activityId", activityId);
 
@@ -126,9 +154,9 @@ public class addInterCollegiateActivity extends Fragment {
             Log.d("addEvent", "Event ID (Passed): " + eventId);
             eventType = getArguments().getString("eventType"); // Retrieve eventType passed from previous fragment
             Log.d("addEvent", "Event Type (Passed): " + eventType);
+            EventName=getArguments().getString("eventName");
         }
 
-        // Retrieve input fields
         String name = eventName.getText().toString();
         String description = eventDescription.getText().toString();
         String date = eventDate.getText().toString();
@@ -143,10 +171,9 @@ public class addInterCollegiateActivity extends Fragment {
             Toast.makeText(getActivity(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
         }
 
-        // Log the retrieved values
         Log.d("addEvent", "Event ID (Passed): " + eventId);
 
-        InterCollege activity = new InterCollege(name, description,  venue,date, rules,  availability,registrationFee,eventId,eventType);
+        InterCollege activity = new InterCollege(EventName,name, description,  venue,date, rules,  availability,registrationFee,eventId,eventType,activityType);
 
         db.collection("EventActivities")
                 .add(activity)

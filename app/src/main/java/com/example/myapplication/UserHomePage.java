@@ -131,21 +131,19 @@ public class UserHomePage extends AppCompatActivity {
 
     public void onBackPressButton() {
         if (bottomNavigationView.getSelectedItemId() == R.id.Home) {
-            // Show exit confirmation dialog when on UserHome Page
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("Exit App")
                     .setMessage("Are you sure you want to exit?")
                     .setPositiveButton("Yes", (dialog1, which) -> {
-                        finish(); // Close the app
+                        finish();
                     })
-                    .setNegativeButton("No", (dialog1, which) -> dialog1.dismiss()) // Dismiss dialog
-                    .setCancelable(true) // Optional: Allow dismissing with the back button
+                    .setNegativeButton("No", (dialog1, which) -> dialog1.dismiss())
+                    .setCancelable(true)
                     .create();
 
-            dialog.setCanceledOnTouchOutside(true); // Allow dismissing by touching outside
+            dialog.setCanceledOnTouchOutside(true);
             dialog.show();
         } else {
-            // Navigate back to the UserHome Page
             bottomNavigationView.setSelectedItemId(R.id.Home);
         }
     }

@@ -49,13 +49,15 @@ public class InterCollegeEventList extends Fragment {
         fetchEvents();
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                getFragment(new UpdateEventDetails());
-            }
-        });
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (getActivity() != null) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }
+                    }
+                });
         return view;
     }
 

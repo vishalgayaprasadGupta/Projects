@@ -14,6 +14,7 @@
         android:layout_margin="16dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="12dp"
+        android:backgroundTint="#EDEDED"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,7 +24,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- Scrollable Content -->
             <ScrollView
                 android:id="@+id/scrollView"
                 android:layout_width="0dp"
@@ -41,7 +41,17 @@
                     android:orientation="vertical"
                     android:padding="8dp">
 
-                    <!-- Seminar Title -->
+                    <TextView
+                        android:id="@+id/eventName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Event Name"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="15dp"/>
+
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -74,7 +84,6 @@
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
-                    <!-- Description -->
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -106,7 +115,6 @@
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
-                    <!-- Date -->
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -138,7 +146,37 @@
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
-                    <!-- Venue -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        app:cardCornerRadius="12dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Activity Type"
+                                android:textColor="@android:color/darker_gray"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/activityType"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingTop="4dp"
+                                android:text="ActivityType ."
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -170,7 +208,6 @@
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
-                    <!-- Duration -->
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -202,7 +239,6 @@
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
-                    <!-- Speaker Name -->
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -234,7 +270,6 @@
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
-                    <!-- Speaker Bio -->
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -266,7 +301,6 @@
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
-                    <!-- Seminar Agenda -->
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -298,7 +332,6 @@
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
-                    <!-- Fee -->
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -329,7 +362,7 @@
                                 android:textSize="16sp" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
-                    <!-- Fee -->
+
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -364,7 +397,6 @@
                 </LinearLayout>
             </ScrollView>
 
-            <!-- Button Layout -->
             <LinearLayout
                 android:id="@+id/buttonLayout"
                 android:layout_width="0dp"
@@ -400,6 +432,9 @@
                         android:layout_gravity="center" />
                 </FrameLayout>
 
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
                 <Button
                     android:id="@+id/registerButton"
                     android:layout_width="250dp"
@@ -411,6 +446,12 @@
                     android:textColor="@android:color/white"
                     android:textSize="16sp"
                     android:visibility="gone" />
+                    <ProgressBar
+                        android:id="@+id/registrationProgressbar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"/>
+                </FrameLayout>
 
                 <TextView
                     android:id="@+id/registrationFull"
@@ -419,7 +460,7 @@
                     android:layout_marginTop="10dp"
                     android:text="Registrations Full!"
                     android:textColor="@color/red"
-                    android:textSize="20dp"
+                    android:textSize="25dp"
                     android:textStyle="bold"
                     android:visibility="gone"
                     android:layout_marginBottom="10dp"/>

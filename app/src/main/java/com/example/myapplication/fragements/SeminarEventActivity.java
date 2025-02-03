@@ -109,6 +109,7 @@ public class SeminarEventActivity extends Fragment {
         SeminarEventActivityDetails activitiesFragment = new SeminarEventActivityDetails();
         Bundle bundle = new Bundle();
         bundle.putString("activityId", activtiyId);
+        bundle.putString("eventId", eventId);
         activitiesFragment.setArguments(bundle);
         getFragment(activitiesFragment);
     }

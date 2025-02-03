@@ -8,10 +8,11 @@ public class User {
     private String contact;
     private String college;
     private String password;
-    private  String status;
+    private  String status,uid;
     private String isVerificationEmailsend;
+    private  String isEmailverified;
 
-    public User(String status,String role, String name, String gender, String email, String contact, String college, String password,String isVerificationEmailsend) {
+    public User(String uid,String status,String role, String name, String gender, String email, String contact, String college, String password,String isVerificationEmailsend,String isEmailverified) {
         this.status=status;
         this.role = role;
         this.name = name;
@@ -21,6 +22,27 @@ public class User {
         this.college = college;
         this.password = password;
         this.isVerificationEmailsend=isVerificationEmailsend;
+        this.uid=uid;
+        this.isEmailverified=isEmailverified;
+    }
+
+
+    public User() {
+    }
+
+    public String getIsEmailverified() {
+        return isEmailverified;
+    }
+
+    public void setIsEmailverified(String isEmailverified) {
+        this.isEmailverified = isEmailverified;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getIsVerificationEmailsend() {

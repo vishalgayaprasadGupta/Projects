@@ -12,15 +12,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.ManageEvents.UpdateEvent.UpdatePage;
 import com.example.myapplication.R;
 import com.example.myapplication.adminfragements.AdminHome;
-import com.example.myapplication.databinding.FragmentAddSeminarDetailsBinding;
 import com.example.myapplication.fragements.Seminar;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -31,6 +33,8 @@ public class addSeminarActivity extends Fragment {
     FirebaseFirestore firestore;
     TextView seminarTitle,seminarDescription,seminarDate,seminarVenue,seminarDuration,speakerName,speakerBio,registrationFeeSeminar,seminarAgenda,requirments,availability;
     Button addEventButton;
+    Spinner activityTypeSpinner;
+    String activityType,EventName="";
     ProgressBar addEventDetails;
     public addSeminarActivity() {
         // Required empty public constructor
@@ -40,7 +44,7 @@ public class addSeminarActivity extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view= inflater.inflate(R.layout.fragment_add_seminar_details, container, false);
+        view= inflater.inflate(R.layout.fragment_add_seminar_activity, container, false);
 
         firestore = FirebaseFirestore.getInstance();
 
@@ -58,6 +62,30 @@ public class addSeminarActivity extends Fragment {
         addEventDetails=view.findViewById(R.id.seminarProgressbar);
         addEventDetails.setVisibility(View.INVISIBLE);
 
+        activityTypeSpinner = view.findViewById(R.id.eventTypeSpinner);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.activtiy_type,
+                android.R.layout.simple_spinner_dropdown_item
+        );
+        activityTypeSpinner.setAdapter(adapter);
+
+        activityTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                activityType = parent.getItemAtPosition(position).toString();
+
+                if (activityType.equals("Activtiy Type")) {
+                    activityType = null;
+                }
+                Toast.makeText(requireContext(), "Selected: " + activityType, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 requireActivity(),
                 new OnBackPressedCallback(true) {
@@ -66,7 +94,6 @@ public class addSeminarActivity extends Fragment {
                         if (getArguments() != null && getArguments().containsKey("activityId")) {
                             String activityId = getArguments().getString("activityId");
 
-                            // Pass activityId to the previous fragment
                             Bundle bundle = new Bundle();
                             bundle.putString("activityId", activityId);
 
@@ -127,9 +154,9 @@ public class addSeminarActivity extends Fragment {
             eventId = getArguments().getString("eventId"); // Retrieve eventId passed from previous fragment
             Log.d("addEvent", "Event ID (Passed): " + eventId);
             eventType = getArguments().getString("eventType");
+            EventName=getArguments().getString("eventName");
         }
 
-        // Retrieve input fields
         String name = seminarTitle.getText().toString();
         String description = seminarDescription.getText().toString();
         String date = seminarDate.getText().toString();
@@ -148,11 +175,9 @@ public class addSeminarActivity extends Fragment {
                 availability.isEmpty()||registrationFee.isEmpty()){
             Toast.makeText(getActivity(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
         }
-
-        // Log the retrieved values
         Log.d("addEvent", "Event ID (Passed): " + eventId);
 
-        Seminar activity = new Seminar(name, description, date, venue, Duration,speaker,bio,registrationFee,agenda,eventId,eventType,requirement,availability);
+        Seminar activity = new Seminar(EventName,name, description, date, venue, Duration,speaker,bio,registrationFee,agenda,eventId,eventType,requirement,availability,activityType);
 
         firestore.collection("EventActivities")
                 .add(activity)

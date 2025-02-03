@@ -120,7 +120,7 @@
                         android:gravity="center_vertical" />
 
                     <TextView
-                        android:id="@+id/addCollegeEvents"
+                        android:id="@+id/updateOrganiserDetails"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="➔"
@@ -151,14 +151,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Delete Event Organiser"
+                        android:text="Restrict Event Organiser"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
                         android:gravity="center_vertical" />
 
                     <TextView
-                        android:id="@+id/updateEvents"
+                        android:id="@+id/deleteOrganiser"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="➔"
@@ -195,7 +195,7 @@
                         android:gravity="center_vertical" />
 
                     <TextView
-                        android:id="@+id/deleteEvents"
+                        android:id="@+id/exportOrganiserDetails"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="➔"

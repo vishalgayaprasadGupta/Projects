@@ -5,26 +5,26 @@ public class Event {
     private String eventType;
     private String eventStatus;
     private String eventDepartment;
-    private String selectStream;
+    private String eventStream;
 
 
     public Event() {
         // Firestore needs a no-argument constructor to deserialize the object
     }
-    public Event(String name, String eventType,String eventStatus,String selectStream,String eventDepartment) {
+    public Event(String name, String eventType,String eventStatus,String eventStream,String eventDepartment) {
         this.name = name;
         this.eventType = eventType;
         this.eventStatus=eventStatus;
-        this.selectStream=selectStream;
+        this.eventStream=eventStream;
         this.eventDepartment=eventDepartment;
     }
 
-    public String getSelectStream() {
-        return selectStream;
+    public String geteventStream() {
+        return eventStream;
     }
 
-    public void setSelectStream(String selectStream) {
-        this.selectStream = selectStream;
+    public void seteventStream(String eventStream) {
+        this.eventStream = eventStream;
     }
 
     public String getEventDepartment() {

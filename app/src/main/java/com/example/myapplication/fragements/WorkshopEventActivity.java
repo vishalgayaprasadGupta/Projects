@@ -23,7 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkshopEventActivtiy extends Fragment {
+public class WorkshopEventActivity extends Fragment {
 
     private View view;
     private RecyclerView activityRecyclerView;
@@ -31,7 +31,7 @@ public class WorkshopEventActivtiy extends Fragment {
     private WorkshopActivtiyAdapater activityAdapter;
     private String eventId = "";
 
-    public WorkshopEventActivtiy() {
+    public WorkshopEventActivity() {
         // Required empty public constructor
     }
 
@@ -108,6 +108,7 @@ public class WorkshopEventActivtiy extends Fragment {
         WorkshopEventActivityDetails activitiesFragment = new WorkshopEventActivityDetails();
         Bundle bundle = new Bundle();
         bundle.putString("activityId", activtiyId);
+        bundle.putString("eventId", eventId);
         activitiesFragment.setArguments(bundle);
         getFragment(activitiesFragment);
     }

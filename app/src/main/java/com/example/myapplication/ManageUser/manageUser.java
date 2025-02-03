@@ -94,13 +94,13 @@ public class manageUser extends Fragment {
         deactivateUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragment(new fetchUserDetailsforDeactivate());
+                getFragment(new DeActivateUser());
             }
         });
         activate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragment(new fetchUserDetailsandActivate());
+                getFragment(new ActivateUser());
             }
         });
         export.setOnClickListener(new View.OnClickListener() {
@@ -158,7 +158,7 @@ public class manageUser extends Fragment {
     private void fetchUserData() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        db.collection("User").get().addOnCompleteListener(task -> {
+        db.collection("User").whereEqualTo("role", "User").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Map<String, Object>> userList = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {

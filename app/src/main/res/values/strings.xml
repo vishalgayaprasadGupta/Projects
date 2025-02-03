@@ -35,5 +35,10 @@
         <item>User</item>
         <item>Event Organiser</item>
     </string-array>
+    <string-array name="activtiy_type">
+        <item>Activtiy Type</item>
+        <item>Individual</item>
+        <item>Group</item>
+    </string-array>
 
 </resources>

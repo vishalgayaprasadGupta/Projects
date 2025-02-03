@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,12 +22,17 @@ import com.example.myapplication.ManageEvents.Activity;
 import com.example.myapplication.ManageEvents.InterCollege;
 import com.example.myapplication.ManageEvents.UpdateEvent.UpdatePage;
 import com.example.myapplication.R;
+import com.example.myapplication.manageEvents;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class updateIntercollegeEventActivity extends Fragment {
     View view;
     private EditText activityName, activityDescription, activityDate, activityVenue,activityRules,registrationFee,availability;
     private Button update;
+    TextView back;
+    ProgressBar progressBar;;
+    String activityId="",eventType="",eventId;
+
     FirebaseFirestore firestore;
 
     public updateIntercollegeEventActivity() {
@@ -37,7 +43,6 @@ public class updateIntercollegeEventActivity extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view= inflater.inflate(R.layout.fragment_update_intercollege_event_activity, container, false);
-        String activityId="";
         activityName = view.findViewById(R.id.activityName);
         activityDescription = view.findViewById(R.id.activityDescription);
         activityDate = view.findViewById(R.id.activityDate);
@@ -46,30 +51,30 @@ public class updateIntercollegeEventActivity extends Fragment {
         registrationFee=view.findViewById(R.id.registrationFee);
         availability=view.findViewById(R.id.availability);
         update = view.findViewById(R.id.updateEvent);
+        progressBar = view.findViewById(R.id.intercollegeProgressbar);
+        progressBar.setVisibility(View.GONE);
+        back=view.findViewById(R.id.back);
 
-        update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String activityId = getArguments().getString("activityId");
-                updateEventDetails(activityId);
-            }
-            });
-
+        if (getArguments() != null) {
+            activityId = getArguments().getString("activityId");
+            eventType=getArguments().getString("eventType");
+            eventId=getArguments().getString("eventId");
+            Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
+        }
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
                         if (getArguments() != null && getArguments().containsKey("activityId")) {
-                            String activityId = getArguments().getString("activityId");
-                            String eventId=getArguments().getString("eventId");
-                            String eventType=getArguments().getString("eventType");
-                            // Pass activityId to the previous fragment
+                            activityId = getArguments().getString("activityId");
+                            eventId=getArguments().getString("eventId");
+                            eventType=getArguments().getString("eventType");
                             Bundle bundle = new Bundle();
                             bundle.putString("activityId", activityId);
                             bundle.putString("eventId",eventId);
                             bundle.putString("eventType",eventType);
-                            InterCollegeActivityList updatePage = new InterCollegeActivityList();
+                            manageEvents updatePage = new manageEvents();
                             updatePage.setArguments(bundle);
                             getFragment(updatePage);
                         } else {
@@ -79,15 +84,34 @@ public class updateIntercollegeEventActivity extends Fragment {
                 }
         );
 
-
         firestore = FirebaseFirestore.getInstance();
-        // Get the eventId from the bundle
-        if (getArguments() != null) {
-            activityId = getArguments().getString("activityId"); // Retrieve the activityId passed from the previous fragment
-        }
-        Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
-        // Fetch event details from your data source (Firestore, Database, etc.)
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("activityId", activityId);
+                bundle.putString("eventId",eventId);
+                bundle.putString("eventType",eventType);
+                UpdatePage updatePage = new UpdatePage();
+                updatePage.setArguments(bundle);
+                if (getActivity() != null) {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+                getFragment(updatePage);
+            }
+        });
         fetchEventDetails(activityId);
+
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
+                String activityId = getArguments().getString("activityId");
+                updateEventDetails(activityId);
+            }
+        });
+
         return view;
     }
     private void fetchEventDetails(String activityId) {
@@ -101,21 +125,17 @@ public class updateIntercollegeEventActivity extends Fragment {
         Log.d("CollegeEventActivityDetails", "Received activityId : " + activityId);
 
 
-        // Query Firestore to get the activity details using the activityId
-        firestore.collection("EventActivities")  // Collection name, replace if needed
-                .document(activityId)  // Use the activityId to fetch the document
+        firestore.collection("EventActivities").document(activityId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     Log.d("CollegeEventActivityDetails", "Received activityId 2: " + activityId);
 
                     if (documentSnapshot.exists()) {
-                        // Map the document to an Activity object
                         InterCollege activity = documentSnapshot.toObject(InterCollege.class);
                         Log.d("CollegeEventActivityDetails", "Activity Name: " + activity.getActivitytName());
                         Log.d("CollegeEventActivityDetails", "Activity Description: " + activity.getActivityDescription());
 
                         if (activity != null) {
-                            // Set the activity details to the respective TextViews
                             activityName.setText(activity.getActivitytName());
                             activityDescription.setText(activity.getActivityDescription());
                             activityDate.setText(activity.getActivityDate());
@@ -137,7 +157,6 @@ public class updateIntercollegeEventActivity extends Fragment {
     }
 
     private void updateEventDetails(String activityId) {
-        // Fetch the updated data from the fields
         String updatedName = activityName.getText().toString();
         String updatedDescription = activityDescription.getText().toString();
         String updatedDate = activityDate.getText().toString();
@@ -146,14 +165,12 @@ public class updateIntercollegeEventActivity extends Fragment {
         String updatedRegistrationFee = registrationFee.getText().toString();
         String updatedAvailability = availability.getText().toString();
 
-        // Validate the inputs (you can add your own validation logic here)
         if (updatedName.isEmpty() || updatedDescription.isEmpty() || updatedDate.isEmpty() ||
                 updatedVenue.isEmpty() || updatedRules.isEmpty() || updatedRegistrationFee.isEmpty()) {
             Toast.makeText(getContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Directly update the fields in Firestore
         firestore.collection("EventActivities")
                 .document(activityId)
                 .update(
@@ -167,12 +184,12 @@ public class updateIntercollegeEventActivity extends Fragment {
                 )
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(getContext(), "Event details updated successfully", Toast.LENGTH_SHORT).show();
-                    // Optionally, you can navigate to another fragment or show a success message
                     getFragment(new UpdatePage());
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Error updating event details", Toast.LENGTH_SHORT).show();
                 });
+        progressBar.setVisibility(View.GONE);
     }
 
     private void showNoEventDialog() {

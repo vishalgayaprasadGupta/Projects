@@ -21,15 +21,16 @@ import com.example.myapplication.ManageEvents.Activity;
 import com.example.myapplication.ManageEvents.InterCollege;
 import com.example.myapplication.ManageEvents.Workshop;
 import com.example.myapplication.R;
+import com.example.myapplication.Registration.EventRegistration;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SeminarEventActivityDetails extends Fragment {
     View view;
-    private TextView activityTitle, activityDescription, activityDate, activityVenue,activityDuration,activitySpeakerName,activitySpeakerBio,activityAgenda,requirments,registrationFee,registrationFull;
+    private TextView activityTitle, activityDescription, activityDate, activityVenue,activityDuration,activitySpeakerName,activitySpeakerBio,activityAgenda,requirments,registrationFee,registrationFull,eventName,activityType;
     private Button registerButton,checkAvailabilityButton;
     FirebaseFirestore firestore;
-    ProgressBar checkAvailabilityProgressbar,dataloadProgressbar;
-    String activityId="",availability;
+    ProgressBar checkAvailabilityProgressbar,dataloadProgressbar,registrationProgressbar;
+    String activityId="",availability,eventId;
 
     public SeminarEventActivityDetails() {
         // Required empty public constructor
@@ -56,7 +57,10 @@ public class SeminarEventActivityDetails extends Fragment {
         checkAvailabilityProgressbar.setVisibility(View.GONE);
         dataloadProgressbar=view.findViewById(R.id.dataloadProgressbar);
         dataloadProgressbar.setVisibility(View.GONE);
-
+        eventName=view.findViewById(R.id.eventName);
+        registrationProgressbar=view.findViewById(R.id.registrationProgressbar);
+        registrationProgressbar.setVisibility(View.GONE);
+        activityType=view.findViewById(R.id.activityType);
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
@@ -72,6 +76,7 @@ public class SeminarEventActivityDetails extends Fragment {
 
         if (getArguments() != null) {
             activityId = getArguments().getString("activityId");
+            eventId = getArguments().getString("eventId");
         }
         Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
         dataloadProgressbar.setVisibility(View.VISIBLE);
@@ -82,6 +87,26 @@ public class SeminarEventActivityDetails extends Fragment {
             public void onClick(View v) {
                 checkAvailabilityProgressbar.setVisibility(View.VISIBLE);
                 checkAvailability(activityId);
+            }
+        });
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registrationProgressbar.setVisibility(View.VISIBLE);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("activityName", activityTitle.getText().toString());
+                bundle.putString("eventName", eventName.getText().toString());
+                bundle.putString("eventSchedule", activityDate.getText().toString());
+                bundle.putString("activityType", activityType.getText().toString());
+                bundle.putString("registrationFee", registrationFee.getText().toString());
+                bundle.putString("activityId", activityId);
+                bundle.putString("eventId", eventId);
+                EventRegistration eventRegistration = new EventRegistration();
+                eventRegistration.setArguments(bundle);
+                registrationProgressbar.setVisibility(View.GONE);
+                getFragment(eventRegistration);
             }
         });
 
@@ -115,11 +140,13 @@ public class SeminarEventActivityDetails extends Fragment {
                             activityTitle.setText(activity.getSeminarTitle());
                             activityDescription.setText(activity.getSeminarDescription());
                             activityDate.setText(activity.getSeminarDate());
+                            activityType.setText(activity.getActivityType());
                             activityVenue.setText(activity.getSeminarVenue());
                             activityDuration.setText(activity.getSeminarDuration());
                             activitySpeakerName.setText(activity.getSpeakerName());
                             activitySpeakerBio.setText(activity.getSpeakerBio());
                             activityAgenda.setText(activity.getSeminarAgenda());
+                            eventName.setText(activity.getEventName());
                             if(activity.getSpecialRequirements()==null){
                                 requirments.setText("N/A");
                             }else{
@@ -179,7 +206,7 @@ public class SeminarEventActivityDetails extends Fragment {
                     registerButton.setVisibility(View.GONE);
                     registrationFull.setVisibility(View.GONE);
                     Toast.makeText(getContext(), "Error fetching event details", Toast.LENGTH_SHORT).show();
-                    getFragment(new CollegeEvents()); // Navigate to the CollegeEvents fragment on failure
+                    getFragment(new CollegeEvents());
                 });
     }
 

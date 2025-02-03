@@ -141,6 +141,10 @@ public class LoginPage extends AppCompatActivity {
                                         if (status.equals("Pending")) {
                                             if (user.isEmailVerified()) {
                                                 if ("Admin".equals(role) || "User".equals(role)) {
+                                                    if("false".equals(isEmailverified)) {
+                                                        isEmailverified(user.getUid());
+                                                    }
+                                                    updateEmailSendStatus(user.getUid());
                                                     updateUserStatus(user.getUid(), emailId);
                                                 } else if ("Event Organiser".equals(role)) {
                                                     if("false".equals(isEmailverified)) {
@@ -149,7 +153,6 @@ public class LoginPage extends AppCompatActivity {
                                                     if ("false".equals(isVerificationEmailsend)) {
                                                         organiserAccountVerificationEmail.sendEventOrganiserAccountVerificationEmail(emailId, name);
                                                         updateEmailSendStatus(user.getUid());
-                                                        return;
                                                     } else {
                                                         Toast.makeText(LoginPage.this, "Your account is under review. Please wait for admin approval.", Toast.LENGTH_LONG).show();
                                                         return;
@@ -224,7 +227,6 @@ public class LoginPage extends AppCompatActivity {
                 .update("isVerificationEmailsend", "true")
                 .addOnSuccessListener(aVoid -> {
                     Log.d(TAG, "Email verification status updated to true");
-                    Toast.makeText(LoginPage.this, "Your account is under review. Please wait for admin approval.", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to update email verification status", e));
     }

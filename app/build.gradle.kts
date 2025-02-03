@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.kotlin.android)
 }
 
 val localprops= Properties()
@@ -15,7 +16,7 @@ if (file.exists()) {
 
 android {
     namespace = "com.example.myapplication"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.myapplication"
@@ -24,6 +25,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         buildConfigField("String", "SENDGRID_API_KEY", localprops.getProperty("SENDGRID_API_KEY"))
+        buildConfigField("String", "RAZORPAY_API_TEST_KEY", localprops.getProperty("RAZORPAY_API_TEST_KEY"))
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -44,6 +46,9 @@ android {
         viewBinding = true
         buildConfig=true
     }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 }
 
 dependencies {
@@ -61,11 +66,17 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     implementation(libs.recyclerview)
+    implementation(libs.core.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.itext)
+    implementation ("androidx.cardview:cardview:1.0.0")
+
     //Email sending
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("com.google.code.gson:gson:2.8.8")
+
+    //Razorpay
+    implementation ("com.razorpay:checkout:1.6.40")
 }

@@ -20,16 +20,17 @@ import android.widget.Toast;
 import com.example.myapplication.ManageEvents.Activity;
 import com.example.myapplication.ManageEvents.InterCollege;
 import com.example.myapplication.R;
+import com.example.myapplication.Registration.EventRegistration;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class IntercollegeEventActivityDetails extends Fragment {
     View view;
-    private TextView activityName, activityDescription, activityDate, activityVenue,activityRules,registrationFee,registrationFull;
+    private TextView activityName, activityDescription, activityDate, activityVenue,activityRules,registrationFee,registrationFull,eventName,activityType;
     private Button registerButton,checkAvailabilityButton;
     FirebaseFirestore firestore;
     String availability;
-    String activityId="";
-    ProgressBar checkAvailabilityProgressbar,dataLoadProgressbar;
+    String activityId="",eventId;
+    ProgressBar checkAvailabilityProgressbar,dataLoadProgressbar,registrationProgressbar;
 
     public IntercollegeEventActivityDetails() {
         // Required empty public constructor
@@ -37,7 +38,7 @@ public class IntercollegeEventActivityDetails extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view= inflater.inflate(R.layout.fragment_event_college_activity_details, container, false);
+        view= inflater.inflate(R.layout.fragment_intercollege_event_activity_details, container, false);
         activityName = view.findViewById(R.id.activityName);
         activityDescription = view.findViewById(R.id.activityDescription);
         activityDate = view.findViewById(R.id.activitySchedule);
@@ -53,17 +54,10 @@ public class IntercollegeEventActivityDetails extends Fragment {
         checkAvailabilityProgressbar.setVisibility(View.GONE);
         dataLoadProgressbar=view.findViewById(R.id.dataloadProgressbar);
         dataLoadProgressbar.setVisibility(View.GONE);
-
-        requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),
-                new OnBackPressedCallback(true) {
-                    @Override
-                    public void handleOnBackPressed() {
-                        if (getActivity() != null) {
-                            getFragment(new InterCollegeEvents());
-                        }
-                    }
-                });
+        eventName=view.findViewById(R.id.eventName);
+        registrationProgressbar=view.findViewById(R.id.registationProgressbar);
+        registrationProgressbar.setVisibility(View.GONE);
+        activityType=view.findViewById(R.id.activityType);
 
         firestore = FirebaseFirestore.getInstance();
 
@@ -80,6 +74,7 @@ public class IntercollegeEventActivityDetails extends Fragment {
 
         if (getArguments() != null) {
             activityId = getArguments().getString("activityId");
+            eventId = getArguments().getString("eventId");
         }
         Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
         dataLoadProgressbar.setVisibility(View.VISIBLE);
@@ -90,6 +85,26 @@ public class IntercollegeEventActivityDetails extends Fragment {
             public void onClick(View v) {
                 checkAvailabilityProgressbar.setVisibility(View.VISIBLE);
                 checkAvailability(activityId);
+            }
+        });
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registrationProgressbar.setVisibility(View.VISIBLE);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("activityName", activityName.getText().toString());
+                bundle.putString("eventName", eventName.getText().toString());
+                bundle.putString("eventSchedule", activityDate.getText().toString());
+                bundle.putString("activityType", activityType.getText().toString());
+                bundle.putString("registrationFee", registrationFee.getText().toString());
+                bundle.putString("activityId", activityId);
+                bundle.putString("eventId", eventId);
+                EventRegistration eventRegistration = new EventRegistration();
+                eventRegistration.setArguments(bundle);
+                registrationProgressbar.setVisibility(View.GONE);
+                getFragment(eventRegistration);
             }
         });
         return view;
@@ -158,9 +173,11 @@ public class IntercollegeEventActivityDetails extends Fragment {
                         Log.d("CollegeEventActivityDetails", "Activity Description: " + activity.getActivityDescription());
 
                         if (activity != null) {
+                            eventName.setText(activity.getEventName());
                             activityName.setText(activity.getActivitytName());
                             activityDescription.setText(activity.getActivityDescription());
                             activityDate.setText(activity.getActivityDate());
+                            activityType.setText(activity.getActivityType());
                             activityVenue.setText(activity.getActivityVenue());
                             activityRules.setText(activity.getActivityRules());
                             registrationFee.setText(activity.getRegistrationFee());

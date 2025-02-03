@@ -109,7 +109,7 @@ public class WorkshopsEvents extends Fragment {
 
     public void onItemClick(String eventId,String Status) {
        if(Status.equals("Active")){
-           WorkshopEventActivtiy activitiesFragment = new WorkshopEventActivtiy();
+           WorkshopEventActivity activitiesFragment = new WorkshopEventActivity();
            Bundle bundle = new Bundle();
            bundle.putString("eventId", eventId);
            activitiesFragment.setArguments(bundle);

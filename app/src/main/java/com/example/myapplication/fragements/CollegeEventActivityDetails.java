@@ -19,16 +19,17 @@ import android.widget.Toast;
 
 import com.example.myapplication.ManageEvents.Activity;
 import com.example.myapplication.R;
+import com.example.myapplication.Registration.EventRegistration;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class CollegeEventActivityDetails extends Fragment {
     View view;
-    private TextView activityName, activityDescription, activityDate, activityVenue,activityRules,registrationFee,registrationFull;
+    private TextView activityName, activityDescription, activityDate, activityVenue,activityRules,registrationFee,registrationFull,activityType,eventName;
     private Button checkAvailabilityButton, registerButton;
     FirebaseFirestore firestore;
     String availability;
-    String activityId="";
-    ProgressBar availabilityProgressbar,dataloadProgressbar;
+    String activityId="",eventId;
+    ProgressBar availabilityProgressbar,dataloadProgressbar,registrationProgressbar;
 
     public CollegeEventActivityDetails() {
         // Required empty public constructor
@@ -50,6 +51,10 @@ public class CollegeEventActivityDetails extends Fragment {
         availabilityProgressbar.setVisibility(View.INVISIBLE);
         dataloadProgressbar=view.findViewById(R.id.dataloadProgressbar);
         dataloadProgressbar.setVisibility(View.GONE);
+        activityType=view.findViewById(R.id.activityType);
+        eventName=view.findViewById(R.id.eventName);
+        registrationProgressbar=view.findViewById(R.id.registerProgressBar);
+        registrationProgressbar.setVisibility(View.GONE);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
@@ -66,6 +71,7 @@ public class CollegeEventActivityDetails extends Fragment {
 
         if (getArguments() != null) {
             activityId = getArguments().getString("activityId");
+            eventId = getArguments().getString("eventId");
         }
         Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
         dataloadProgressbar.setVisibility(View.VISIBLE);
@@ -76,6 +82,28 @@ public class CollegeEventActivityDetails extends Fragment {
             public void onClick(View v) {
                 availabilityProgressbar.setVisibility(View.VISIBLE);
                 checkAvailability(activityId);
+            }
+        });
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registrationProgressbar.setVisibility(View.VISIBLE);
+                String ActivityName = activityName.getText().toString();
+
+                Bundle bundle = new Bundle();
+                bundle.putString("activityName", ActivityName);
+                bundle.putString("eventName", eventName.getText().toString());
+                bundle.putString("eventSchedule", activityDate.getText().toString());
+                bundle.putString("activityType", activityType.getText().toString());
+                bundle.putString("registrationFee", registrationFee.getText().toString());
+                bundle.putString("activityId", activityId);
+                bundle.putString("eventId", eventId);
+
+                EventRegistration eventRegistration = new EventRegistration();
+                eventRegistration.setArguments(bundle);
+                registrationProgressbar.setVisibility(View.GONE);
+                getFragment(eventRegistration);
             }
         });
         return view;
@@ -106,6 +134,8 @@ public class CollegeEventActivityDetails extends Fragment {
                             activityDate.setText(activity.getDate());
                             activityVenue.setText(activity.getVenue());
                             activityRules.setText(activity.getRules());
+                            activityType.setText(activity.getActivityType());
+                            eventName.setText(activity.getEventName());
                             registrationFee.setText(activity.getRegistrationFee());
                             dataloadProgressbar.setVisibility(View.GONE);
                         } else {
@@ -137,6 +167,7 @@ public class CollegeEventActivityDetails extends Fragment {
                         availability=activity.getAvailability().toString();
                         int Availability=Integer.parseInt(availability);
                         if(Availability>0){
+                            Toast.makeText(getContext(), "Availability confirmed! Proceed with registration.", Toast.LENGTH_SHORT).show();
                             availabilityProgressbar.setVisibility(View.GONE);
                             checkAvailabilityButton.setVisibility(View.GONE);
                             registerButton.setVisibility(View.VISIBLE);
@@ -160,7 +191,7 @@ public class CollegeEventActivityDetails extends Fragment {
                     registerButton.setVisibility(View.GONE);
                     registrationFull.setVisibility(View.GONE);
                     Toast.makeText(getContext(), "Error fetching event details", Toast.LENGTH_SHORT).show();
-                    getFragment(new CollegeEvents()); // Navigate to the CollegeEvents fragment on failure
+                    getFragment(new CollegeEvents());
                 });
     }
 

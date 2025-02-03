@@ -51,7 +51,7 @@ public class AddUser extends Fragment {
     static final String USER = "User";
     CollectionReference userData;
     User user;
-    String Gender,Role,Status,isVerficationEmailSend;
+    String uid,Gender,Role,Status,isVerficationEmailSend,isEmailVerified;
     RadioButton selectedRadioButton;
     public AddUser() {
         // Required empty public constructor
@@ -88,6 +88,7 @@ public class AddUser extends Fragment {
         addUserProgressbar.setVisibility(View.INVISIBLE);
 
         isVerficationEmailSend="false";
+        isEmailVerified="false";
         radioGroup=view.findViewById(R.id.radioGroupGender);
         firestore= FirebaseFirestore.getInstance();
         userData = firestore.collection(USER);
@@ -148,7 +149,7 @@ public class AddUser extends Fragment {
         }
 
         if(isNetworkAvailable()) {
-            user = new User(Status,Role, Username, Gender, EmailId, Contact, College, Password,isVerficationEmailSend);
+            user = new User(uid,Status,Role, Username, Gender, EmailId, Contact, College, Password,isVerficationEmailSend,isEmailVerified);
             registerUser(EmailId, Password);
         }else{
             Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
@@ -238,9 +239,9 @@ public class AddUser extends Fragment {
     public void updateUI(FirebaseUser user){
         if (user != null) {
             if(isNetworkAvailable()) {
-                String uid = user.getUid();
-                User userdata = new User(Status,Role, name.getText().toString(), Gender, email.getText().toString(),
-                        phone.getText().toString(), college.getText().toString(), password.getText().toString(),isVerficationEmailSend);
+                uid = user.getUid();
+                User userdata = new User(uid,Status,Role, name.getText().toString(), Gender, email.getText().toString(),
+                        phone.getText().toString(), college.getText().toString(), password.getText().toString(),isVerficationEmailSend,isEmailVerified);
                 userData.document(uid).set(userdata).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                       getFragment(new manageUser());

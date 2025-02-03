@@ -15,18 +15,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.ManageEvents.Activity;
 import com.example.myapplication.ManageEvents.UpdateEvent.UpdatePage;
 import com.example.myapplication.R;
+import com.example.myapplication.manageEvents;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class updateCollegeEventActivity extends Fragment {
     View view;
     private EditText activityName, activityDescription, activityDate, activityVenue,activityRules,registrationFee,availability;
     private Button updateButton;
+    TextView back;
     FirebaseFirestore firestore;
+    ProgressBar progressBar;
+    String activityId="",eventId="",eventType="";
 
     public updateCollegeEventActivity() {
         // Required empty public constructor
@@ -44,20 +50,37 @@ public class updateCollegeEventActivity extends Fragment {
         registrationFee=view.findViewById(R.id.registrationfees);
         updateButton = view.findViewById(R.id.updateDetails);
         availability=view.findViewById(R.id.availability);
+        progressBar = view.findViewById(R.id.addCollegeProgressbaar);
+        back=view.findViewById(R.id.back);
 
         firestore = FirebaseFirestore.getInstance();
-        String activityId="",eventId="";
-        // Get the eventId from the bundle
+
         if (getArguments() != null) {
-            activityId = getArguments().getString("activityId"); // Retrieve the activityId passed from the previous fragment
-            eventId=getArguments().getString("eventType");
+            activityId = getArguments().getString("activityId");
+            eventId=getArguments().getString("eventId");
+            eventType=getArguments().getString("eventType");
             Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
         }
         Log.d("CollegeEventActivityDetails", "Received activityId on CollegeEventActivityDetails Page: " + activityId);
 
-        //handle back pressed
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("activityId", activityId);
+                bundle.putString("eventId",eventId);
+                bundle.putString("eventType",eventType);
+                UpdatePage updatePage = new UpdatePage();
+                updatePage.setArguments(bundle);
+                if (getActivity() != null) {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+                getFragment(updatePage);
+            }
+        });
+
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
@@ -65,13 +88,15 @@ public class updateCollegeEventActivity extends Fragment {
                             String activityId = getArguments().getString("activityId");
                             String eventId=getArguments().getString("eventId");
                             String eventType=getArguments().getString("eventType");
-                            // Pass activityId to the previous fragment
                             Bundle bundle = new Bundle();
                             bundle.putString("activityId", activityId);
                             bundle.putString("eventId",eventId);
                             bundle.putString("eventType",eventType);
-                            CollegeActivityList updatePage = new CollegeActivityList();
+                            manageEvents updatePage = new manageEvents();
                             updatePage.setArguments(bundle);
+                            if (getActivity() != null) {
+                                getActivity().getSupportFragmentManager().popBackStack();
+                            }
                             getFragment(updatePage);
                         } else {
                             requireActivity().getSupportFragmentManager().popBackStack();
@@ -79,12 +104,12 @@ public class updateCollegeEventActivity extends Fragment {
                     }
                 }
         );
-        // Fetch event details from your data source (Firestore, Database, etc.)
         fetchEventDetails(activityId);
 
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
                 String activityId=getArguments().getString("activityId");
                 updateEventDetails(activityId);
             }
@@ -135,7 +160,6 @@ public class updateCollegeEventActivity extends Fragment {
     }
 
     private void updateEventDetails(String activityId) {
-        // Fetch the updated data from the fields
         String updatedName = activityName.getText().toString();
         String updatedDescription = activityDescription.getText().toString();
         String updatedDate = activityDate.getText().toString();
@@ -144,14 +168,12 @@ public class updateCollegeEventActivity extends Fragment {
         String updatedRegistrationFee = registrationFee.getText().toString();
         String updatedAvailability = availability.getText().toString();
 
-        // Validate the inputs (you can add your own validation logic here)
         if (updatedName.isEmpty() || updatedDescription.isEmpty() || updatedDate.isEmpty() ||
                 updatedVenue.isEmpty() || updatedRules.isEmpty() || updatedRegistrationFee.isEmpty()) {
             Toast.makeText(getContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Directly update the fields in Firestore
         firestore.collection("EventActivities")
                 .document(activityId)
                 .update(
@@ -165,12 +187,12 @@ public class updateCollegeEventActivity extends Fragment {
                 )
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(getContext(), "Event details updated successfully", Toast.LENGTH_SHORT).show();
-                    // Optionally, you can navigate to another fragment or show a success message
-                    getFragment(new UpdatePage());
+                    getFragment(new manageEvents());
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Error updating event details", Toast.LENGTH_SHORT).show();
                 });
+        progressBar.setVisibility(View.GONE);
     }
 
     private void showNoEventDialog() {

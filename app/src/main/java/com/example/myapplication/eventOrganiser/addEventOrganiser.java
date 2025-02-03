@@ -64,7 +64,7 @@ public class addEventOrganiser extends Fragment {
     ProgressBar progressBar;
     User user;
     EventOrganiser organiser;
-    String username,email,phone,college,password,confirmPassword;
+    String uid,username,email,phone,college,password,confirmPassword;
     static final String USER = "User";
     static final String TAG="RegistrationPage";
     public addEventOrganiser() {
@@ -88,6 +88,7 @@ public class addEventOrganiser extends Fragment {
         streamSpinner = view.findViewById(R.id.streamSpinner);
 
         isVerificationEmailsend="false";
+        isEmailVerified="false";
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
@@ -117,7 +118,7 @@ public class addEventOrganiser extends Fragment {
 
                 if(validateUserInput()) {
                     if (isNetworkAvailable()) {
-                        organiser = new EventOrganiser(Status, Role, username, Gender, email, phone, college, password,selectedStream,selectedDepartment,isVerificationEmailsend,isEmailVerified);
+                        organiser = new EventOrganiser(uid,Status, Role, username, Gender, email, phone, college, password,selectedStream,selectedDepartment,isVerificationEmailsend,isEmailVerified);
                         registerUser(email, password);
                     } else {
                         Toast.makeText(requireActivity(), "Network error", Toast.LENGTH_SHORT).show();
@@ -298,7 +299,6 @@ public class addEventOrganiser extends Fragment {
                         Signup.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1E3C72")));
                         if (task.isSuccessful()) {
                             sendVerificationEmail();
-                            isVerificationEmailsend="Email Verification";
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
@@ -365,8 +365,8 @@ public class addEventOrganiser extends Fragment {
     public void updateUI(FirebaseUser user){
         if (user != null) {
             if(isNetworkAvailable()) {
-                String uid = user.getUid();
-                EventOrganiser userdata = new EventOrganiser(Status,Role, username, Gender, email, phone, college, password,selectedStream,selectedDepartment,isVerificationEmailsend,isEmailVerified);
+                uid = user.getUid();
+                EventOrganiser userdata = new EventOrganiser( uid,Status,Role, username, Gender, email, phone, college, password,selectedStream,selectedDepartment,isVerificationEmailsend,isEmailVerified);
                 userData.document(uid).set(userdata).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                        getFragment(new ManageEventOrganiser());
