@@ -1,47 +1,45 @@
-package com.example.myapplication.ManageUser;
+package com.example.myapplication.ManageRole;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
 import com.example.myapplication.R;
-import com.example.myapplication.User; // Assuming you have a User class
+import com.example.myapplication.User;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class ActivateUser extends Fragment {
+public class updateUserRoleList extends Fragment {
 
     private FirebaseFirestore firestore;
     private RecyclerView recyclerView;
-    private ActivateUserAdapter adapter;
+    private updateUserRoleAdapter adapter;
     private List<User> userList;
-
-    public ActivateUser() {
+    public updateUserRoleList() {
         // Required empty public constructor
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_activate_user, container, false);
+        View view= inflater.inflate(R.layout.fragment_update_user_role_list, container, false);
 
         firestore = FirebaseFirestore.getInstance();
-        recyclerView = view.findViewById(R.id.activateRecyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
         userList = new ArrayList<>();
-        adapter = new ActivateUserAdapter(userList);
+        adapter = new updateUserRoleAdapter(userList);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
@@ -55,18 +53,22 @@ public class ActivateUser extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
-        fetchInactiveUsers();
+        fetchUsers();
 
         adapter.setOnItemClickListener((uid, position) -> {
-            activateUser(uid, position);
+            Fragment fragment = new UpdateRole();
+            Bundle bundle = new Bundle();
+            bundle.putString("uid", uid);
+            fragment.setArguments(bundle);
+            getFragment(fragment);
         });
 
         return view;
     }
 
-    private void fetchInactiveUsers() {
+    private void fetchUsers() {
         firestore.collection("User")
-                .whereEqualTo("status", "Inactive")
+                .whereIn("role", Arrays.asList("User", "Admin"))
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -83,26 +85,10 @@ public class ActivateUser extends Fragment {
                 });
     }
 
-    private void activateUser(String uid, int position) {
-        firestore.collection("User").document(uid)
-                .update("status", "Active")
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getActivity(), "User activated successfully!", Toast.LENGTH_SHORT).show();
-
-                    userList.get(position).setStatus("Active");
-                    adapter.notifyItemChanged(position);
-
-                    redirectToFragment(new manageUser());
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(getActivity(), "Failed to activate user", Toast.LENGTH_SHORT).show();
-                });
-    }
-
     private void showNoUserDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("No User");
-        builder.setMessage("No De-Activated user is found");
+        builder.setMessage("No  User found");
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -116,7 +102,7 @@ public class ActivateUser extends Fragment {
         dialog.show();
     }
 
-    private void redirectToFragment(Fragment fragment) {
+    private void getFragment(Fragment fragment) {
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragement_layout, fragment)
                 .addToBackStack(null)

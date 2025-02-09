@@ -18,11 +18,11 @@ import android.widget.TextView;
 
 import com.example.myapplication.AdminTrackEventRegistration.AdminEventList;
 import com.example.myapplication.ManageRole.fetchUserDetails;
+import com.example.myapplication.ManageRole.updateUserRoleList;
 import com.example.myapplication.R;
 import com.example.myapplication.ManageUser.manageUser;
 import com.example.myapplication.eventOrganiser.ManageEventOrganiser;
 import com.example.myapplication.manageEvents;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -91,7 +91,7 @@ public class AdminHome extends Fragment {
         manageRole.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragment(new fetchUserDetails());
+                getFragment(new updateUserRoleList());
             }
         });
         manageOrganiser=view.findViewById(R.id.manageOrganiser);

@@ -37,7 +37,6 @@
                     android:textStyle="bold"
                     android:padding="16dp" />
 
-                <!-- Name Input Field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -51,7 +50,6 @@
                         android:inputType="textPersonName" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Gender Selection -->
                 <RadioGroup
                     android:id="@+id/radioGroupGender"
                     android:layout_width="match_parent"
@@ -75,7 +73,6 @@
                         android:textColor="@color/black" />
                 </RadioGroup>
 
-                <!-- College Input Field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -120,7 +117,6 @@
                         android:textColor="@color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Phone Number -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -135,7 +131,6 @@
                         android:inputType="phone" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Email Address -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -150,7 +145,6 @@
                         android:inputType="textEmailAddress" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Password -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -184,7 +178,6 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <!-- Add Event Organiser Button -->
                     <Button
                         android:id="@+id/addEventOrganiser"
                         android:layout_width="match_parent"
@@ -195,15 +188,14 @@
                         android:textStyle="bold"
                         android:padding="10dp" />
 
-                    <!-- Progress Bar -->
                     <ProgressBar
                         android:id="@+id/addOrganiserProgressbaar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                 </FrameLayout>
 
-                <!-- Back TextView -->
                 <TextView
+                    android:id="@+id/back"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Back"

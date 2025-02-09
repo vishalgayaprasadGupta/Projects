@@ -62,7 +62,7 @@ public class UpdateRole extends Fragment {
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        getFragment(new fetchUserDetails());
+                        getActivity().getSupportFragmentManager().popBackStack();
                     }
                 });
 

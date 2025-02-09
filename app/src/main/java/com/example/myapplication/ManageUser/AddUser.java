@@ -76,11 +76,11 @@ public class AddUser extends Fragment {
         password=view.findViewById(R.id.editPassword);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        getFragment(new manageUser());
+                        getActivity().getSupportFragmentManager().popBackStack();
                     }
                 });
 

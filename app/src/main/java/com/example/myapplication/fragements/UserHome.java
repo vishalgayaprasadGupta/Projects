@@ -52,9 +52,7 @@ public class UserHome extends Fragment {
                     @Override
                     public void handleOnBackPressed() {
                         if (getActivity() != null && isAdded()) {
-                            getActivity().getSupportFragmentManager().popBackStackImmediate(null,
-                                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                            getFragment(new manageEvents());
+                            getActivity().getSupportFragmentManager().popBackStack();
                         }
                     }
                 });

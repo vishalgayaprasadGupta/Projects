@@ -82,9 +82,7 @@ public class manageUser extends Fragment {
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                        fragmentManager.popBackStack();
-                        getFragment(new AdminHome());
+                        getActivity().getSupportFragmentManager().popBackStack();
                     }
                 });
 
@@ -97,7 +95,7 @@ public class manageUser extends Fragment {
         updateUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragment(new UpdateUser());
+                getFragment(new UpdateUserList());
             }
         });
         deactivateUser.setOnClickListener(new View.OnClickListener() {

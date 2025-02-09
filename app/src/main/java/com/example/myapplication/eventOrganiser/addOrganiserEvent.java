@@ -40,7 +40,7 @@ public class addOrganiserEvent extends Fragment {
     String documentId;
     private Button addEventButton;
     private ProgressBar addEvent;
-    TextView streamField,departmentField;
+    TextView streamField,departmentField,back;
     private Spinner spinner;
     public addOrganiserEvent() {
         // Required empty public constructor
@@ -58,6 +58,7 @@ public class addOrganiserEvent extends Fragment {
         spinner = view.findViewById(R.id.mySpinner);
         streamField = view.findViewById(R.id.department);
         departmentField = view.findViewById(R.id.stream);
+        back = view.findViewById(R.id.back);
 
         loadEventTypes();
         requireActivity().getOnBackPressedDispatcher().addCallback(
@@ -71,6 +72,12 @@ public class addOrganiserEvent extends Fragment {
                     }
                 });
 
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
         if (getArguments() != null) {
             stream = getArguments().getString("stream");
             department = getArguments().getString("department");

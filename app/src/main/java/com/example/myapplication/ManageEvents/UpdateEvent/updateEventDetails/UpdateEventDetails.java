@@ -47,9 +47,7 @@ public class UpdateEventDetails extends Fragment {
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                        fragmentManager.popBackStack();
-                        getFragment(new manageEvents());
+                        getActivity().getSupportFragmentManager().popBackStack();
                     }
                 });
 

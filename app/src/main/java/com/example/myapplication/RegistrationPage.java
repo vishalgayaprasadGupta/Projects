@@ -206,30 +206,30 @@ public class RegistrationPage extends AppCompatActivity {
             return false;
         }
 
-        if (!isValidPhoneNumber(Contact)) {
-            Toast.makeText(RegistrationPage.this, "Invalid phone number", Toast.LENGTH_SHORT).show();
+        if (Contact.matches("\\d{10}")) {
+            Phone.setError("Invalid phone number");
             return false;
         }
 
         if(selectedRole.equals("User")){
             if (!College.matches("^[a-zA-Z0-9 .'-]{2,100}$")) {
-                Toast.makeText(RegistrationPage.this, "Invalid college name. Use valid characters only.", Toast.LENGTH_SHORT).show();
+                CollegeName.setError("Invalid college name");
                 return false;
             }
         }
 
-
         if(!Username.matches("[a-zA-Z ]+")){
-            Toast.makeText(RegistrationPage.this, "Invalid username", Toast.LENGTH_SHORT).show();
+            UserName.setError("Invalid username");
             return false;
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(EmailId).matches()) {
-            Toast.makeText(RegistrationPage.this, "Invalid email format!", Toast.LENGTH_SHORT).show();
+            EmailAddress.setError("Invalid email address");
             return false;
         }
+
         if (!Password.equals(CheckPassword)) {
-            Toast.makeText(RegistrationPage.this, "Passwords do not match!", Toast.LENGTH_SHORT).show();
+            UserPassword.setError("Passwords does not match");
             return false;
         }
         if (selectedRole.equals("Event Organsier")) {

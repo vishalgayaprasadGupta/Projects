@@ -48,11 +48,11 @@ public class fetchUserDetails extends Fragment {
         fetchProgressbar.setVisibility(View.INVISIBLE);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        getBackFragment(new AdminHome());
+                        getActivity().getSupportFragmentManager().popBackStack();
                     }
                 });
 

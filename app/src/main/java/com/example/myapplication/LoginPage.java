@@ -90,12 +90,11 @@ public class LoginPage extends AppCompatActivity {
                     Log.d(TAG, "Signin button clicked");
                      EmailId = Email.getText().toString().trim();
                      Password = UserPassword.getText().toString().trim();
-
                     if (TextUtils.isEmpty(EmailId)) {
-                        Toast.makeText(LoginPage.this, "Enter Email!", Toast.LENGTH_LONG).show();
+                        Email.setError("Enter Valid EmailID!");
                         return;
                     } else if (TextUtils.isEmpty(Password)) {
-                        Toast.makeText(LoginPage.this, "Enter Password!", Toast.LENGTH_LONG).show();
+                        UserPassword.setError("Enter Valid Password!");
                         return;
                     }
                     userLogin(EmailId, Password);

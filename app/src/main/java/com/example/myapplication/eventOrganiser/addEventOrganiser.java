@@ -29,6 +29,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.LoginPage;
@@ -64,6 +65,7 @@ public class addEventOrganiser extends Fragment {
     ProgressBar progressBar;
     User user;
     EventOrganiser organiser;
+    TextView back;
     String uid,username,email,phone,college,password,confirmPassword;
     static final String USER = "User";
     static final String TAG="RegistrationPage";
@@ -83,6 +85,7 @@ public class addEventOrganiser extends Fragment {
         ConfirmPassword = view.findViewById(R.id.editConfirmPassword);
         Signup = view.findViewById(R.id.addEventOrganiser);
         radioGroup = view.findViewById(R.id.radioGroupGender);
+        back = view.findViewById(R.id.back);
 
         departmentSpinner = view.findViewById(R.id.departmentSpinner);
         streamSpinner = view.findViewById(R.id.streamSpinner);
@@ -95,9 +98,16 @@ public class addEventOrganiser extends Fragment {
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        getFragment(new ManageEventOrganiser());
+                        getActivity().getSupportFragmentManager().popBackStack();
                     }
                 });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
 
