@@ -114,14 +114,11 @@ public class SeminarEventActivityDetails extends Fragment {
     }
     private void fetchEventDetails(String activityId) {
         Log.d("CollegeEventActivityDetails", "Received activityId on fetchEventDetails : " + activityId);
-
-
         if (activityId.isEmpty()) {
             Toast.makeText(getContext(), "Activity ID is missing", Toast.LENGTH_SHORT).show();
             return;
         }
         Log.d("CollegeEventActivityDetails", "Received activityId : " + activityId);
-
 
         firestore.collection("EventActivities")
                 .document(activityId)
@@ -147,12 +144,19 @@ public class SeminarEventActivityDetails extends Fragment {
                             activitySpeakerBio.setText(activity.getSpeakerBio());
                             activityAgenda.setText(activity.getSeminarAgenda());
                             eventName.setText(activity.getEventName());
+                            registrationFee.setText(activity.getregistrationFee());
+                            Log.d("CollegeEventActivityDetails", "Registration Fee: " + activity.getregistrationFee());
+                            if(activity.getregistrationFee()==null){
+                                registrationFee.setText("N/A");
+                            }else{
+                                registrationFee.setText(activity.getregistrationFee());
+                            }
                             if(activity.getSpecialRequirements()==null){
                                 requirments.setText("N/A");
                             }else{
                                 requirments.setText(activity.getSpecialRequirements());
                             }
-                            registrationFee.setText(activity.getRegistrationFeeSeminar());
+
                             dataloadProgressbar.setVisibility(View.GONE);
 
                         } else {
@@ -183,6 +187,9 @@ public class SeminarEventActivityDetails extends Fragment {
                         availability=activity.getAvailability().toString();
                         int Availability=Integer.parseInt(availability);
                         if(Availability>0){
+                            Toast toast = Toast.makeText(getContext(), "Availability confirmed! Proceed with registration.", Toast.LENGTH_SHORT);
+                            toast.show();
+                            new android.os.Handler().postDelayed(() -> toast.cancel(), 1000);
                             checkAvailabilityProgressbar.setVisibility(View.GONE);
                             checkAvailabilityButton.setVisibility(View.GONE);
                             registerButton.setVisibility(View.VISIBLE);

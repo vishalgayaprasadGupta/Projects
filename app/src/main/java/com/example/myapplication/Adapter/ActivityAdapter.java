@@ -31,9 +31,9 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Activi
     public void onBindViewHolder(@NonNull ActivityViewHolder holder, int position) {
         Activity activity = activityList.get(position);
 
-        holder.activityName.setText(activity.getName());
-        holder.activityDescription.setText(activity.getDescription());
-        holder.activityDate.setText(activity.getDate());
+        holder.activityName.setText(activity.getActivtiyName());
+        holder.activityDescription.setText(activity.getActivtiyDescription());
+        holder.activityDate.setText(activity.getActivtiyDate());
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {

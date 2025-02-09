@@ -16,6 +16,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.TextView;
 
+import com.example.myapplication.AdminTrackEventRegistration.AdminEventList;
 import com.example.myapplication.ManageRole.fetchUserDetails;
 import com.example.myapplication.R;
 import com.example.myapplication.ManageUser.manageUser;
@@ -32,7 +33,7 @@ public class AdminHome extends Fragment {
         // Required empty public constructor
     }
     FirebaseFirestore firestore;
-    TextView userCount,activeCount,manageUser,manageEvents,manageRole,manageOrganiser;
+    TextView userCount,activeCount,manageUser,manageEvents,manageRole,manageOrganiser,trackEventRegistration;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,11 +49,11 @@ public class AdminHome extends Fragment {
 
         //start animation
         animateCardView(ManageUser,0);
-        animateCardView(ManageEvents,500);
-        animateCardView(ManageRole,1000);
-        animateCardView(ManageOrganiser,1500);
+        animateCardView(ManageEvents,400);
+        animateCardView(ManageRole,800);
+        animateCardView(ManageOrganiser,1200);
+        animateCardView(TrackEventRegistration,1600);
         animateCardView(EventReport,2000);
-        animateCardView(TrackEventRegistration,2500);
 
         userCount=view.findViewById(R.id.UserCount);
         activeCount=view.findViewById(R.id.activeCount);
@@ -98,6 +99,14 @@ public class AdminHome extends Fragment {
             @Override
             public void onClick(View v) {
                 getFragment(new ManageEventOrganiser());
+            }
+        });
+
+        trackEventRegistration=view.findViewById(R.id.trackEventRegistration);
+        trackEventRegistration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragment(new AdminEventList());
             }
         });
         return view;

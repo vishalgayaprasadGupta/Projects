@@ -14,7 +14,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.R;
-import com.example.myapplication.eventOrganiser.registration.trackOrganiserEventRegistration;
+import com.example.myapplication.eventOrganiser.registration.OrganiserEventList;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,8 +24,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class EventOrganiserHome extends Fragment {
 
     private TextView branchName, departmentName;
-    CardView manageEvents, cancelEvent, eventRegistrations;
-    TextView manageEvent, eventReport, eventRegistration;
+    CardView manageEvents, cancelEvent, trackEventRegistrations;
+    TextView manageEvent, eventReport, trackEventRegistration;
     private FirebaseFirestore firestore;
     private FirebaseAuth auth;
 
@@ -40,17 +40,17 @@ public class EventOrganiserHome extends Fragment {
 
         manageEvent=view.findViewById(R.id.manageEvents);
         eventReport=view.findViewById(R.id.cancelEvent);
-        eventRegistration=view.findViewById(R.id.trackEventRegistrations);
+        trackEventRegistration=view.findViewById(R.id.trackEventRegistrations);
 
         branchName = view.findViewById(R.id.branchName);
         departmentName = view.findViewById(R.id.departmentName);
 
         manageEvents = view.findViewById(R.id.ManageEvents);
         cancelEvent = view.findViewById(R.id.CancelEvent);
-        eventRegistrations = view.findViewById(R.id.EventRegistrations);
+        trackEventRegistrations = view.findViewById(R.id.EventRegistrations);
 
         animateCardView(manageEvents, 400);
-        animateCardView(eventRegistrations, 800);
+        animateCardView(trackEventRegistrations, 800);
         animateCardView(cancelEvent, 1200);
 
 
@@ -70,10 +70,10 @@ public class EventOrganiserHome extends Fragment {
             }
         });
 
-        eventRegistration.setOnClickListener(new View.OnClickListener() {
+        trackEventRegistration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = new trackOrganiserEventRegistration();
+                Fragment fragment = new OrganiserEventList();
                 Bundle bundle = new Bundle();
                 bundle.putString("stream", branchName.getText().toString());
                 bundle.putString("department", departmentName.getText().toString());

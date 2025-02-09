@@ -47,6 +47,7 @@ public class OrganiserRequestApproveEmail {
                     "<p>You now have access to all the tools and features needed to plan and manage events successfully on Campus Connect. Welcome aboard!</p>" +
                     "<p>Thank you for joining us, and we look forward to your contributions!</p>" +
                     "<p>Best regards,<br>The Campus Connect Team</p>" +
+                    "<p>&#169; 2025 Campus Connect. All rights reserved.</p>" +
                     "</body></html>";
 
 

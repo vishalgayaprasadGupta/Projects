@@ -136,11 +136,11 @@ public class Seminar {
         this.speakerBio = speakerBio;
     }
 
-    public String getRegistrationFeeSeminar() {
+    public String getregistrationFee() {
         return registrationFee;
     }
 
-    public void setRegistrationFeeSeminar(String registrationFeeSeminar) {
+    public void setregistrationFee(String registrationFee) {
         this.registrationFee = registrationFee;
     }
 

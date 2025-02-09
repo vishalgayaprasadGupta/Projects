@@ -37,10 +37,10 @@ public class EventCategory extends Fragment {
         Workshop=view.findViewById(R.id.Workshop);
         Seminar=view.findViewById(R.id.Seminar);
 
-        animateCardView(CollegeEvents,500);
-        animateCardView(InterCollegeEvents,1000);
-        animateCardView(Workshop,1500);
-        animateCardView(Seminar,2000);
+        animateCardView(CollegeEvents,0);
+        animateCardView(InterCollegeEvents,400);
+        animateCardView(Workshop,800);
+        animateCardView(Seminar,1200);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),

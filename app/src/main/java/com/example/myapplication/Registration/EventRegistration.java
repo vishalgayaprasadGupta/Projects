@@ -117,46 +117,51 @@ public class EventRegistration extends Fragment {
         });
 
         registerButton.setOnClickListener(v -> {
-            validateinpute();
-            String RegistrationFees = registrationAmount.getText().toString();
-            Intent intent = new Intent(getActivity(), ConfirmPayment.class);
-            intent.putExtra("email", email.getText().toString());
-            intent.putExtra("contact", contact.getText().toString());
-            intent.putExtra("registrationAmount", RegistrationFees);
-            intent.putExtra("eventName", eventName.getText().toString());
-            intent.putExtra("eventId", eventId);
-            intent.putExtra("activityName", activtiyName.getText().toString());
-            intent.putExtra("activityId", activityid);
-            intent.putExtra("studentUid", studentUid.getText().toString());
-            paymentLauncher.launch(intent);
-
+            if(validateinpute()) {
+                String RegistrationFees = registrationAmount.getText().toString();
+                Intent intent = new Intent(getActivity(), ConfirmPayment.class);
+                intent.putExtra("email", email.getText().toString());
+                intent.putExtra("contact", contact.getText().toString());
+                intent.putExtra("registrationAmount", RegistrationFees);
+                intent.putExtra("eventName", eventName.getText().toString());
+                intent.putExtra("eventId", eventId);
+                intent.putExtra("activityName", activtiyName.getText().toString());
+                intent.putExtra("activityId", activityid);
+                intent.putExtra("studentUid", studentUid.getText().toString());
+                intent.putExtra("studentName", name.getText().toString());
+                intent.putExtra("studentEmail", email.getText().toString());
+                Log.d("Registration", "Student ID: " + studentUid.getText().toString());
+                paymentLauncher.launch(intent);
+            }else{
+                Toast.makeText(getContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
+            }
         });
-
         fetchDetails();
         return view;
     }
 
-    public void validateinpute(){
+    public boolean validateinpute(){
         String name = this.name.getText().toString();
         String email = this.email.getText().toString();
         String contact = this.contact.getText().toString();
         String studentUid = this.studentUid.getText().toString();
         if(name.isEmpty()){
             this.name.setError("Name is required");
-            return;
+            return false;
         }
         if(email.isEmpty()){
             this.email.setError("Email is required");
-            return;
+            return false;
         }
         if(contact.isEmpty()){
             this.contact.setError("Contact is required");
-            return;
+            return false;
         }
         if(studentUid.isEmpty()){
             this.studentUid.setError("Student ID is required");
-            return;
+            return false;
         }
+        return true;
     }
     public void fetchUserRole(String uid){
         firestore.collection("User").document(uid).get()

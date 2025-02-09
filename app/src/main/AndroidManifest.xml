@@ -67,9 +67,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".AdminLogin"
-            android:exported="false" />
     </application>
 
 </manifest>

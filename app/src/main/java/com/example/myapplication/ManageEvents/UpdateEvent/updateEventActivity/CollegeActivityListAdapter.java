@@ -34,9 +34,9 @@ public class CollegeActivityListAdapter extends RecyclerView.Adapter<CollegeActi
         Activity activity = activityList.get(position);
 
         // Bind data to the views
-        holder.activityName.setText(activity.getName());
-        holder.activityDescription.setText(activity.getDescription());
-        holder.activityDate.setText(activity.getDate());
+        holder.activityName.setText(activity.getActivtiyName());
+        holder.activityDescription.setText(activity.getActivtiyDescription());
+        holder.activityDate.setText(activity.getActivtiyDate());
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {

@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_margin="8dp"
-    android:padding="16dp"
-    android:clickable="true"
-    android:focusable="true"
-    android:background="#F5F5F5"
-    android:elevation="2dp"
-    android:layout_gravity="center">
+    android:padding="0dp"
+    android:background="@android:color/transparent"
+    android:clickable="false"
+    android:focusable="false">
 
-    <!-- CardView for the event container -->
+    <!-- CardView for Event Details -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="6dp"
+        android:layout_marginBottom="12dp"
+        android:layout_margin="5dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="4dp"
         app:cardBackgroundColor="@android:color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="15dp"
+            android:padding="16dp"
             android:background="@android:color/white">
 
             <!-- Event Name -->
@@ -35,15 +34,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Event Name"
-                android:textSize="20sp"
+                android:textSize="24dp"
                 android:textColor="#2C3E50"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:layout_marginBottom="8dp"
-                android:ellipsize="end"
+                android:layout_marginBottom="6dp"
                 android:maxLines="1"
-                android:focusable="true"
-                android:textAppearance="?android:textAppearanceLarge" />
+                android:ellipsize="end" />
 
             <!-- Event Type -->
             <TextView
@@ -52,13 +49,11 @@
                 android:layout_height="wrap_content"
                 android:text="Event Type"
                 android:textSize="16sp"
-                android:textColor="#2980B9"
+                android:textColor="#00796B"
                 android:gravity="center"
-                android:layout_marginBottom="8dp"
-                android:textStyle="bold"
+                android:layout_marginBottom="6dp"
                 android:maxLines="1"
-                android:ellipsize="end"
-                android:focusable="true" />
+                android:ellipsize="end" />
 
             <!-- Event Status -->
             <TextView
@@ -67,15 +62,11 @@
                 android:layout_height="wrap_content"
                 android:text="Event Status"
                 android:textSize="16sp"
+                android:textColor="#D84315"
                 android:gravity="center"
-                android:textColor="#34495E"
-                android:textStyle="bold"
-                android:padding="5dp"
+                android:padding="4dp"
                 android:maxLines="1"
-                android:ellipsize="end"
-                android:layout_marginBottom="10dp"
-                android:focusable="true" />
-
+                android:ellipsize="end" />
 
         </LinearLayout>
 

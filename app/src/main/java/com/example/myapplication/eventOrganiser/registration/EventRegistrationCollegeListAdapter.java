@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.ManageEvents.Activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ public class EventRegistrationCollegeListAdapter extends RecyclerView.Adapter<Ev
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.organiser_event_registration, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_list_menu, parent, false);
         return new EventViewHolder(view);
     }
 
@@ -50,7 +49,7 @@ public class EventRegistrationCollegeListAdapter extends RecyclerView.Adapter<Ev
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onItemClick(activity.getEventId(),activity.getEventStatus());
+                listener.onItemClick(activity.getEventId(),activity.getEventStatus(),activity.getEventName());
             }
         });
     }
@@ -76,6 +75,6 @@ public class EventRegistrationCollegeListAdapter extends RecyclerView.Adapter<Ev
     }
 
     public interface OnItemClickListener {
-        void onItemClick(String eventId,String Status);
+        void onItemClick(String eventId,String Status,String eventName);
     }
 }

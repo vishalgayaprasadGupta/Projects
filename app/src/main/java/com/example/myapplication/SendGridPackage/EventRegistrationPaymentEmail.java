@@ -236,12 +236,13 @@ public class EventRegistrationPaymentEmail {
                     "<p><strong>Payment Details:</strong></p>" +
                     "<ul>" +
                     "<li><strong>Payment ID:</strong> " + paymentID + "</li>" +
-                    "<li><strong>Amount Paid:</strong> $" + paymentAmount + "</li>" +
+                    "<li><strong>Amount Paid:</strong> " + paymentAmount + "</li>" +
                     "<li><strong>Payment Status:</strong> " + paymentStatus + "</li>" +
                     "</ul>" +
                     "<p><strong>Receipt:</strong> Please find the attached payment receipt for your reference.</p>" +
                     "<p>We look forward to seeing you at the event!</p>" +
                     "<p>Best regards,<br>The Campus Connect Team</p>" +
+                    "<p>&#169; 2025 Campus Connect. All rights reserved.</p>" +
                     "</body></html>";
 
             JsonObject jsonBody = new JsonObject();

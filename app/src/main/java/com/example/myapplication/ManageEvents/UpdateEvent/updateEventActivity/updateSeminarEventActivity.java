@@ -155,7 +155,7 @@ public class updateSeminarEventActivity extends Fragment {
                             activityAgenda.setText(activity.getSeminarAgenda());
                             requirments.setText(activity.getSpecialRequirements());
                             availability.setText(activity.getAvailability());
-                            registrationFee.setText(activity.getRegistrationFeeSeminar());
+                            registrationFee.setText(activity.getregistrationFee());
 
                         } else {
                             showNoEventDialog();

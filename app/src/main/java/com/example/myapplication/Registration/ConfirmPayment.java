@@ -19,6 +19,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.LoginPage;
 import com.example.myapplication.R;
 import com.example.myapplication.SendGridPackage.EventRegistrationPaymentEmail;
 import com.example.myapplication.adminfragements.AdminHome;
@@ -34,7 +35,7 @@ import com.razorpay.PaymentResultListener;
 import org.json.JSONObject;
 
 public class ConfirmPayment extends AppCompatActivity implements PaymentResultListener {
-    String RegistrationFees, paymentEmail, paymentMobile,activityId,eventId,studentId;
+    String RegistrationFees, paymentEmail, paymentMobile,activityId,eventId,studentId,Name,Email;
     Button paymentButton;
     EditText  email, mobile;
     TextView paymentAmount;
@@ -62,7 +63,11 @@ public class ConfirmPayment extends AppCompatActivity implements PaymentResultLi
         activityName=getIntent().getStringExtra("activityName");
         eventId=getIntent().getStringExtra("eventId");
         eventName=getIntent().getStringExtra("eventName");
-        studentId=getIntent().getStringExtra("studentId");
+        studentId=getIntent().getStringExtra("studentUid");
+        Name=getIntent().getStringExtra("studentName");
+        Email=getIntent().getStringExtra("studentEmail");
+
+        Log.d("Registration", "Student ID: " + studentId);
 
         paymentAmount = findViewById(R.id.paymentAmount);
         email = findViewById(R.id.paymentEmail);
@@ -91,16 +96,25 @@ public class ConfirmPayment extends AppCompatActivity implements PaymentResultLi
     public void redirectAfterPayment(String role){
         switch (role){
             case "Admin":
-                getFragment(new AdminHome());
+                Intent intent = new Intent(ConfirmPayment.this, AdminHome.class);
+                startActivity(intent);
+                break;
+            case "Student":
+                Intent intent3 = new Intent(ConfirmPayment.this, UserHome.class);
+                startActivity(intent3);
                 break;
             case "User":
-                getFragment(new UserHome());
+                Intent intent1 = new Intent(ConfirmPayment.this, UserHome.class);
+                startActivity(intent1);
                 break;
             case "Event Organiser":
-                getFragment(new EventOrganiserHome());
+                Intent intent2 = new Intent(ConfirmPayment.this, EventOrganiserHome.class);
+                startActivity(intent2);
                 break;
             default:
-                getFragment(new UserHome());
+                Toast.makeText(ConfirmPayment.this, "Invalid role", Toast.LENGTH_SHORT).show();
+                Intent intent4 = new Intent(ConfirmPayment.this, LoginPage.class);
+                startActivity(intent4);
                 break;
         }
     }
@@ -146,7 +160,7 @@ public class ConfirmPayment extends AppCompatActivity implements PaymentResultLi
     @Override
     public void onPaymentSuccess(String razorpayPaymentID) {
         paymentStatus="Success";
-        saveRegistrationDetails(uid,studentId, eventId, eventName, activityId, activityName);
+        saveRegistrationDetails(uid,studentId, eventId, eventName, activityId, activityName,Name,Email,paymentStatus);
         EventRegistrationPaymentEmail.generatePDF(this,uid,studentId, paymentEmail, userName, eventName, activityName, razorpayPaymentID, paymentAmount.getText().toString(), paymentStatus);
         Intent resultIntent = new Intent();
         resultIntent.putExtra("role", role);
@@ -164,8 +178,8 @@ public class ConfirmPayment extends AppCompatActivity implements PaymentResultLi
         Checkout.clearUserData(this);
     }
 
-    public void saveRegistrationDetails(String uid,String studentId, String eventId, String eventName, String activityId, String activityName) {
-        Registration registration = new Registration(uid,studentId, eventId, eventName, activityId, activityName);
+    public void saveRegistrationDetails(String uid,String studentId, String eventId, String eventName, String activityId, String activityName,String Name,String Email,String paymentStatus) {
+        Registration registration = new Registration(uid,studentId, eventId, eventName, activityId, activityName,Name,Email,paymentStatus);
 
         firestore.collection("Event Registrations")
                 .add(registration)

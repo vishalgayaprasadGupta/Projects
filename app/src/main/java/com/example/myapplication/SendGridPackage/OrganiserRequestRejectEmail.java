@@ -49,6 +49,7 @@ public class OrganiserRequestRejectEmail {
                     "<p>If you wish to delete your account, you can do so by logging in and navigating to the account settings page.</p>" +
                     "<p>We appreciate your interest and encourage you to stay connected with Campus Connect for future opportunities.</p>" +
                     "<p>Best regards,<br>The Campus Connect Team</p>" +
+                    "<p>&#169; 2025 Campus Connect. All rights reserved.</p>" +
                     "</body></html>";
 
 

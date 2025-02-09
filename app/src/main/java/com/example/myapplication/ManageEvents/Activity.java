@@ -1,10 +1,12 @@
 package com.example.myapplication.ManageEvents;
 
 public class Activity {
-    String activtiyName, activtiyDescription, activtiyVenue, activtiyDate, activtiyRules, availability,eventId,activityId,registrationFee,eventType,activityType,eventName;
+    String activtiyName, activtiyDescription, activtiyVenue, activtiyDate, activtiyRules, availability, eventId, activityId, registrationFee, eventType, activityType, eventName;
+
     public String getEventType() {
         return eventType;
     }
+
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
@@ -33,7 +35,7 @@ public class Activity {
         this.activityId = activityId;
     }
 
-    public Activity(String eventName,String activtiyName, String activtiyDescription, String activtiyVenue, String activtiyDate, String activtiyRules,String availability,String eventId,String registrationFee,String eventType,String activityType) {
+    public Activity(String eventName, String activtiyName, String activtiyDescription, String activtiyVenue, String activtiyDate, String activtiyRules, String availability, String eventId, String registrationFee, String eventType, String activityType) {
         this.activtiyName = activtiyName;
         this.activtiyDescription = activtiyDescription;
         this.activtiyVenue = activtiyVenue;
@@ -43,16 +45,61 @@ public class Activity {
         this.availability = availability;
         this.registrationFee = registrationFee;
         this.eventType = eventType;
-        this.activityType=activityType;
-        this.eventName=eventName;
-    }
-
-    public String getEventName() {
-        return eventName;
-    }
-
-    public void setEventName(String eventName) {
+        this.activityType = activityType;
         this.eventName = eventName;
+    }
+
+
+    public void setRegistrationFee(String registrationFee) {
+        this.registrationFee = registrationFee;
+    }
+
+    public Activity() {
+        // Default constructor
+    }
+
+    public String getActivtiyName() {
+        return activtiyName;
+    }
+
+    public void setActivtiyName(String activtiyName) {
+        this.activtiyName = activtiyName;
+    }
+
+    public String getActivtiyDescription() {
+        return activtiyDescription;
+    }
+
+    public void setActivtiyDescription(String activtiyDescription) {
+        this.activtiyDescription = activtiyDescription;
+    }
+
+    public String getActivtiyVenue() {
+        return activtiyVenue;
+    }
+
+    public void setActivtiyVenue(String activtiyVenue) {
+        this.activtiyVenue = activtiyVenue;
+    }
+
+    public String getActivtiyDate() {
+        return activtiyDate;
+    }
+
+    public void setActivtiyDate(String activtiyDate) {
+        this.activtiyDate = activtiyDate;
+    }
+
+    public String getActivtiyRules() {
+        return activtiyRules;
+    }
+
+    public void setActivtiyRules(String activtiyRules) {
+        this.activtiyRules = activtiyRules;
+    }
+
+    public String getRegistrationFee() {
+        return registrationFee;
     }
 
     public String getActivityType() {
@@ -63,55 +110,11 @@ public class Activity {
         this.activityType = activityType;
     }
 
-    public String getRegistrationFee() {
-        return registrationFee;
+    public String getEventName() {
+        return eventName;
     }
 
-    public void setRegistrationFee(String registrationFee) {
-        this.registrationFee = registrationFee;
-    }
-
-    public Activity() {
-        // Default constructor
-    }
-
-    public String getName() {
-        return activtiyName;
-    }
-
-    public void setName(String activtiyName) {
-        this.activtiyName = activtiyName;
-    }
-
-    public String getDescription() {
-        return activtiyDescription;
-    }
-
-    public void setDescription(String activtiyDescription) {
-        this.activtiyDescription = activtiyDescription;
-    }
-
-    public String getDate() {
-        return activtiyDate;
-    }
-
-    public void setDate(String activtiyDate) {
-        this.activtiyDate = activtiyDate;
-    }
-
-    public String getVenue() {
-        return activtiyVenue;
-    }
-
-    public void setVenue(String activtiyVenue) {
-        this.activtiyVenue = activtiyVenue;
-    }
-
-    public String getRules() {
-        return activtiyRules;
-    }
-
-    public void setRules(String activtiyRules) {
-        this.activtiyRules = activtiyRules;
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
     }
 }

@@ -118,12 +118,15 @@ public class IntercollegeEventActivityDetails extends Fragment {
                     Log.d("CollegeEventActivityDetails", "Received activityId 2: " + activityId);
 
                     if (documentSnapshot.exists()) {
-                        Activity activity = documentSnapshot.toObject(Activity.class);
-                        Log.d("CollegeEventActivityDetails", "Activity Name: " + activity.getName());
+                        InterCollege activity = documentSnapshot.toObject(InterCollege.class);
+                        Log.d("CollegeEventActivityDetails", "Activity Name: " + activity.getActivitytName());
                         Log.d("CollegeEventActivityDetails", "Activity Avaialability: " + activity.getAvailability());
                         availability=activity.getAvailability().toString();
                         int Availability=Integer.parseInt(availability);
                         if(Availability>0){
+                            Toast toast = Toast.makeText(getContext(), "Availability confirmed! Proceed with registration.", Toast.LENGTH_SHORT);
+                            toast.show();
+                            new android.os.Handler().postDelayed(() -> toast.cancel(), 1000);
                             checkAvailabilityProgressbar.setVisibility(View.GONE);
                             checkAvailabilityButton.setVisibility(View.GONE);
                             registerButton.setVisibility(View.VISIBLE);

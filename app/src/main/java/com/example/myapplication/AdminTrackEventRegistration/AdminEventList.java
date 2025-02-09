@@ -1,4 +1,4 @@
-package com.example.myapplication.eventOrganiser.registration;
+package com.example.myapplication.AdminTrackEventRegistration;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -15,11 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.myapplication.Adapter.EventAdapter;
 import com.example.myapplication.R;
 import com.example.myapplication.eventOrganiser.EventOrganiserHome;
-import com.example.myapplication.fragements.CollegeEventActivities;
-import com.example.myapplication.fragements.UserHome;
+import com.example.myapplication.eventOrganiser.registration.EventRegistrationCollegeListAdapter;
+import com.example.myapplication.eventOrganiser.registration.RegistrationCollegeList;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -29,22 +28,19 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class trackOrganiserEventRegistration extends Fragment {
-
+public class AdminEventList extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     List<RegistrationCollegeList> allEvents = new ArrayList<>();
     EventRegistrationCollegeListAdapter adapter;
     RecyclerView recyclerView;
-    String stream,department,filter;
 
-    public trackOrganiserEventRegistration() {
+    public AdminEventList() {
         // Required empty public constructor
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_track_organiser_event_registration, container, false);
+        View view= inflater.inflate(R.layout.fragment_admin_event_list, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -53,11 +49,6 @@ public class trackOrganiserEventRegistration extends Fragment {
         adapter = new EventRegistrationCollegeListAdapter(new ArrayList<>());
         adapter.setOnItemClickListener(this::onItemClick);
         recyclerView.setAdapter(adapter);
-
-        if (getArguments() != null) {
-            stream = getArguments().getString("stream");
-            department = getArguments().getString("department");
-        }
 
         fetchEventDetails();
 
@@ -71,23 +62,17 @@ public class trackOrganiserEventRegistration extends Fragment {
                         }
                     }
                 });
-
         return view;
     }
-
     public void fetchEventDetails() {
         allEvents.clear();
 
         List<Task<QuerySnapshot>> tasks = new ArrayList<>();
 
-        tasks.add(db.collection("College Events").whereEqualTo("eventStream", stream)
-                .whereEqualTo("eventDepartment", department).get());
-        tasks.add(db.collection("InterCollegiate Events").whereEqualTo("eventStream", stream)
-                .whereEqualTo("eventDepartment", department).get());
-        tasks.add(db.collection("Seminars").whereEqualTo("eventStream", stream)
-                .whereEqualTo("eventDepartment", department).get());
-        tasks.add(db.collection("Workshops").whereEqualTo("eventStream", stream)
-                .whereEqualTo("eventDepartment", department).get());
+        tasks.add(db.collection("College Events").get());
+        tasks.add(db.collection("InterCollegiate Events").get());
+        tasks.add(db.collection("Seminars").get());
+        tasks.add(db.collection("Workshops").get());
 
         Tasks.whenAllSuccess(tasks).addOnSuccessListener(objects -> {
             for (Object object : objects) {
@@ -114,13 +99,10 @@ public class trackOrganiserEventRegistration extends Fragment {
             Toast.makeText(getActivity(), "Error fetching event details: " + e.getMessage(), Toast.LENGTH_LONG).show();
         });
     }
-
-
     private void updateAdapterWithEvents(List<RegistrationCollegeList> allEvents) {
         adapter.updateEventList(allEvents);
         recyclerView.setAdapter(adapter);
     }
-
     private void showNoEventDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("No Event");
@@ -145,25 +127,28 @@ public class trackOrganiserEventRegistration extends Fragment {
                 .commit();
     }
 
-    public void onItemClick(String eventId, String Status) {
+    public void onItemClick(String eventId, String Status, String eventName) {
         if (Status.equals("Active")) {
-            CollegeEventActivities activitiesFragment = new CollegeEventActivities();
+            trackAdminRegistrationPage activitiesFragment = new trackAdminRegistrationPage();
             Bundle bundle = new Bundle();
             bundle.putString("eventId", eventId);
+            bundle.putString("eventName", eventName);
             activitiesFragment.setArguments(bundle);
             getFragment(activitiesFragment);
         } else if (Status.equals("Cancel")) {
             Toast.makeText(getActivity(), "Event has been Cancelled", Toast.LENGTH_LONG).show();
-            CollegeEventActivities activitiesFragment = new CollegeEventActivities();
+            trackAdminRegistrationPage activitiesFragment = new trackAdminRegistrationPage();
             Bundle bundle = new Bundle();
             bundle.putString("eventId", eventId);
+            bundle.putString("eventName", eventName);
             activitiesFragment.setArguments(bundle);
             getFragment(activitiesFragment);
         } else {
             Toast.makeText(getActivity(), "Event has been Closed", Toast.LENGTH_LONG).show();
-            CollegeEventActivities activitiesFragment = new CollegeEventActivities();
+            trackAdminRegistrationPage activitiesFragment = new trackAdminRegistrationPage();
             Bundle bundle = new Bundle();
             bundle.putString("eventId", eventId);
+            bundle.putString("eventName", eventName);
             activitiesFragment.setArguments(bundle);
             getFragment(activitiesFragment);
         }

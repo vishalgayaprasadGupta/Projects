@@ -169,6 +169,9 @@ public class WorkshopEventActivityDetails extends Fragment {
                         availability=activity.getAvailability().toString();
                         int Availability=Integer.parseInt(availability);
                         if(Availability>0){
+                            Toast toast = Toast.makeText(getContext(), "Availability confirmed! Proceed with registration.", Toast.LENGTH_SHORT);
+                            toast.show();
+                            new android.os.Handler().postDelayed(() -> toast.cancel(), 1000);
                             availabilityProgressbar.setVisibility(View.GONE);
                             checkAvailabilityButton.setVisibility(View.GONE);
                             registerButton.setVisibility(View.VISIBLE);

@@ -125,15 +125,15 @@ public class CollegeEventActivityDetails extends Fragment {
 
                     if (documentSnapshot.exists()) {
                         Activity activity = documentSnapshot.toObject(Activity.class);
-                        Log.d("CollegeEventActivityDetails", "Activity Name: " + activity.getName());
-                        Log.d("CollegeEventActivityDetails", "Activity Description: " + activity.getDescription());
+                        Log.d("CollegeEventActivityDetails", "Activity Name: " + activity.getActivtiyName());
+                        Log.d("CollegeEventActivityDetails", "Activity Description: " + activity.getActivtiyDescription());
 
                         if (activity != null) {
-                            activityName.setText(activity.getName());
-                            activityDescription.setText(activity.getDescription());
-                            activityDate.setText(activity.getDate());
-                            activityVenue.setText(activity.getVenue());
-                            activityRules.setText(activity.getRules());
+                            activityName.setText(activity.getActivtiyName());
+                            activityDescription.setText(activity.getActivtiyDescription());
+                            activityDate.setText(activity.getActivtiyDate());
+                            activityVenue.setText(activity.getActivtiyVenue());
+                            activityRules.setText(activity.getActivtiyRules());
                             activityType.setText(activity.getActivityType());
                             eventName.setText(activity.getEventName());
                             registrationFee.setText(activity.getRegistrationFee());
@@ -162,12 +162,14 @@ public class CollegeEventActivityDetails extends Fragment {
 
                     if (documentSnapshot.exists()) {
                         Activity activity = documentSnapshot.toObject(Activity.class);
-                        Log.d("CollegeEventActivityDetails", "Activity Name: " + activity.getName());
+                        Log.d("CollegeEventActivityDetails", "Activity Name: " + activity.getActivtiyName());
                         Log.d("CollegeEventActivityDetails", "Activity Avaialability: " + activity.getAvailability());
                         availability=activity.getAvailability().toString();
                         int Availability=Integer.parseInt(availability);
                         if(Availability>0){
-                            Toast.makeText(getContext(), "Availability confirmed! Proceed with registration.", Toast.LENGTH_SHORT).show();
+                            Toast toast = Toast.makeText(getContext(), "Availability confirmed! Proceed with registration.", Toast.LENGTH_SHORT);
+                            toast.show();
+                            new android.os.Handler().postDelayed(() -> toast.cancel(), 1000);
                             availabilityProgressbar.setVisibility(View.GONE);
                             checkAvailabilityButton.setVisibility(View.GONE);
                             registerButton.setVisibility(View.VISIBLE);

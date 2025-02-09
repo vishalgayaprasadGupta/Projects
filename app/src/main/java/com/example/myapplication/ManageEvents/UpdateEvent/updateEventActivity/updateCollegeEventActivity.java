@@ -135,15 +135,15 @@ public class updateCollegeEventActivity extends Fragment {
 
                     if (documentSnapshot.exists()) {
                         Activity activity = documentSnapshot.toObject(Activity.class);
-                        Log.d("CollegeEventActivityDetails", "Activity Name: " + activity.getName());
-                        Log.d("CollegeEventActivityDetails", "Activity Description: " + activity.getDescription());
+                        Log.d("CollegeEventActivityDetails", "Activity Name: " + activity.getActivtiyName());
+                        Log.d("CollegeEventActivityDetails", "Activity Description: " + activity.getActivtiyDescription());
 
                         if (activity != null) {
-                            activityName.setText(activity.getName());
-                            activityDescription.setText(activity.getDescription());
-                            activityDate.setText(activity.getDate());
-                            activityVenue.setText(activity.getVenue());
-                            activityRules.setText(activity.getRules());
+                            activityName.setText(activity.getActivtiyName());
+                            activityDescription.setText(activity.getActivtiyDescription());
+                            activityDate.setText(activity.getActivtiyDate());
+                            activityVenue.setText(activity.getActivtiyVenue());
+                            activityRules.setText(activity.getActivtiyRules());
                             registrationFee.setText(activity.getRegistrationFee());
                             availability.setText(activity.getAvailability());
                         } else {
