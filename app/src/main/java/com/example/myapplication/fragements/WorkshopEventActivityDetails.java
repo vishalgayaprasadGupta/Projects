@@ -26,10 +26,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class WorkshopEventActivityDetails extends Fragment {
     View view;
-    private TextView activityTitle, activityDescription, activityDate, activityVenue,requirments,registrationFee,registrationFull,eventName,activityType;
+    private TextView activityTitle, activityDescription, activityDate, activityVenue,requirments,registrationFee,registrationFull,eventName,activityType,activityTime;
     private Button registerButton,checkAvailabilityButton;
     ProgressBar dataloadProgressbar,availabilityProgressbar,registrationProgressbar;
-    String activityId="",availability,eventId;
+    String activityId="",availability,eventId,time;
     FirebaseFirestore firestore;
 
     public WorkshopEventActivityDetails() {
@@ -56,6 +56,7 @@ public class WorkshopEventActivityDetails extends Fragment {
         registrationProgressbar=view.findViewById(R.id.registrationProgressbar);
         registrationProgressbar.setVisibility(View.GONE);
         activityType=view.findViewById(R.id.activityType);
+        activityTime=view.findViewById(R.id.activityTimeSchedule);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
@@ -99,6 +100,7 @@ public class WorkshopEventActivityDetails extends Fragment {
                 bundle.putString("registrationFee", registrationFee.getText().toString());
                 bundle.putString("activityId", activityId);
                 bundle.putString("eventId", eventId);
+                bundle.putString("activityTime", time);
                 EventRegistration eventRegistration = new EventRegistration();
                 eventRegistration.setArguments(bundle);
                 registrationProgressbar.setVisibility(View.GONE);
@@ -140,6 +142,10 @@ public class WorkshopEventActivityDetails extends Fragment {
                             activityVenue.setText(activity.getWorkshopVenue());
                             requirments.setText(activity.getSpecialRequirements());
                             registrationFee.setText(activity.getRegistrationFees());
+                            String startTime=activity.getActivityStartTime();
+                            String endTime=activity.getActivityEndTime();
+                            time=startTime+" - "+endTime;
+                            activityTime.setText(time);
                             dataloadProgressbar.setVisibility(View.GONE);
                         } else {
                             showNoEventDialog();

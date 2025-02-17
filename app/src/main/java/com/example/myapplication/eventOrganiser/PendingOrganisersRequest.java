@@ -49,7 +49,7 @@ public class PendingOrganisersRequest extends Fragment {
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        getFragment(new ManageEventOrganiser());
+                        getActivity().getSupportFragmentManager().popBackStack();
                     }
                 });
         return view;

@@ -24,10 +24,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class CollegeEventActivityDetails extends Fragment {
     View view;
-    private TextView activityName, activityDescription, activityDate, activityVenue,activityRules,registrationFee,registrationFull,activityType,eventName;
+    private TextView activityName, activityDescription, activityDate, activityVenue,activityRules,registrationFee,registrationFull,activityType,eventName,activityTimeSchedule;
     private Button checkAvailabilityButton, registerButton;
     FirebaseFirestore firestore;
-    String availability;
+    String availability,time;
     String activityId="",eventId;
     ProgressBar availabilityProgressbar,dataloadProgressbar,registrationProgressbar;
 
@@ -55,6 +55,7 @@ public class CollegeEventActivityDetails extends Fragment {
         eventName=view.findViewById(R.id.eventName);
         registrationProgressbar=view.findViewById(R.id.registerProgressBar);
         registrationProgressbar.setVisibility(View.GONE);
+        activityTimeSchedule=view.findViewById(R.id.activityTimeSchedule);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
@@ -99,6 +100,7 @@ public class CollegeEventActivityDetails extends Fragment {
                 bundle.putString("registrationFee", registrationFee.getText().toString());
                 bundle.putString("activityId", activityId);
                 bundle.putString("eventId", eventId);
+                bundle.putString("activityTime",time);
 
                 EventRegistration eventRegistration = new EventRegistration();
                 eventRegistration.setArguments(bundle);
@@ -131,12 +133,16 @@ public class CollegeEventActivityDetails extends Fragment {
                         if (activity != null) {
                             activityName.setText(activity.getActivtiyName());
                             activityDescription.setText(activity.getActivtiyDescription());
-                            activityDate.setText(activity.getActivtiyDate());
+                            activityDate.setText(activity.getActivityDate());
                             activityVenue.setText(activity.getActivtiyVenue());
                             activityRules.setText(activity.getActivtiyRules());
                             activityType.setText(activity.getActivityType());
                             eventName.setText(activity.getEventName());
                             registrationFee.setText(activity.getRegistrationFee());
+                            String startTime=activity.getActivityStartTime();
+                            String endTime=activity.getActivityEndTime();
+                            time=startTime+" - "+endTime;
+                            activityTimeSchedule.setText(time);
                             dataloadProgressbar.setVisibility(View.GONE);
                         } else {
                             showNoEventDialog();

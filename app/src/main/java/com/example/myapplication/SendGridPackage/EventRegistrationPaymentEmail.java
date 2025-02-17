@@ -53,7 +53,7 @@ public class EventRegistrationPaymentEmail {
     private static final String SENDGRID_API_KEY = BuildConfig.SENDGRID_API_KEY;
 
     public static void generatePDF(Context context,String uid,String studentId, String toEmail, String userName, String eventName,
-                                   String activityName, String paymentID, String paymentAmount, String paymentStatus) {
+                                   String activityName, String paymentID, String paymentAmount, String paymentStatus,String activityDate,String activityTime) {
         try {
             Log.d(TAG, "Generating PDF...");
             Uri pdfUri;
@@ -101,8 +101,8 @@ public class EventRegistrationPaymentEmail {
                         .setBackgroundColor(new DeviceRgb(230, 81, 0))
                         .setBorder(new SolidBorder(new DeviceRgb(200, 55, 0), 1))
                         .setTextAlignment(TextAlignment.CENTER)
-                        .setPadding(6)
-                        .setMarginBottom(10);
+                        .setPadding(4)
+                        .setMarginBottom(8);
 
                 document.add(header);
 
@@ -145,6 +145,8 @@ public class EventRegistrationPaymentEmail {
 
                 eventTable.addCell(new Cell().add(new Paragraph("Activity:").setBold()));
                 eventTable.addCell(new Cell().add(new Paragraph(activityName)));
+                eventTable.addCell(new Cell().add(new Paragraph(activityDate)));
+                eventTable.addCell(new Cell().add(new Paragraph(activityTime)));
 
                 document.add(eventTable);
 
@@ -223,6 +225,7 @@ public class EventRegistrationPaymentEmail {
             String timestamp = new SimpleDateFormat("dd MMMM yyyy, HH:mm:ss", Locale.getDefault()).format(new Date());
 
             String subject = "Your Event Registration Has Been Successful!";
+            String adminEmail = "hub.campusconnect@gmail.com";
             String message = "<html><body>" +
                     "<h2>Greetings From Campus Connect!</h2>" +
                     "<p>Dear " + userName + ",</p>" +
@@ -241,6 +244,8 @@ public class EventRegistrationPaymentEmail {
                     "</ul>" +
                     "<p><strong>Receipt:</strong> Please find the attached payment receipt for your reference.</p>" +
                     "<p>We look forward to seeing you at the event!</p>" +
+                    "<p>If you have any questions regarding your registration, feel free to contact at: " +
+                    "<a href='mailto:" + adminEmail + "'>" + adminEmail + "</a></p>" +
                     "<p>Best regards,<br>The Campus Connect Team</p>" +
                     "<p>&#169; 2025 Campus Connect. All rights reserved.</p>" +
                     "</body></html>";

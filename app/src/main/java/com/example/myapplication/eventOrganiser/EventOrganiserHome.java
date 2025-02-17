@@ -13,7 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.EventVolunteer.VolunteerList;
 import com.example.myapplication.R;
+import com.example.myapplication.eventOrganiser.ManageVolunteers.ManageVolunteer;
 import com.example.myapplication.eventOrganiser.registration.OrganiserEventList;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,11 +26,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class EventOrganiserHome extends Fragment {
 
     private TextView branchName, departmentName;
-    CardView manageEvents, cancelEvent, trackEventRegistrations;
-    TextView manageEvent, eventReport, trackEventRegistration;
+    CardView manageEvents, Report, trackEventRegistrations, ManageVolunteers;
+    TextView manageEvent, eventReport, trackEventRegistration,manageVolunteer;
     private FirebaseFirestore firestore;
     private FirebaseAuth auth;
-
     public EventOrganiserHome() {
         // Required empty public constructor
     }
@@ -39,19 +40,22 @@ public class EventOrganiserHome extends Fragment {
         View view = inflater.inflate(R.layout.fragment_event_organiser_home_, container, false);
 
         manageEvent=view.findViewById(R.id.manageEvents);
-        eventReport=view.findViewById(R.id.cancelEvent);
+        eventReport=view.findViewById(R.id.eventReport);
         trackEventRegistration=view.findViewById(R.id.trackEventRegistrations);
+        manageVolunteer=view.findViewById(R.id.manageVolunteer);
 
         branchName = view.findViewById(R.id.branchName);
         departmentName = view.findViewById(R.id.departmentName);
 
         manageEvents = view.findViewById(R.id.ManageEvents);
-        cancelEvent = view.findViewById(R.id.CancelEvent);
+        Report = view.findViewById(R.id.Report);
         trackEventRegistrations = view.findViewById(R.id.EventRegistrations);
+        ManageVolunteers = view.findViewById(R.id.ManageVolunteers);
 
         animateCardView(manageEvents, 400);
         animateCardView(trackEventRegistrations, 800);
-        animateCardView(cancelEvent, 1200);
+        animateCardView(ManageVolunteers, 1200);
+        animateCardView(Report, 1600);
 
 
         firestore = FirebaseFirestore.getInstance();
@@ -74,6 +78,18 @@ public class EventOrganiserHome extends Fragment {
             @Override
             public void onClick(View v) {
                 Fragment fragment = new OrganiserEventList();
+                Bundle bundle = new Bundle();
+                bundle.putString("stream", branchName.getText().toString());
+                bundle.putString("department", departmentName.getText().toString());
+                fragment.setArguments(bundle);
+                getFragment(fragment);
+            }
+        });
+
+        manageVolunteer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new ManageVolunteer();
                 Bundle bundle = new Bundle();
                 bundle.putString("stream", branchName.getText().toString());
                 bundle.putString("department", departmentName.getText().toString());

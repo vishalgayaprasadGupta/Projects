@@ -22,8 +22,10 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.EventVolunteer.VolunteerRegistrationPage;
 import com.example.myapplication.SendGridPackage.EventOrganiserAccountVerificationEmail;
 import com.example.myapplication.SendGridPackage.UserAccountActivationEmail;
+import com.example.myapplication.eventOrganiser.DeleteOrganiser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -36,7 +38,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginPage extends AppCompatActivity {
 
-    TextView userRegisterPage,forgetPasswordPage;
+    TextView userRegisterPage,forgetPasswordPage,volunteerRegistration;
     TextInputEditText Email,UserPassword;
     Button Signin;
     FirebaseAuth mAuth;
@@ -70,6 +72,18 @@ public class LoginPage extends AppCompatActivity {
             public void onClick(View v) {
                 RegisterProgressbar.setVisibility(View.VISIBLE);
                 Intent intent = new Intent(LoginPage.this, RegistrationPage.class);
+                startActivity(intent);
+                RegisterProgressbar.setVisibility(View.INVISIBLE);
+                finish();
+            }
+        });
+
+        volunteerRegistration=findViewById(R.id.registerVolunteer);
+        volunteerRegistration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RegisterProgressbar.setVisibility(View.VISIBLE);
+                Intent intent = new Intent(LoginPage.this, VolunteerRegistrationPage.class);
                 startActivity(intent);
                 RegisterProgressbar.setVisibility(View.INVISIBLE);
                 finish();
@@ -180,7 +194,11 @@ public class LoginPage extends AppCompatActivity {
                                                 Toast.makeText(LoginPage.this, "Enter Registered EmailID and Password", Toast.LENGTH_SHORT).show();
                                                 mAuth.signOut();
                                             }
-                                        } else {
+                                        }else if("Event Organiser".equals(role) && status.equals("Rejected")){
+                                            Toast.makeText(LoginPage.this, "Your Request has been Rejected ", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(LoginPage.this, DeleteOrganiser.class);
+                                            startActivity(intent);
+                                        }else {
                                             mAuth.signOut();
                                             Toast.makeText(LoginPage.this, "Your Account has been Deactivated, Contact Admin!", Toast.LENGTH_SHORT).show();
                                             finish();
@@ -225,6 +243,7 @@ public class LoginPage extends AppCompatActivity {
                 .document(uid)
                 .update("isVerificationEmailsend", "true")
                 .addOnSuccessListener(aVoid -> {
+                    userLogin(EmailId,Password);
                     Log.d(TAG, "Email verification status updated to true");
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to update email verification status", e));

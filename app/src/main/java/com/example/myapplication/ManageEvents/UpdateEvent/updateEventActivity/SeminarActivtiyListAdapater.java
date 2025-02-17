@@ -37,12 +37,11 @@ public class SeminarActivtiyListAdapater extends RecyclerView.Adapter<SeminarAct
 
         holder.activityName.setText(activity.getSeminarTitle());
         holder.activityDescription.setText(activity.getSeminarDescription());
-        holder.activityDate.setText(activity.getSeminarDate());
+        holder.activityDate.setText(activity.getActivtiyDate());
 
-        // Make the entire item clickable, not just the CardView
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onItemClick(activity.getActivityId()); // Pass document ID on click
+                listener.onItemClick(activity.getActivityId());
             }
         });
     }

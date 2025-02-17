@@ -37,7 +37,7 @@ public class SeminarActivtiyAdapater extends RecyclerView.Adapter<SeminarActivti
 
         holder.activityName.setText(activity.getSeminarTitle());
         holder.activityDescription.setText(activity.getSeminarDescription());
-        holder.activityDate.setText(activity.getSeminarDate());
+        holder.activityDate.setText(activity.getActivtiyDate());
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {

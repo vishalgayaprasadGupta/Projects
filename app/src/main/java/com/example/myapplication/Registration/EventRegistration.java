@@ -17,16 +17,21 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adminfragements.AdminHome;
 import com.example.myapplication.eventOrganiser.EventOrganiserHome;
 import com.example.myapplication.fragements.UserHome;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
@@ -38,10 +43,11 @@ public class EventRegistration extends Fragment {
     FirebaseFirestore firestore;
     String role;
     EditText name, email, contact,studentUid;
-    TextView eventName, activtiyName, activityType, schedule, registrationAmount;
+    TextView eventName, activtiyName, activityType, schedule, registrationAmount,timeSchedule;
     ProgressBar dataloadProgressbar;
     Button registerButton;
-    String activityid,eventId;
+    String activityId,eventId,activityTime;
+    boolean isAlredyRegistered=false;
 
     public EventRegistration() {
         // Required empty public constructor
@@ -74,6 +80,7 @@ public class EventRegistration extends Fragment {
         dataloadProgressbar = view.findViewById(R.id.dataloadProgressbar);
         dataloadProgressbar.setVisibility(View.VISIBLE);
         studentUid=view.findViewById(R.id.studentUid);
+        timeSchedule=view.findViewById(R.id.timeSchedule);
 
         firestore = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -81,8 +88,9 @@ public class EventRegistration extends Fragment {
         fetchUserRole(uid);
 
         if(getArguments()!=null){
-            activityid=getArguments().getString("activityId");
+            activityId=getArguments().getString("activityId");
             eventId=getArguments().getString("eventId");
+            activityTime=getArguments().getString("activityTime");
         }
 
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
@@ -117,6 +125,7 @@ public class EventRegistration extends Fragment {
         });
 
         registerButton.setOnClickListener(v -> {
+            isUserRegisteredForEvent(activityId);
             if(validateinpute()) {
                 String RegistrationFees = registrationAmount.getText().toString();
                 Intent intent = new Intent(getActivity(), ConfirmPayment.class);
@@ -126,10 +135,13 @@ public class EventRegistration extends Fragment {
                 intent.putExtra("eventName", eventName.getText().toString());
                 intent.putExtra("eventId", eventId);
                 intent.putExtra("activityName", activtiyName.getText().toString());
-                intent.putExtra("activityId", activityid);
+                intent.putExtra("activityId", activityId);
                 intent.putExtra("studentUid", studentUid.getText().toString());
                 intent.putExtra("studentName", name.getText().toString());
                 intent.putExtra("studentEmail", email.getText().toString());
+                intent.putExtra("activityTime", activityTime);
+                intent.putExtra("activityDate", schedule.getText().toString());
+
                 Log.d("Registration", "Student ID: " + studentUid.getText().toString());
                 paymentLauncher.launch(intent);
             }else{
@@ -172,6 +184,30 @@ public class EventRegistration extends Fragment {
                     }
                 });
     }
+    public void isUserRegisteredForEvent(String activityId) {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("Event Registrations")
+                .whereEqualTo("uid", uid)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String storedActivityId = document.getString("activityId");
+                                if (storedActivityId != null && storedActivityId.equals(activityId)) {
+                                    Toast.makeText(requireActivity(), "You have already registered for this event", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+                            }
+                        }
+
+                    }
+                });
+    }
+
     public void redirectUser(String role){
         switch (role){
             case "Admin":
@@ -215,6 +251,7 @@ public class EventRegistration extends Fragment {
             activityType.setText(getArguments().getString("activityType"));
             schedule.setText(getArguments().getString("eventSchedule"));
             registrationAmount.setText(getArguments().getString("registrationFee"));
+            timeSchedule.setText(getArguments().getString("activityTime"));
         }
         dataloadProgressbar.setVisibility(View.INVISIBLE);
     }

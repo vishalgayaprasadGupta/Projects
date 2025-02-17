@@ -84,7 +84,7 @@ public class DeActivateUser extends Fragment {
         firestore.collection("User").document(uid)
                 .update("status", "Inactive")
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getActivity(), "User activated successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "User DeActivated successfully!", Toast.LENGTH_SHORT).show();
 
                     userList.get(position).setStatus("Active");
                     adapter.notifyItemChanged(position);

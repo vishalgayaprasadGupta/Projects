@@ -35,6 +35,7 @@ public class OrganiserRequestRejectEmail {
 
 
             String subject = "Your Request for Event Organizer Role Has Been Rejected";
+            String adminEmail = "hub.campusconnect@gmail.com";
             String message = "<html><body>" +
                     "<h1>Campus Connect - Request Update</h1>" +
                     "<p>Dear " + organiserName + ",</p>" +
@@ -48,6 +49,8 @@ public class OrganiserRequestRejectEmail {
                     "<p>Your account access has been set to <strong>User</strong>. You can continue to log in and explore other features available on Campus Connect.</p>" +
                     "<p>If you wish to delete your account, you can do so by logging in and navigating to the account settings page.</p>" +
                     "<p>We appreciate your interest and encourage you to stay connected with Campus Connect for future opportunities.</p>" +
+                    "<p>If you have any questions or would like to receive feedback on your application, feel free to contact the admin at: " +
+                    "<a href='mailto:" + adminEmail + "'>" + adminEmail + "</a></p>" +
                     "<p>Best regards,<br>The Campus Connect Team</p>" +
                     "<p>&#169; 2025 Campus Connect. All rights reserved.</p>" +
                     "</body></html>";

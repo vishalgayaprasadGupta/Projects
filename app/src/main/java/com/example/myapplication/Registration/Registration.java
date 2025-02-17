@@ -3,11 +3,10 @@ package com.example.myapplication.Registration;
 public class Registration {
     private String eventId;
     private String eventName;
-    private String activityId;
+    private String activityId,activityDate,activityTime;
     private String activityName,uid,studentId,studentName,studentEmail,paymentStatus;
 
-    public Registration(String uid,String studentId,String eventId, String eventName, String activityId, String activityName,String studentName,String studentEmail,String paymentStatus) {
-        this.eventId = eventId;
+    public Registration(String uid,String studentId, String eventName, String activityId, String activityName,String studentName,String studentEmail,String paymentStatus,String activityDate,String activityTime) {
         this.eventName = eventName;
         this.activityId = activityId;
         this.activityName = activityName;
@@ -16,6 +15,8 @@ public class Registration {
         this.studentName=studentName;
         this.studentEmail=studentEmail;
         this.paymentStatus=paymentStatus;
+        this.activityDate=activityDate;
+        this.activityTime=activityTime;
     }
 
     public String getUid() {
@@ -24,6 +25,22 @@ public class Registration {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getActivityDate() {
+        return activityDate;
+    }
+
+    public void setActivityDate(String activityDate) {
+        this.activityDate = activityDate;
+    }
+
+    public String getActivityTime() {
+        return activityTime;
+    }
+
+    public void setActivityTime(String activityTime) {
+        this.activityTime = activityTime;
     }
 
     public String getPaymentStatus() {

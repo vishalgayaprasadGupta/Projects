@@ -35,7 +35,7 @@ import com.razorpay.PaymentResultListener;
 import org.json.JSONObject;
 
 public class ConfirmPayment extends AppCompatActivity implements PaymentResultListener {
-    String RegistrationFees, paymentEmail, paymentMobile,activityId,eventId,studentId,Name,Email;
+    String RegistrationFees, paymentEmail, paymentMobile,activityId,eventId,studentId,Name,Email,activityTime,activitytDate;
     Button paymentButton;
     EditText  email, mobile;
     TextView paymentAmount;
@@ -66,6 +66,8 @@ public class ConfirmPayment extends AppCompatActivity implements PaymentResultLi
         studentId=getIntent().getStringExtra("studentUid");
         Name=getIntent().getStringExtra("studentName");
         Email=getIntent().getStringExtra("studentEmail");
+        activityTime=getIntent().getStringExtra("activityTime");
+        activitytDate=getIntent().getStringExtra("activityDate");
 
         Log.d("Registration", "Student ID: " + studentId);
 
@@ -160,8 +162,8 @@ public class ConfirmPayment extends AppCompatActivity implements PaymentResultLi
     @Override
     public void onPaymentSuccess(String razorpayPaymentID) {
         paymentStatus="Success";
-        saveRegistrationDetails(uid,studentId, eventId, eventName, activityId, activityName,Name,Email,paymentStatus);
-        EventRegistrationPaymentEmail.generatePDF(this,uid,studentId, paymentEmail, userName, eventName, activityName, razorpayPaymentID, paymentAmount.getText().toString(), paymentStatus);
+        saveRegistrationDetails(uid,studentId, eventName, activityId, activityName,Name,Email,paymentStatus,activitytDate,activityTime);
+        EventRegistrationPaymentEmail.generatePDF(this,uid,studentId, paymentEmail, userName, eventName, activityName, razorpayPaymentID, paymentAmount.getText().toString(), paymentStatus,activitytDate,activityTime);
         Intent resultIntent = new Intent();
         resultIntent.putExtra("role", role);
         setResult(Activity.RESULT_OK, resultIntent);
@@ -178,8 +180,8 @@ public class ConfirmPayment extends AppCompatActivity implements PaymentResultLi
         Checkout.clearUserData(this);
     }
 
-    public void saveRegistrationDetails(String uid,String studentId, String eventId, String eventName, String activityId, String activityName,String Name,String Email,String paymentStatus) {
-        Registration registration = new Registration(uid,studentId, eventId, eventName, activityId, activityName,Name,Email,paymentStatus);
+    public void saveRegistrationDetails(String uid,String studentId, String eventName, String activityId, String activityName,String Name,String Email,String paymentStatus,String activityDate,String activityTime) {
+        Registration registration = new Registration(uid,studentId, eventName, activityId, activityName,Name,Email,paymentStatus,activityDate,activityTime);
 
         firestore.collection("Event Registrations")
                 .add(registration)

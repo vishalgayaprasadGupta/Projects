@@ -141,7 +141,7 @@ public class updateCollegeEventActivity extends Fragment {
                         if (activity != null) {
                             activityName.setText(activity.getActivtiyName());
                             activityDescription.setText(activity.getActivtiyDescription());
-                            activityDate.setText(activity.getActivtiyDate());
+                            activityDate.setText(activity.getActivityDate());
                             activityVenue.setText(activity.getActivtiyVenue());
                             activityRules.setText(activity.getActivtiyRules());
                             registrationFee.setText(activity.getRegistrationFee());

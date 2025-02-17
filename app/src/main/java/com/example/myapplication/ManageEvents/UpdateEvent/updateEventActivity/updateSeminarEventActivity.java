@@ -73,6 +73,7 @@ public class updateSeminarEventActivity extends Fragment {
                     @Override
                     public void handleOnBackPressed() {
                         if (getArguments() != null && getArguments().containsKey("activityId")) {
+                            requireActivity().getSupportFragmentManager().popBackStack();
                             String activityId = getArguments().getString("activityId");
                             String eventId = getArguments().getString("eventId");
                             String eventType = getArguments().getString("eventType");
@@ -147,7 +148,7 @@ public class updateSeminarEventActivity extends Fragment {
                         if (activity != null) {
                             activityTitle.setText(activity.getSeminarTitle());
                             activityDescription.setText(activity.getSeminarDescription());
-                            activityDate.setText(activity.getSeminarDate());
+                            activityDate.setText(activity.getActivtiyDate());
                             activityVenue.setText(activity.getSeminarVenue());
                             activityDuration.setText(activity.getSeminarDuration());
                             activitySpeakerName.setText(activity.getSpeakerName());

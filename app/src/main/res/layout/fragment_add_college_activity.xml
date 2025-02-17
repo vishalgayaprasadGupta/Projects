@@ -96,6 +96,32 @@
                     android:layout_marginBottom="10dp">
 
                     <Spinner
+                        android:id="@+id/startTimeSpinner"
+                        android:layout_width="match_parent"
+                        android:background="#D3D3D3"
+                        android:layout_height="48dp"
+                        android:padding="10dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp">
+
+                    <Spinner
+                        android:id="@+id/endTimeSpinner"
+                        android:layout_width="match_parent"
+                        android:background="#D3D3D3"
+                        android:layout_height="48dp"
+                        android:padding="10dp"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp">
+
+                    <Spinner
                         android:id="@+id/eventTypeSpinner"
                         android:layout_width="match_parent"
                         android:background="#D3D3D3"
@@ -113,7 +139,7 @@
                     <EditText
                         android:id="@+id/venue"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:hint="Activity Venue"
                         android:textColor="@android:color/black"
                         android:inputType="textPersonName"

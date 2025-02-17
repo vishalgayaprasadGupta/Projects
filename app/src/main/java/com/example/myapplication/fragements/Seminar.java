@@ -1,8 +1,9 @@
 package com.example.myapplication.fragements;
 
 public class Seminar {
-    String activityName,activtyDescription,activtiyDate,activtiyVenue,availability,eventId,activtiyDuration,eventName;
-    String speakerName,speakerBio,registrationFee,seminarAgenda,activityId,eventType,specialRequirements,activityType;
+    String activityName,activtyDescription,activtiyDate,activtiyVenue,availability,eventId,activtiyDuration,
+            eventName,selectedStartTime,selectedEndTime;
+    String speakerName,speakerBio,registrationFee,seminarAgenda,activityId,eventType,specialRequirements,activityType,activityTime;
 
     public String getActivityId() {
         return activityId;
@@ -20,7 +21,10 @@ public class Seminar {
         this.eventType = eventType;
     }
 
-    public Seminar(String eventName,String activityName, String activtyDescription, String activtiyDate, String activtiyVenue, String activtiyDuration, String speakerName, String speakerBio, String registrationFee, String seminarAgenda,String eventId,String eventType,String specialRequirements,String availability,String activityType) {
+    public Seminar(String eventName,String activityName, String activtyDescription, String activtiyDate, String activtiyVenue,
+                   String activtiyDuration, String speakerName, String speakerBio, String registrationFee,
+                   String seminarAgenda,String eventId,String eventType,String specialRequirements,String availability
+                  ,String activityStartTime,String activityEndTime) {
         this.activityName = activityName;
         this.activtyDescription = activtyDescription;
         this.activtiyDate = activtiyDate;
@@ -34,12 +38,19 @@ public class Seminar {
         this.eventType=eventType;
         this.specialRequirements=specialRequirements;
         this.availability=availability;
-        this.activityType=activityType;
         this.eventName=eventName;
+        this.selectedStartTime=activityStartTime;
+        this.selectedEndTime=activityEndTime;
     }
     public Seminar() {
     }
 
+    public String getActivityStartTime() {
+        return selectedStartTime;
+    }
+    public void setActivityStartTime(String activityStartTime) {
+        this.selectedStartTime = activityStartTime;
+    }
     public String getEventName() {
         return eventName;
     }
@@ -47,13 +58,11 @@ public class Seminar {
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
-
-    public String getActivityType() {
-        return activityType;
+    public String getActivityEndTime() {
+        return selectedEndTime;
     }
-
-    public void setActivityType(String activityType) {
-        this.activityType = activityType;
+    public void setActivityEndTime(String activityEndTime) {
+        this.selectedEndTime = activityEndTime;
     }
 
     public String getAvailability() {
@@ -96,11 +105,11 @@ public class Seminar {
         this.activtyDescription = activtyDescription;
     }
 
-    public String getSeminarDate() {
+    public String getActivtiyDate() {
         return activtiyDate;
     }
 
-    public void setSeminarDate(String activtiyDate) {
+    public void setActivtiyDate(String activtiyDate) {
         this.activtiyDate = activtiyDate;
     }
 

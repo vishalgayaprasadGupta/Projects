@@ -26,11 +26,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SeminarEventActivityDetails extends Fragment {
     View view;
-    private TextView activityTitle, activityDescription, activityDate, activityVenue,activityDuration,activitySpeakerName,activitySpeakerBio,activityAgenda,requirments,registrationFee,registrationFull,eventName,activityType;
+    private TextView activityTitle, activityDescription, activityDate, activityVenue,activityDuration,activitySpeakerName,activitySpeakerBio,activityAgenda,requirments,registrationFee,registrationFull,eventName,activityType,activityTime;
     private Button registerButton,checkAvailabilityButton;
     FirebaseFirestore firestore;
     ProgressBar checkAvailabilityProgressbar,dataloadProgressbar,registrationProgressbar;
-    String activityId="",availability,eventId;
+    String activityId="",availability,eventId,time;
 
     public SeminarEventActivityDetails() {
         // Required empty public constructor
@@ -61,6 +61,7 @@ public class SeminarEventActivityDetails extends Fragment {
         registrationProgressbar=view.findViewById(R.id.registrationProgressbar);
         registrationProgressbar.setVisibility(View.GONE);
         activityType=view.findViewById(R.id.activityType);
+        activityTime=view.findViewById(R.id.activityTimeSchedule);
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
@@ -103,6 +104,7 @@ public class SeminarEventActivityDetails extends Fragment {
                 bundle.putString("registrationFee", registrationFee.getText().toString());
                 bundle.putString("activityId", activityId);
                 bundle.putString("eventId", eventId);
+                bundle.putString("activityTime", time);
                 EventRegistration eventRegistration = new EventRegistration();
                 eventRegistration.setArguments(bundle);
                 registrationProgressbar.setVisibility(View.GONE);
@@ -136,8 +138,7 @@ public class SeminarEventActivityDetails extends Fragment {
                         if (activity != null) {
                             activityTitle.setText(activity.getSeminarTitle());
                             activityDescription.setText(activity.getSeminarDescription());
-                            activityDate.setText(activity.getSeminarDate());
-                            activityType.setText(activity.getActivityType());
+                            activityDate.setText(activity.getActivtiyDate());
                             activityVenue.setText(activity.getSeminarVenue());
                             activityDuration.setText(activity.getSeminarDuration());
                             activitySpeakerName.setText(activity.getSpeakerName());
@@ -145,6 +146,10 @@ public class SeminarEventActivityDetails extends Fragment {
                             activityAgenda.setText(activity.getSeminarAgenda());
                             eventName.setText(activity.getEventName());
                             registrationFee.setText(activity.getregistrationFee());
+                            String startTime=activity.getActivityStartTime();
+                            String endTime=activity.getActivityEndTime();
+                            time=startTime+" - "+endTime;
+                            activityTime.setText(time);
                             Log.d("CollegeEventActivityDetails", "Registration Fee: " + activity.getregistrationFee());
                             if(activity.getregistrationFee()==null){
                                 registrationFee.setText("N/A");

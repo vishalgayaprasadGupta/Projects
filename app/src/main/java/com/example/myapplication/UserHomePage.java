@@ -117,8 +117,6 @@ public class UserHomePage extends AppCompatActivity {
                 return true;
             }
         });
-
-
     }
 
     public void getFragment(Fragment fragment){

@@ -65,24 +65,7 @@ public class OrganiserDeletePage extends Fragment {
                             String eventId=getArguments().getString("eventId");
                             String eventType=getArguments().getString("eventType");
 
-                            Fragment targetFragment;
-                            switch(eventType.trim()){
-                                case "College Events":
-                                    targetFragment=new OrganiserDeleteEventCategory();
-                                    break;
-                                case "InterCollegiate Events":
-                                    targetFragment=new OrganiserDeleteEventCategory();
-                                    break;
-                                case "Workshops":
-                                    targetFragment=new OrganiserDeleteEventCategory();
-                                    break;
-                                case "Seminars":
-                                    targetFragment=new OrganiserDeleteEventCategory();
-                                    break;
-                                default:
-                                    targetFragment=new manageEvents();
-                                    break;
-                            }
+                            Fragment targetFragment=new OrganiserDeleteEventCategory();
                             Bundle bundle = new Bundle();
                             bundle.putString("eventId",eventId);
                             bundle.putString("eventType",eventType);
@@ -94,8 +77,7 @@ public class OrganiserDeletePage extends Fragment {
                             requireActivity().getSupportFragmentManager().popBackStack();
                         }
                     }
-                }
-        );
+                });
 
         Bundle bundle = new Bundle();
         bundle.putString("eventId",eventId);

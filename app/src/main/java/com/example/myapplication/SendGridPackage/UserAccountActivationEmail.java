@@ -34,6 +34,7 @@ public class UserAccountActivationEmail {
             String timestamp = new SimpleDateFormat("dd MMMM yyyy, HH:mm:ss", Locale.getDefault()).format(new Date());
 
             String subject = "Account Activation Successful";
+            String adminEmail = "hub.campusconnect@gmail.com";
             String message = "<html><body>" +
                     "<h1>Welcome to Campus Connect! 🎉</h1>" +
                     "<p>Dear " + Name + ",</p>" +
@@ -43,6 +44,8 @@ public class UserAccountActivationEmail {
                     "<p>If you have any questions or need assistance, feel free to reach out to our support team at hub.campusconnect@gmail.com</p>" +
                     "<p>Explore Events and many more,<br>The Campus Connect Team</p>" +
                     "<p><strong>Activated on:</strong> " + timestamp + "</p>" +
+                    "<p>If you have any query, feel free to contact  at: " +
+                    "<a href='mailto:" + adminEmail + "'>" + adminEmail + "</a></p>" +
                     "<p>&#169; 2025 Campus Connect. All rights reserved.</p>" +
                     "</body></html>";
 

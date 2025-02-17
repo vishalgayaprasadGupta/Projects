@@ -297,12 +297,12 @@ public class AddEvent extends Fragment {
                 addDetails(documentId, eventType,name);
             }
         });
-
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                getFragment(new manageUser());
+                getActivity().getSupportFragmentManager().popBackStack();
+                getFragment(new manageEvents());
             }
         });
 

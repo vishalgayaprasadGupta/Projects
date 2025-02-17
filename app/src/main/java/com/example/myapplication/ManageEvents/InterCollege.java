@@ -1,9 +1,9 @@
 package com.example.myapplication.ManageEvents;
 
 public class InterCollege {
-    String activitytName, activityDescription, activityVenue, activityRules, availability, registrationFee, eventId, eventType, activityDate, activityId,activityType,eventName;
+    String activitytName, activityDescription, activityVenue, activityRules, availability, registrationFee, eventId, eventType, activityDate, activityId,activityType,eventName,activityStartTime,activityEndTime;
 
-    public InterCollege(String eventName,String activitytName, String activityDescription, String activityVenue, String activityDate, String activityRules, String availability, String registrationFee, String eventId, String eventType,String activityType) {
+    public InterCollege(String eventName,String activitytName, String activityDescription, String activityVenue, String activityDate, String activityRules, String availability, String registrationFee, String eventId, String eventType,String activityType,String activityStartTime,String activityEndTime) {
         this.activitytName = activitytName;
         this.activityDescription = activityDescription;
         this.activityVenue = activityVenue;
@@ -15,6 +15,24 @@ public class InterCollege {
         this.eventType = eventType;
         this.activityType=activityType;
         this.eventName=eventName;
+        this.activityStartTime=activityStartTime;
+        this.activityEndTime=activityEndTime;
+    }
+
+    public String getActivityStartTime() {
+        return activityStartTime;
+    }
+
+    public void setActivityStartTime(String activityStartTime) {
+        this.activityStartTime = activityStartTime;
+    }
+
+    public String getActivityEndTime() {
+        return activityEndTime;
+    }
+
+    public void setActivityEndTime(String activityEndTime) {
+        this.activityEndTime = activityEndTime;
     }
 
     public String getEventName() {

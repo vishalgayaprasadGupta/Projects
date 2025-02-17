@@ -106,7 +106,6 @@ public class CollegeEventList extends Fragment {
     }
 
     public void onItemClick(String eventId,String eventType,String eventName) {
-        // Navigate to the next fragment
         db.collection("College Events").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {

@@ -174,10 +174,11 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="@id/cardContainer"
-            app:layout_constraintBottom_toBottomOf="@id/cardContainer"
-            app:layout_constraintStart_toStartOf="@id/cardContainer"
-            app:layout_constraintEnd_toEndOf="@id/cardContainer" />
+            android:visibility="visible"
+            android:elevation="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

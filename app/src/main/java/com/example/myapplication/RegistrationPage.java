@@ -27,6 +27,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.SendGridPackage.OrganiserRequestRecieveEmail;
 import com.example.myapplication.eventOrganiser.EventOrganiser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -60,6 +61,7 @@ public class RegistrationPage extends AppCompatActivity {
     static final String TAG="RegistrationPage";
     User userClass;
     EventOrganiser organiserClass;
+    OrganiserRequestRecieveEmail sendRequestEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,7 +208,7 @@ public class RegistrationPage extends AppCompatActivity {
             return false;
         }
 
-        if (Contact.matches("\\d{10}")) {
+        if (!Contact.matches("\\d{10}")) {
             Phone.setError("Invalid phone number");
             return false;
         }
@@ -493,6 +495,7 @@ public class RegistrationPage extends AppCompatActivity {
                             Phone.getText().toString(), selectedCollege, UserPassword.getText().toString(), selectedStream, selectedDepartment,isVerificationEmailsend,isEmailVerified);
                     userData.document(uid).set(organiserClass).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
+                            sendRequestEmail.sendOrgnaiserRequestToAdmin(UserName.getText().toString(),selectedStream,selectedDepartment);
                             Intent intent = new Intent(RegistrationPage.this, LoginPage.class);
                             startActivity(intent);
                             finish();

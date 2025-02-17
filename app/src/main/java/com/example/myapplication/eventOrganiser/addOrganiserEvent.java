@@ -221,10 +221,9 @@ public class addOrganiserEvent extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                getFragment(new manageUser());
+                getFragment(new ManageOrganiserEvents());
             }
         });
-
         AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();

@@ -34,6 +34,7 @@ public class OrganiserRequestApproveEmail {
             String timestamp = new SimpleDateFormat("dd MMMM yyyy, HH:mm:ss", Locale.getDefault()).format(new Date());
 
             String subject = "Your Request for Event Organizer Role Has Been Approved!";
+            String adminEmail = "hub.campusconnect@gmail.com";
             String message = "<html><body>" +
                     "<h1>Welcome to Campus Connect!</h1>" +
                     "<p>Dear " + organiserName + ",</p>" +
@@ -46,6 +47,8 @@ public class OrganiserRequestApproveEmail {
                     "<p><strong>Request Processed On: </strong> " + timestamp + "</p>" +
                     "<p>You now have access to all the tools and features needed to plan and manage events successfully on Campus Connect. Welcome aboard!</p>" +
                     "<p>Thank you for joining us, and we look forward to your contributions!</p>" +
+                    "<p>If you have any questions or would like to receive feedback on your application, feel free to contact the admin at: " +
+                    "<a href='mailto:" + adminEmail + "'>" + adminEmail + "</a></p>" +
                     "<p>Best regards,<br>The Campus Connect Team</p>" +
                     "<p>&#169; 2025 Campus Connect. All rights reserved.</p>" +
                     "</body></html>";

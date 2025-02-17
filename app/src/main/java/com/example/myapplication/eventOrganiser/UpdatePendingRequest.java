@@ -26,8 +26,6 @@ public class UpdatePendingRequest extends Fragment {
     private FirebaseFirestore db;
     private String email;
     TextView organiserName, organiserGender, organiserCollege, organiserEmail, organiserPhone, organiserBranch, organiserDepartment;
-    OrganiserRequestApproveEmail organiserApprovalRequestEmail;
-    OrganiserRequestRejectEmail organiserRejectionRequestEmail;
     String OrganiserName,OrganiserEmail,adminUID,adminName;
     ProgressBar progressBar,approveProgressbar,rejectProgressbar;
     Button approveButton, rejectButton;
@@ -177,7 +175,7 @@ public class UpdatePendingRequest extends Fragment {
                         if (!queryDocumentSnapshots.isEmpty()) {
                             DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0);
                             db.collection("User").document(document.getId())
-                                    .update("status", "User")
+                                    .update("status", "Rejected")
                                     .addOnSuccessListener(aVoid -> {
                                         progressBar.setVisibility(View.INVISIBLE);
                                         Toast.makeText(getContext(), "Event organsier request rejected successfully!", Toast.LENGTH_SHORT).show();
