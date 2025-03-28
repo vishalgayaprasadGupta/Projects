@@ -13,22 +13,24 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.myapplication.ManageEvents.UpdateEvent.CollegeEventList;
-import com.example.myapplication.ManageEvents.UpdateEvent.InterCollegeEventList;
-import com.example.myapplication.ManageEvents.UpdateEvent.SeminarEventList;
-import com.example.myapplication.ManageEvents.UpdateEvent.UpdatePage;
-import com.example.myapplication.ManageEvents.UpdateEvent.WorkshopEventList;
 import com.example.myapplication.R;
-import com.example.myapplication.manageEvents;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class OrganiserDeletePage extends Fragment {
 
     View view;
     String eventId="",eventType="",stream,department;
-    Button cancelEvent,deleteEvent,closeRegistration;
+    Button cancelEvent,closeRegistration;
     FirebaseFirestore db;
     TextView eventName;
+    FirebaseUser user;
+    String role,uid,EventName,status;
     public OrganiserDeletePage() {
         // Required empty public constructor
     }
@@ -38,10 +40,10 @@ public class OrganiserDeletePage extends Fragment {
         view= inflater.inflate(R.layout.fragment_organiser_delete_page, container, false);
 
         cancelEvent=view.findViewById(R.id.cancelEvent);
-        deleteEvent=view.findViewById(R.id.deleteEvent);
         closeRegistration=view.findViewById(R.id.closeRegistration);
         eventName=view.findViewById(R.id.eventName);
-
+        user= FirebaseAuth.getInstance().getCurrentUser();
+        uid=user.getUid();
         if (getArguments() != null) {
             eventId = getArguments().getString("eventId");
             eventType=getArguments().getString("eventType");
@@ -55,27 +57,13 @@ public class OrganiserDeletePage extends Fragment {
             Log.d("CollegeEventActivities", "Missing activityId or eventId" );
         }
         fetchEventName();
+        fetchUserRole();
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        if (getArguments() != null) {
-                            String activityId = getArguments().getString("activityId");
-                            String eventId=getArguments().getString("eventId");
-                            String eventType=getArguments().getString("eventType");
-
-                            Fragment targetFragment=new OrganiserDeleteEventCategory();
-                            Bundle bundle = new Bundle();
-                            bundle.putString("eventId",eventId);
-                            bundle.putString("eventType",eventType);
-                            bundle.putString("stream",stream);
-                            bundle.putString("department",department);
-                            targetFragment.setArguments(bundle);
-                            getFragment(targetFragment);
-                        } else {
-                            requireActivity().getSupportFragmentManager().popBackStack();
-                        }
+                       back();
                     }
                 });
 
@@ -89,7 +77,9 @@ public class OrganiserDeletePage extends Fragment {
             @Override
             public void onClick(View v) {
                 closeEvent(eventId,eventType);
-                Fragment fragment=new ManageOrganiserEvents();
+                status=" registration has been Closed";
+                sendNotificationToUsers(status);
+                Fragment fragment=new EventOrganiserHome();
                 fragment.setArguments(bundle);
                 getFragment(fragment);
             }
@@ -99,23 +89,40 @@ public class OrganiserDeletePage extends Fragment {
             @Override
             public void onClick(View v) {
                 cancelEvent(eventId, eventType);
-                Fragment fragment=new ManageOrganiserEvents();
-                fragment.setArguments(bundle);
-                getFragment(fragment);
-            }
-        });
-
-        deleteEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteEvent(eventId, eventType);
-                Fragment fragment=new ManageOrganiserEvents();
+                status = " has been canceled. We sincerely apologize for the inconvenience caused.";
+                sendNotificationToUsers(status);
+                Fragment fragment=new EventOrganiserHome();
                 fragment.setArguments(bundle);
                 getFragment(fragment);
             }
         });
 
         return view;
+    }
+    public void back(){
+        requireActivity().getSupportFragmentManager().popBackStack();
+        requireActivity().getSupportFragmentManager().popBackStack();
+    }
+    public void fetchUserRole(){
+        uid=user.getUid();
+        db.collection("User").document(uid).get().addOnSuccessListener(documentSnapshot -> {
+            if(documentSnapshot.exists()){
+                role=documentSnapshot.getString("role");
+            }
+        });
+    }
+    private void sendNotificationToUsers(String status) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> notification = new HashMap<>();
+        notification.put("title", "Event Update");
+        notification.put("message", "Attention! The event " + EventName + " "+status+". Please stay updated for future events.");
+        notification.put("senderType", role);
+        notification.put("timestamp", FieldValue.serverTimestamp());
+        notification.put("seen", false);
+
+        db.collection("Notifications").add(notification)
+                .addOnSuccessListener(documentReference -> Log.d("Firestore", "Notification added"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error adding notification", e));
     }
     public void getFragment(Fragment fragment) {
         requireActivity().getSupportFragmentManager()
@@ -129,10 +136,11 @@ public class OrganiserDeletePage extends Fragment {
         db.collection(eventType).document(eventId)
                 .update("eventStatus", "Closed")
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getActivity(), "Event status updated to closed", Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(getContext(), "Event status updated to closed", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getActivity(), "Error updating event status", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Error updating event status", Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -141,10 +149,10 @@ public class OrganiserDeletePage extends Fragment {
         db.collection(eventType).document(eventId)
                 .update("eventStatus", "Cancel")
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getActivity(), "Event status updated to cancel", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Event status updated to cancel", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getActivity(), "Error updating event status", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Error updating event status", Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -153,11 +161,11 @@ public class OrganiserDeletePage extends Fragment {
         db.collection(eventType).document(eventId)
                 .update("eventStatus", "Deleted")
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getActivity(), "Event status updated to deleted", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getActivity(), "Browse Report section for force deleting of an Event", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Event status updated to deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Browse Report section for force deleting of an Event", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getActivity(), "Error updating event status", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Error updating event status", Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -168,8 +176,8 @@ public class OrganiserDeletePage extends Fragment {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String EventName = documentSnapshot.getString("name");
-                        if (eventName != null) {
+                        EventName = documentSnapshot.getString("name");
+                        if (EventName != null) {
                             eventName.setText(EventName);
                         } else {
                             Toast.makeText(getContext(), "Event name not found", Toast.LENGTH_SHORT).show();

@@ -7,6 +7,16 @@
     android:background="#EDEDED"
     tools:context=".Registration.ConfirmPayment">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:id="@+id/backProgressBar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:visibility="visible"
+            android:elevation="20dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -125,5 +135,5 @@
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
-
+    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

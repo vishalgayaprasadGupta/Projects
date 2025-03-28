@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -48,11 +49,11 @@ public class EventRegistration extends Fragment {
     Button registerButton;
     String activityId,eventId,activityTime;
     boolean isAlredyRegistered=false;
+    String link;
 
     public EventRegistration() {
         // Required empty public constructor
     }
-
     private final ActivityResultLauncher<Intent> paymentLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -123,35 +124,40 @@ public class EventRegistration extends Fragment {
                 }
             }
         });
-
+        fetchDetails();
         registerButton.setOnClickListener(v -> {
             isUserRegisteredForEvent(activityId);
-            if(validateinpute()) {
-                String RegistrationFees = registrationAmount.getText().toString();
-                Intent intent = new Intent(getActivity(), ConfirmPayment.class);
-                intent.putExtra("email", email.getText().toString());
-                intent.putExtra("contact", contact.getText().toString());
-                intent.putExtra("registrationAmount", RegistrationFees);
-                intent.putExtra("eventName", eventName.getText().toString());
-                intent.putExtra("eventId", eventId);
-                intent.putExtra("activityName", activtiyName.getText().toString());
-                intent.putExtra("activityId", activityId);
-                intent.putExtra("studentUid", studentUid.getText().toString());
-                intent.putExtra("studentName", name.getText().toString());
-                intent.putExtra("studentEmail", email.getText().toString());
-                intent.putExtra("activityTime", activityTime);
-                intent.putExtra("activityDate", schedule.getText().toString());
-
-                Log.d("Registration", "Student ID: " + studentUid.getText().toString());
-                paymentLauncher.launch(intent);
+            if(isAlredyRegistered){
+                Toast.makeText(getContext(), "You have already registered for this event", Toast.LENGTH_LONG).show();
+                getActivity().getSupportFragmentManager().popBackStack();
+                return;
             }else{
-                Toast.makeText(getContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
+                if (validateinpute()) {
+                    String RegistrationFees = registrationAmount.getText().toString();
+                    Intent intent = new Intent(getActivity(), ConfirmPayment.class);
+                    intent.putExtra("email", email.getText().toString());
+                    intent.putExtra("contact", contact.getText().toString());
+                    intent.putExtra("registrationAmount", RegistrationFees);
+                    intent.putExtra("eventName", eventName.getText().toString());
+                    intent.putExtra("eventId", eventId);
+                    intent.putExtra("activityName", activtiyName.getText().toString());
+                    intent.putExtra("activityId", activityId);
+                    intent.putExtra("studentUid", studentUid.getText().toString());
+                    intent.putExtra("studentName", name.getText().toString());
+                    intent.putExtra("studentEmail", email.getText().toString());
+                    intent.putExtra("activityTime", activityTime);
+                    intent.putExtra("activityDate", schedule.getText().toString());
+
+                    Log.d("Registration", "Student ID: " + studentUid.getText().toString());
+                    paymentLauncher.launch(intent);
+                } else {
+                    Toast.makeText(getContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-        fetchDetails();
+
         return view;
     }
-
     public boolean validateinpute(){
         String name = this.name.getText().toString();
         String email = this.email.getText().toString();
@@ -198,7 +204,7 @@ public class EventRegistration extends Fragment {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String storedActivityId = document.getString("activityId");
                                 if (storedActivityId != null && storedActivityId.equals(activityId)) {
-                                    Toast.makeText(requireActivity(), "You have already registered for this event", Toast.LENGTH_LONG).show();
+                                    isAlredyRegistered=true;
                                     return;
                                 }
                             }
@@ -256,6 +262,30 @@ public class EventRegistration extends Fragment {
         dataloadProgressbar.setVisibility(View.INVISIBLE);
     }
 
+    private void retrieveGroupLink(String eventName) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection(eventName)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            link = documentSnapshot.getString("groupLink");
+                            if (link != null) {
+                                Log.d("Registration", "Group Link: " + link);
+                                Toast.makeText(requireContext(), "Group Link: " + link, Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                        }
+                        Toast.makeText(requireContext(), "No group link found!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(requireContext(), "No data found for this event!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(requireContext(), "Error fetching link: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+    }
     public void getFragment(Fragment fragment) {
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()

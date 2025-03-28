@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <group android:id="@+id/breaker2">
+    <item
+        android:icon="@drawable/registerevents"
+        android:id="@+id/registerEvents"
+        android:title="Registered Events" />
+  </group>
   <group android:id="@+id/breaker1">
     <item
         android:icon="@drawable/settings"
         android:id="@+id/setting"
         android:title="Settings" />
-  </group>
-  <group android:id="@+id/breaker2">
-    <item
-        android:icon="@drawable/share"
-        android:id="@+id/share"
-        android:title="Share" />
   </group>
   <group android:id="@+id/breaker3">
     <item

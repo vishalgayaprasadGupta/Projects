@@ -66,23 +66,45 @@
         android:id="@+id/fragement_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"></FrameLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        alignParentBottom="true"
+    <FrameLayout
+        android:id="@+id/bottom_nav_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="#A4C2F4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:menu="@menu/admin_bottom_navigation" />
+        app:layout_constraintTop_toBottomOf="@+id/fragement_layout">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="#A4C2F4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:menu="@menu/admin_bottom_navigation" />
+
+        <View
+            android:id="@+id/notification_dot"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_gravity="end|top"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="40dp"
+            android:background="@drawable/notification_dot_bg"
+            android:elevation="20dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/bottom_navigation" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

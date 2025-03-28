@@ -54,8 +54,11 @@ public class CollegeEventListForDelete extends Fragment {
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        getActivity().getSupportFragmentManager().popBackStack();
-                        getFragment(new EventCategory());
+                        if(getActivity()!=null) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }else{
+                            getFragment(new EventCategory());
+                        }
                     }
                 });
         return view;
@@ -83,10 +86,11 @@ public class CollegeEventListForDelete extends Fragment {
     private void showNoEventDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("No Event");
-        builder.setMessage("No activity or event is there");
+        builder.setMessage("No Event or Activity is Found");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                getActivity().getSupportFragmentManager().popBackStack();
                 dialog.dismiss();
             }
         });
@@ -102,7 +106,7 @@ public class CollegeEventListForDelete extends Fragment {
                 .commit();
     }
 
-    public void onItemClick(String eventId,String eventType,String eventName) {
+    public void onItemClick(String eventId,String eventType,String eventName,String startTime,String endTime) {
         db.collection("College Events").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -114,6 +118,8 @@ public class CollegeEventListForDelete extends Fragment {
                             bundle.putString("eventId", eventId);
                             bundle.putString("eventType", eventType);
                             bundle.putString("eventName", eventName);
+                            bundle.putString("startTime", startTime);
+                            bundle.putString("endTime", endTime);
                             activitiesFragment.setArguments(bundle);
                             getFragment(activitiesFragment);
                         }else if("Closed".equals(status)){

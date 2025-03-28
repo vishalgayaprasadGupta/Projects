@@ -40,7 +40,6 @@ public class VolunteerRequestRejectEmail {
                     "<p>We regret to inform you that your request to become a volunteer has been <strong>rejected</strong>, and your volunteer account has been <strong>deleted</strong> from our system.</p>" +
                     "<p><strong>Reviewed By:</strong></p>" +
                     "<ul>" +
-                    "<li><strong>Name:</strong> " + organiserUid + "</li>" +
                     "<li><strong>UID:</strong> " + organiserName + "</li>" +
                     "</ul>" +
                     "<p><strong>Review Date:</strong> " + timestamp + "</p>" +

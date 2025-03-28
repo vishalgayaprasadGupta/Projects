@@ -50,11 +50,15 @@ public class InterCollegeEventListForDelete extends Fragment {
         fetchEvents();
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        getFragment(new EventCategory());
+                        if(getActivity()!=null) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }else{
+                            getFragment(new EventCategory());
+                        }
                     }
                 });
         return view;
@@ -80,10 +84,11 @@ public class InterCollegeEventListForDelete extends Fragment {
     private void showNoEventDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("No Event");
-        builder.setMessage("No activity or event is there");
+        builder.setMessage("No Event or Activity is Found");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                getActivity().getSupportFragmentManager().popBackStack();
                 dialog.dismiss();
             }
         });
@@ -100,7 +105,7 @@ public class InterCollegeEventListForDelete extends Fragment {
                 .commit();
     }
 
-    public void onItemClick(String eventId,String eventType, String eventName) {
+    public void onItemClick(String eventId,String eventType, String eventName,String startTime,String endTime) {
         db.collection("InterCollegiate Events").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -113,6 +118,10 @@ public class InterCollegeEventListForDelete extends Fragment {
                         bundle.putString("eventType", eventType);
                         Log.d("InterCollegeEventList", "Event Type: " + eventType);
                         bundle.putString("eventName", eventName);
+                        Log.d("InterCollegeEventList", "Event Name: " + eventName);
+                        bundle.putString("startTime", startTime);
+                        Log.d("InterCollegeEventList", "Start Time: " + startTime);
+                        bundle.putString("endTime", endTime);
                         activitiesFragment.setArguments(bundle);
                         getFragment(activitiesFragment);
                     }else if("Closed".equals(status)){

@@ -9,12 +9,15 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -41,13 +44,17 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class RegistrationPage extends AppCompatActivity {
+    private static final Logger log = LoggerFactory.getLogger(RegistrationPage.class);
     TextView Signin;
     TextInputEditText Phone,EmailAddress,UserName,CollegeName,collegeName,UserPassword,ConfirmPassword;
-    TextInputLayout collegeField,CollegeField,BranchField,DepartmentField;
+    TextInputLayout CollegeField,BranchField,DepartmentField;
     Button Signup;
     FirebaseAuth mAuth;
     FirebaseFirestore firestore;
@@ -62,12 +69,18 @@ public class RegistrationPage extends AppCompatActivity {
     User userClass;
     EventOrganiser organiserClass;
     OrganiserRequestRecieveEmail sendRequestEmail;
+    private List<String> allColleges = new ArrayList<>();
+    private ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_registration_page);
+
+        firestore= FirebaseFirestore.getInstance();
+        userData = firestore.collection(USER);
+        mAuth=FirebaseAuth.getInstance();
 
         Phone = findViewById(R.id.editPhone);
         EmailAddress=findViewById(R.id.editEmailAddress);
@@ -80,7 +93,6 @@ public class RegistrationPage extends AppCompatActivity {
         Signin = findViewById(R.id.SigninButton);
 
         Spinner roleSpinner = findViewById(R.id.spinnerRole);
-        collegeField = findViewById(R.id.collegeField);
         CollegeField = findViewById(R.id.CollegeField);
         BranchField = findViewById(R.id.branch);
         DepartmentField = findViewById(R.id.dept);
@@ -101,23 +113,20 @@ public class RegistrationPage extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 selectedRole = parentView.getItemAtPosition(position).toString();
-
+                loadCollege();
                 if(selectedRole.equals("Select Role")){
                     CollegeField.setVisibility(View.GONE);
-                    collegeField.setVisibility(View.GONE);
                     BranchField.setVisibility(View.GONE);
                     DepartmentField.setVisibility(View.GONE);
                 }else if (selectedRole.equals("Event Organiser")) {
                     CollegeField.setVisibility(View.VISIBLE);
                     BranchField.setVisibility(View.VISIBLE);
                     DepartmentField.setVisibility(View.VISIBLE);
-                    collegeField.setVisibility(View.GONE);
-                    loadCollege();
                 } else if (selectedRole.equals("User")) {
-                    CollegeField.setVisibility(View.GONE);
+                    CollegeField.setVisibility(View.VISIBLE);
                     BranchField.setVisibility(View.GONE);
                     DepartmentField.setVisibility(View.GONE);
-                    collegeField.setVisibility(View.VISIBLE);
+                    //collegeField.setVisibility(View.VISIBLE);
                 }
             }
             @Override
@@ -137,9 +146,6 @@ public class RegistrationPage extends AppCompatActivity {
         RegisterProgressbar.setVisibility(View.GONE);
 
         radioGroup=findViewById(R.id.radioGroupGender);
-        firestore= FirebaseFirestore.getInstance();
-        userData = firestore.collection(USER);
-        mAuth=FirebaseAuth.getInstance();
 
         Signup.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -163,10 +169,10 @@ public class RegistrationPage extends AppCompatActivity {
                 if(validateInput(Contact,EmailId,Username,College,Password,CheckPassword)) {
                     if (isNetworkAvailable()) {
                         if(selectedRole.equals("User")) {
-                            userClass = new User(uid,Status, selectedRole, Username, Gender, EmailId, Contact, College, Password,isVerificationEmailsend,isEmailVerified);
+                            userClass = new User(uid,Status, selectedRole, Username, Gender, EmailId, Contact, College,isVerificationEmailsend,isEmailVerified);
                             registerUser(EmailId, Password);
                         }else if(selectedRole.equals("Event Organiser")){
-                            organiserClass = new EventOrganiser(uid,Status, selectedRole, Username, Gender, EmailId, Contact, College, Password, selectedStream, selectedDepartment,isVerificationEmailsend,isEmailVerified);
+                            organiserClass = new EventOrganiser(uid,Status, selectedRole, Username, Gender, EmailId, Contact, College, selectedStream, selectedDepartment,isVerificationEmailsend,isEmailVerified);
                             showConfirmationDialog(EmailId, Password);
                         }
                     } else {
@@ -202,49 +208,49 @@ public class RegistrationPage extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-    public boolean validateInput(String Contact,String EmailId,String Username,String College,String Password,String CheckPassword){
-        if(TextUtils.isEmpty(Contact) || TextUtils.isEmpty(EmailId) || TextUtils.isEmpty(Username) || TextUtils.isEmpty(Password) || TextUtils.isEmpty(Gender)){
+    public boolean validateInput(String Contact, String EmailId, String Username, String College, String Password, String CheckPassword) {
+        Contact = Contact.trim();
+        EmailId = EmailId.trim();
+        Username = Username.trim();
+        College = College.trim();
+        Password = Password.trim();
+        CheckPassword = CheckPassword.trim();
+
+        if (TextUtils.isEmpty(Contact) || TextUtils.isEmpty(EmailId) || TextUtils.isEmpty(Username) ||
+                TextUtils.isEmpty(Password) || TextUtils.isEmpty(CheckPassword) ||
+                TextUtils.isEmpty(Gender)) {
             Toast.makeText(RegistrationPage.this, "All fields are mandatory!", Toast.LENGTH_LONG).show();
             return false;
         }
-
         if (!Contact.matches("\\d{10}")) {
+            Toast.makeText(RegistrationPage.this, "Invalid phone number", Toast.LENGTH_SHORT).show();
             Phone.setError("Invalid phone number");
             return false;
         }
-
-        if(selectedRole.equals("User")){
-            if (!College.matches("^[a-zA-Z0-9 .'-]{2,100}$")) {
-                CollegeName.setError("Invalid college name");
-                return false;
-            }
-        }
-
-        if(!Username.matches("[a-zA-Z ]+")){
-            UserName.setError("Invalid username");
+        if (!Username.matches("^[a-zA-Z]+(?: [a-zA-Z]+)*$")) {
+            Toast.makeText(RegistrationPage.this, "Invalid Name", Toast.LENGTH_SHORT).show();
+            UserName.setError("Invalid Name");
             return false;
         }
-
         if (!Patterns.EMAIL_ADDRESS.matcher(EmailId).matches()) {
+            Toast.makeText(RegistrationPage.this, "Invalid email address", Toast.LENGTH_SHORT).show();
             EmailAddress.setError("Invalid email address");
             return false;
         }
-
         if (!Password.equals(CheckPassword)) {
-            UserPassword.setError("Passwords does not match");
+            Toast.makeText(RegistrationPage.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+            UserPassword.setError("Passwords do not match");
             return false;
         }
-        if (selectedRole.equals("Event Organsier")) {
+        if (selectedRole.equals("Event Organiser")) {
             if (selectedStream == null || selectedStream.equals("Select Stream")) {
                 Toast.makeText(RegistrationPage.this, "Please select a stream", Toast.LENGTH_SHORT).show();
                 return false;
             }
-
-            if(selectedCollege==null || selectedCollege.equals("Select College")){
+            if (selectedCollege == null || selectedCollege.equals("Select College")) {
                 Toast.makeText(RegistrationPage.this, "Please select a college", Toast.LENGTH_SHORT).show();
                 return false;
             }
-
             if (selectedDepartment == null || selectedDepartment.equals("Select Department")) {
                 Toast.makeText(RegistrationPage.this, "Please select a department", Toast.LENGTH_SHORT).show();
                 return false;
@@ -492,7 +498,7 @@ public class RegistrationPage extends AppCompatActivity {
                     Log.d("loadColleges", "Role Fetchehd 2: " + selectedRole);
                     Log.d("loadColleges", "isVerificationEmailsend: " + isVerificationEmailsend);
                     organiserClass = new EventOrganiser(uid,Status, selectedRole, UserName.getText().toString(), Gender, EmailAddress.getText().toString(),
-                            Phone.getText().toString(), selectedCollege, UserPassword.getText().toString(), selectedStream, selectedDepartment,isVerificationEmailsend,isEmailVerified);
+                            Phone.getText().toString(), selectedCollege, selectedStream, selectedDepartment,isVerificationEmailsend,isEmailVerified);
                     userData.document(uid).set(organiserClass).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             sendRequestEmail.sendOrgnaiserRequestToAdmin(UserName.getText().toString(),selectedStream,selectedDepartment);
@@ -509,7 +515,7 @@ public class RegistrationPage extends AppCompatActivity {
                     Log.d("loadColleges", "isVerificationEmailsend: " + isVerificationEmailsend);
 
                     userClass = new User(uid,Status, selectedRole, UserName.getText().toString(), Gender, EmailAddress.getText().toString(),
-                            Phone.getText().toString(), CollegeName.getText().toString(), UserPassword.getText().toString(),isVerificationEmailsend,isEmailVerified);
+                            Phone.getText().toString(), selectedCollege,isVerificationEmailsend,isEmailVerified);
 
                     userData.document(uid).set(userClass).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {

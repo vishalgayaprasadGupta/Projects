@@ -29,7 +29,7 @@ public class CollegeActivityList extends Fragment {
     private RecyclerView activityRecyclerView;
     private FirebaseFirestore db;
     private CollegeActivityListAdapter activityAdapter;
-    private String eventId = "";
+    private String eventId = "",startDate,endDate;
     private String activityId="",eventType="";
 
     public CollegeActivityList() {
@@ -47,6 +47,8 @@ public class CollegeActivityList extends Fragment {
             Log.d("CollegeEventActivities", "Received eventId: " + eventId);
             Log.d("CollegeEventActivities", "Received eventId: " + eventId);
             Log.d("CollegeEventActivities", "Received eventType: " + eventType);
+            startDate=getArguments().getString("startDate");
+            endDate=getArguments().getString("endDate");
         }
 
         activityRecyclerView = view.findViewById(R.id.activityRecyclerView);
@@ -70,6 +72,8 @@ public class CollegeActivityList extends Fragment {
                             bundle.putString("activityId", activityId);
                             bundle.putString("eventId",eventId);
                             bundle.putString("eventType",eventType);
+                            bundle.putString("startDate",startDate);
+                            bundle.putString("endDate",endDate);
                             UpdatePage updatePage = new UpdatePage();
                             updatePage.setArguments(bundle);
                             getFragment(updatePage);
@@ -111,6 +115,7 @@ public class CollegeActivityList extends Fragment {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                requireActivity().getSupportFragmentManager().popBackStack();
                 dialog.dismiss();
             }
         });
@@ -129,6 +134,8 @@ public class CollegeActivityList extends Fragment {
         bundle.putString("activityId", activtiyId);
         bundle.putString("eventType",eventType);
         bundle.putString("eventId",eventId);
+        bundle.putString("startDate",startDate);
+        bundle.putString("endDate",endDate);
         activitiesFragment.setArguments(bundle);
         getFragment(activitiesFragment);
     }

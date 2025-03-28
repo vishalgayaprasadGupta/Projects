@@ -17,10 +17,12 @@ import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.SendGridPackage.PdfExporter;
+import com.example.myapplication.SendGridPackage.sendEventRemainder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,12 +32,13 @@ import java.util.Map;
 
 public class trackAdminRegistrationPage extends Fragment {
 
-    TextView exportActivityDetails,exportParticipationDetails;
+    TextView exportActivityDetails,exportParticipationDetails,sendEventReminder;
     String eventId,EventName,uid,Email,AdminName;
     TextView eventName,totalActivity;
     FirebaseFirestore firestore;
     FirebaseUser user;
     ProgressBar progressBar;
+    String participantUid,participantName,activityName,participantEmail,activityDate,activityTime;
     public trackAdminRegistrationPage() {
         // Required empty public constructor
     }
@@ -51,12 +54,13 @@ public class trackAdminRegistrationPage extends Fragment {
         progressBar.setVisibility(View.GONE);
 
         user= FirebaseAuth.getInstance().getCurrentUser();
+        firestore=FirebaseFirestore.getInstance();
+
         uid=user.getUid();
         if(uid!=null){
             AdminName=user.getDisplayName();
             Email=user.getEmail();
         }
-        firestore=FirebaseFirestore.getInstance();
 
         if (getArguments() != null) {
             eventId = getArguments().getString("eventId");
@@ -92,6 +96,13 @@ public class trackAdminRegistrationPage extends Fragment {
                 exportParticipantsDetails(eventId);
             }
         });
+        sendEventReminder=view.findViewById(R.id.sendRemainderEmail);
+        sendEventReminder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAlert(EventName);
+            }
+        });
         return view;
     }
 
@@ -117,7 +128,6 @@ public class trackAdminRegistrationPage extends Fragment {
                         Toast.makeText(requireContext(), "No data available", Toast.LENGTH_SHORT).show();
                         return;
                     }
-
                     Log.d("Participant Details", "Particpant List Size: " + participantsList.size());
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
                         Map<String, Object> documentData = document.getData();
@@ -213,6 +223,52 @@ public class trackAdminRegistrationPage extends Fragment {
                 return;
             }
             PdfExporter.sendEmailWithPdf(Email, AdminName, pdfFile);
+            dialogInterface.dismiss();
+        });
+        builder.setNegativeButton("NO", (dialogInterface, i) -> {
+            dialogInterface.dismiss();
+        });
+        builder.setCancelable(false)
+                .create().show();
+    }
+
+    private void sendEventPass(String EventName) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("Event Registrations")
+                .whereEqualTo("eventName", EventName)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            participantUid = document.getString("uid");
+                            participantName = document.getString("participantName");
+                            activityName = document.getString("activityName");
+                            participantEmail = document.getString("participantEmail");
+                            activityDate = document.getString("activityDate");
+                            activityTime = document.getString("activityTime");
+                            String activityId=document.getString("activityId");
+                            String eventName=document.getString("eventName");
+                            Log.d("Participant UID", participantUid);
+
+                            if (participantUid != null) {
+                                sendEventRemainder sendEmail=new sendEventRemainder();
+                                sendEmail.sendEvetReminderQR(requireContext(),participantEmail, participantUid,participantName,eventName,activityId,activityName,activityDate,activityTime);
+                            }
+                        }
+                    } else {
+                        Log.e("Firestore", "Error fetching participants", task.getException());
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Firestore", "Error fetching participants", e));
+    }
+    public void showAlert(String eventName){
+        AlertDialog.Builder builder=new AlertDialog.Builder(requireContext());
+        builder.setTitle("Confirm");
+        builder.setMessage("Send Event Pass to all Participants ? ");
+        builder.setPositiveButton("YES", (dialogInterface, i) -> {
+            sendEventPass(eventName);
+            Toast.makeText(requireContext(), "Event Pass Sent to all Participants", Toast.LENGTH_SHORT).show();
             dialogInterface.dismiss();
         });
         builder.setNegativeButton("NO", (dialogInterface, i) -> {

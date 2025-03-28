@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#ECEFF1">
+    android:background="@drawable/bg">
 
     <TextView
         android:layout_width="wrap_content"
@@ -103,6 +103,43 @@
 
             <TextView
                 android:id="@+id/exportParticipationDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="➔"
+                android:textSize="24sp"
+                android:textColor="@color/colorAccent"
+                android:gravity="center" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/SendReminder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:focusable="true"
+        android:backgroundTint="@color/card_background"
+        android:clickable="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Send Event Reminder "
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:id="@+id/sendRemainderEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="➔"

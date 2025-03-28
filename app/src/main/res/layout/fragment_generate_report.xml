@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center"
+    android:background="@drawable/bg">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Event Report"
+        android:layout_marginBottom="40dp"
+        android:textSize="30dp"
+        android:textStyle="bold"/>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/teal_700"
+        android:padding="20dp"
+        android:background="@color/card_background">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <!-- Event Name -->
+            <TextView
+                android:id="@+id/eventNameLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Event Name:"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:paddingBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/eventName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Event Name"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/teal_700"
+                android:paddingBottom="10dp"/>
+
+            <!-- Event Date -->
+            <TextView
+                android:id="@+id/eventDateLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Event Date:"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:paddingBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/eventDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Date "
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:paddingBottom="10dp"/>
+
+            <!-- Event Status -->
+            <TextView
+                android:id="@+id/eventStatusLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Event Status:"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:paddingBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/eventStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Status"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/red"
+                android:paddingBottom="20dp"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <!-- Generate Report Button -->
+            <Button
+                android:id="@+id/generateReportButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Generate Event Report"
+                android:textSize="18sp"
+                android:padding="14dp"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="@color/teal_700"
+                android:textColor="@android:color/white"
+                android:gravity="center"/>
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:elevation="20dp"
+                    android:visibility="gone"
+                    android:layout_gravity="center"/>
+                </FrameLayout>
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

@@ -5,22 +5,28 @@ import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.myapplication.R;
-import com.example.myapplication.manageEvents;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class UserHome extends Fragment {
     TextView CollegeEvents,InterCollegeEvents,Workshops,Seminars;
     View view;
     private CardView collegeEventsCard, interCollegeEventCard, workshopEventCard, seminarEventCard;
+    FirebaseFirestore db;
+    FirebaseUser user;
+    String uid,collegeName;
 
     public UserHome() {
         // Required empty public constructor
@@ -37,10 +43,13 @@ public class UserHome extends Fragment {
 
         // Start animations
         animateCardView(collegeEventsCard, 0);
-        animateCardView(interCollegeEventCard, 500);
-        animateCardView(workshopEventCard, 1000);
-        animateCardView(seminarEventCard, 1500);
+        animateCardView(interCollegeEventCard, 200);
+        animateCardView(workshopEventCard, 400);
+        animateCardView(seminarEventCard, 600);
 
+        db=FirebaseFirestore.getInstance();
+        user= FirebaseAuth.getInstance().getCurrentUser();
+        uid=user.getUid();
         CollegeEvents=view.findViewById(R.id.CollegeEvents);
         InterCollegeEvents=view.findViewById(R.id.interCollegeEvent);
         Workshops=view.findViewById(R.id.workshopEvent);
@@ -57,33 +66,49 @@ public class UserHome extends Fragment {
                     }
                 });
 
-
-
+        fetchCollegeName(uid);
+        Log.d("Event", "College Name 3: " + collegeName);
         Workshops.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragment(new WorkshopsEvents());
+                Fragment fragment=new WorkshopsEvents();
+                Bundle bundle = new Bundle();
+                bundle.putString("collegeName", collegeName);
+                fragment.setArguments(bundle);
+                getFragment(fragment);
             }
         });
 
         Seminars.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragment(new SeminarsEvent());
+                Fragment fragment=new SeminarsEvent();
+                Bundle bundle = new Bundle();
+                bundle.putString("collegeName", collegeName);
+                fragment.setArguments(bundle);
+                getFragment(fragment);
             }
-            });
+        });
 
         InterCollegeEvents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragment(new InterCollegeEvents());
+                Fragment fragment=new InterCollegeEvents();
+                Bundle bundle = new Bundle();
+                bundle.putString("collegeName", collegeName);
+                fragment.setArguments(bundle);
+                getFragment(fragment);
             }
             });
 
         CollegeEvents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragment(new CollegeEvents());
+                Fragment fragment=new CollegeEvents();
+                Bundle bundle = new Bundle();
+                bundle.putString("collegeName", collegeName);
+                fragment.setArguments(bundle);
+                getFragment(fragment);
             }
         });
         return view;
@@ -113,6 +138,19 @@ public class UserHome extends Fragment {
         });
 
         cardView.startAnimation(fadeIn);
+    }
+
+    public void fetchCollegeName(String uid){
+        db.collection("User").document(uid).get().addOnSuccessListener(documentSnapshot -> {
+            if(documentSnapshot.exists()){
+                collegeName=documentSnapshot.getString("college");
+                Log.d("Event", "College Name 2: " + collegeName);
+            }else{
+                Toast.makeText(getContext(), "No user found", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(getContext(), "Error fetching admin name", Toast.LENGTH_SHORT).show();
+        });
     }
 
     public void getFragment(Fragment fragment) {

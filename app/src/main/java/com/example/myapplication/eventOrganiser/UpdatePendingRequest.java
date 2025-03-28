@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.example.myapplication.R;
 import com.example.myapplication.SendGridPackage.OrganiserRequestApproveEmail;
 import com.example.myapplication.SendGridPackage.OrganiserRequestRejectEmail;
-import com.google.android.material.button.MaterialButton;
+import com.example.myapplication.eventOrganiser.ManageOrganiser.ManageEventOrganiser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -175,11 +175,11 @@ public class UpdatePendingRequest extends Fragment {
                         if (!queryDocumentSnapshots.isEmpty()) {
                             DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0);
                             db.collection("User").document(document.getId())
-                                    .update("status", "Rejected")
+                                    .update("status", "User")
                                     .addOnSuccessListener(aVoid -> {
                                         progressBar.setVisibility(View.INVISIBLE);
                                         Toast.makeText(getContext(), "Event organsier request rejected successfully!", Toast.LENGTH_SHORT).show();
-                                        OrganiserRequestRejectEmail.sendOrganiserAccountApprovalEmail(OrganiserEmail,OrganiserName,adminUID,adminName);
+                                        OrganiserRequestRejectEmail.sendOrganiserAccountRejectEmail(email,OrganiserName,adminUID,adminName);
                                         getFragment(new ManageEventOrganiser());
                                     })
                                     .addOnFailureListener(e -> {

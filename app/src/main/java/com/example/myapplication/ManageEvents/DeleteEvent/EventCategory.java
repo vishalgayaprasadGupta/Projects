@@ -14,11 +14,8 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.TextView;
 
-import com.example.myapplication.ManageEvents.UpdateEvent.InterCollegeEventList;
-import com.example.myapplication.ManageEvents.UpdateEvent.SeminarEventList;
-import com.example.myapplication.ManageEvents.UpdateEvent.WorkshopEventList;
 import com.example.myapplication.R;
-import com.example.myapplication.manageEvents;
+import com.example.myapplication.ManageEvents.manageEvents;
 
 public class EventCategory extends Fragment {
     View view;
@@ -38,18 +35,16 @@ public class EventCategory extends Fragment {
         Seminar=view.findViewById(R.id.Seminar);
 
         animateCardView(CollegeEvents,0);
-        animateCardView(InterCollegeEvents,400);
-        animateCardView(Workshop,800);
-        animateCardView(Seminar,1200);
+        animateCardView(InterCollegeEvents,200);
+        animateCardView(Workshop,400);
+        animateCardView(Seminar,600);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                        fragmentManager.popBackStack();
-                        getFragment(new manageEvents());
+                        requireActivity().getSupportFragmentManager().popBackStack();
                     }
                 });
 

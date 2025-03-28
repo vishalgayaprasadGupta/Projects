@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EDEDED"
+    android:background="@drawable/bg"
     android:padding="16dp"
     tools:context=".eventOrganiser.EventOrganiserHome">
 
@@ -48,7 +48,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Event Registration Section -->
         <androidx.cardview.widget.CardView
             android:id="@+id/DeleteVolunteers"
             android:layout_width="match_parent"

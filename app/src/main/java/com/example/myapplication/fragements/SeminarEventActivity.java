@@ -16,7 +16,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.myapplication.Adapter.SeminarActivtiyAdapater;
+import com.example.myapplication.ManageEvents.Seminar;
 import com.example.myapplication.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -28,7 +32,8 @@ public class SeminarEventActivity extends Fragment {
     private RecyclerView activityRecyclerView;
     private FirebaseFirestore db;
     private SeminarActivtiyAdapater activityAdapter;
-    private String eventId = "";
+    private String eventId = "",uid;
+    FirebaseUser user;
 
     public SeminarEventActivity() {
         // Required empty public constructor
@@ -39,6 +44,8 @@ public class SeminarEventActivity extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_inter_college_event_activities, container, false);
 
+        user=FirebaseAuth.getInstance().getCurrentUser();
+        uid=user.getUid();
         if (getArguments() != null) {
             eventId = getArguments().getString("eventId");
             Log.d("CollegeEventActivities", "Received eventId: " + eventId);
@@ -69,21 +76,41 @@ public class SeminarEventActivity extends Fragment {
     }
 
     private void fetchActivities(String eventId) {
-        db.collection("EventActivities")
-                .whereEqualTo("eventId", eventId)
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        db.collection("Event Registrations")
+                .whereEqualTo("uid", currentUserId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        List<Seminar> activity = task.getResult().toObjects(Seminar.class);
-                        if (activity.isEmpty()) {
-                           showNoEventDialog();
-                        } else {
-                            activityAdapter = new SeminarActivtiyAdapater(activity);
-                            activityAdapter.setOnItemClickListener(this::onItemClick); // Re-attach the listener
-                            activityRecyclerView.setAdapter(activityAdapter);
+                        List<String> registeredActivityIds = new ArrayList<>();
+                        for (DocumentSnapshot document : task.getResult()) {
+                            registeredActivityIds.add(document.getString("activityId"));
                         }
+                        db.collection("EventActivities")
+                                .whereEqualTo("eventId", eventId)
+                                .get()
+                                .addOnCompleteListener(activityTask -> {
+                                    if (activityTask.isSuccessful()) {
+                                        List<Seminar> activities = new ArrayList<>();
+                                        for (DocumentSnapshot document : activityTask.getResult()) {
+                                            Seminar activity = document.toObject(Seminar.class);
+                                            if (activity != null && !registeredActivityIds.contains(activity.getActivityId())) {
+                                                activities.add(activity);
+                                            }
+                                        }
+                                        if (activities.isEmpty()) {
+                                            showNoEventDialog();
+                                        } else {
+                                            activityAdapter = new SeminarActivtiyAdapater(activities);
+                                            activityAdapter.setOnItemClickListener(this::onItemClick);
+                                            activityRecyclerView.setAdapter(activityAdapter);
+                                        }
+                                    } else {
+                                        Toast.makeText(getActivity(), "Error fetching events", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                     } else {
-                        Toast.makeText(getActivity(), "Error fetching events", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Error fetching registrations", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -104,16 +131,33 @@ public class SeminarEventActivity extends Fragment {
         dialog.show();
     }
 
-    public void onItemClick(String activtiyId) {
-        Toast.makeText(getActivity(), "Button clicked", Toast.LENGTH_SHORT).show();
+    public void onItemClick(String activityId) {
+        db.collection("User").document(uid).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String userRole = documentSnapshot.getString("role");
+                if (userRole != null) {
+                    if(userRole.equals("Admin") || userRole.equals("Event Organiser")){
+                        Toast.makeText(getActivity(), "Press Back button explore more events..", Toast.LENGTH_SHORT).show();
+                        return;
+                    }else{
+                        navigate(activityId);
+                    }
+                }else{
+                    Toast.makeText(getActivity(), "Error Occured", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+        });
+    }
+
+    public void navigate(String activityId){
         SeminarEventActivityDetails activitiesFragment = new SeminarEventActivityDetails();
         Bundle bundle = new Bundle();
-        bundle.putString("activityId", activtiyId);
+        bundle.putString("activityId", activityId);
         bundle.putString("eventId", eventId);
         activitiesFragment.setArguments(bundle);
         getFragment(activitiesFragment);
     }
-
     public void getFragment(Fragment fragment) {
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()

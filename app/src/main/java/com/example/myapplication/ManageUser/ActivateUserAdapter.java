@@ -18,7 +18,6 @@ public class ActivateUserAdapter extends RecyclerView.Adapter<ActivateUserAdapte
     private List<User> userList;
     private OnItemClickListener listener;
 
-    // Constructor that accepts the userList
     public ActivateUserAdapter(List<User> userList) {
         this.userList = userList;
     }
@@ -26,7 +25,6 @@ public class ActivateUserAdapter extends RecyclerView.Adapter<ActivateUserAdapte
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflate the item layout
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activate_user_list, parent, false);
         return new UserViewHolder(view);
     }

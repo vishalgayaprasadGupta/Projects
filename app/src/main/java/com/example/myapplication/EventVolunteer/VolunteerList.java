@@ -15,10 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
-import com.example.myapplication.eventOrganiser.EventOrganiser;
-import com.example.myapplication.eventOrganiser.ManageEventOrganiser;
-import com.example.myapplication.eventOrganiser.PendingRequestAdapter;
-import com.example.myapplication.eventOrganiser.UpdatePendingRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;

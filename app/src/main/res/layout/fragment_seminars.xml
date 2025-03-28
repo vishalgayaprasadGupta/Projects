@@ -5,8 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="#EDEDED"
-    tools:context=".fragements.CollegeEvents">
+    android:background="@drawable/bg"
+    tools:context=".fragements.SeminarsEvent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Event "
+            android:textSize="30sp"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"
+            android:textColor="#00224D"
+            android:textStyle="bold"/>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -24,6 +37,7 @@
 
         </LinearLayout>
     </ScrollView>
+    </LinearLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

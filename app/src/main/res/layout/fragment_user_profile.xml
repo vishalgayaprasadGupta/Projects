@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#EDEDED"
-    tools:context=".fragements.UserProfile">
+    android:background="@drawable/bg"
+    tools:context=".ManageUser.UserProfile">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -99,52 +99,13 @@
                             android:textColor="@color/black" />
 
                         <TextView
-                            android:id="@+id/detailsArrow"
+                            android:id="@+id/personalDetails"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="end"
                             android:text="➔"
                             android:textColor="@color/colorAccent"
                             android:textSize="24sp" />
-
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/UpdateProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardElevation="0dp"
-                    app:cardCornerRadius="12dp"
-                    android:backgroundTint="@color/card_background"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Update Profile"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/black" />
-
-                        <TextView
-                            android:id="@+id/updateProfile"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="➔"
-                            android:textSize="24sp"
-                            android:textColor="@color/colorAccent"
-                            android:gravity="center" />
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -177,7 +138,7 @@
                             android:textColor="@color/black" />
 
                         <TextView
-                            android:id="@+id/changePassword"
+                            android:id="@+id/resetPassword"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="➔"

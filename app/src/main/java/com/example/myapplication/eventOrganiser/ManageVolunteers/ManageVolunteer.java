@@ -2,6 +2,7 @@ package com.example.myapplication.eventOrganiser.ManageVolunteers;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
@@ -14,11 +15,15 @@ import android.widget.TextView;
 
 import com.example.myapplication.EventVolunteer.VolunteerList;
 import com.example.myapplication.R;
+import com.example.myapplication.SendGridPackage.VolunteerCertificateGeneration;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ManageVolunteer extends Fragment {
     CardView verifyVolunteers,deleteVolunteers,certificates,exportDetails;
     TextView verifyVolunteersText,deleteVolunteersText,certificatesText,exportDetailsText;
     String stream,department;
+    FirebaseFirestore firestore;
+    VolunteerCertificateGeneration volunteerCertificateGeneration ;
     public ManageVolunteer() {
         // Required empty public constructor
     }
@@ -27,6 +32,7 @@ public class ManageVolunteer extends Fragment {
                              Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_manage_volunteers, container, false);
 
+        firestore=FirebaseFirestore.getInstance();
         //cardviews
         verifyVolunteers=view.findViewById(R.id.VerifyVolunteers);
         deleteVolunteers=view.findViewById(R.id.DeleteVolunteers);
@@ -43,6 +49,15 @@ public class ManageVolunteer extends Fragment {
         deleteVolunteersText=view.findViewById(R.id.deleteVolunteers);
         certificatesText=view.findViewById(R.id.certificates);
         exportDetailsText=view.findViewById(R.id.exportDetails);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        getActivity().getSupportFragmentManager().popBackStack();
+                    }
+                });
 
         if (getArguments() != null){
             stream = getArguments().getString("stream");
@@ -64,6 +79,17 @@ public class ManageVolunteer extends Fragment {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new deleteVolunteer();
+                Bundle bundle = new Bundle();
+                bundle.putString("stream", stream);
+                bundle.putString("department", department);
+                fragment.setArguments(bundle);
+                getFragment(fragment);
+            }
+        });
+        certificatesText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new SelectVolunteerList();
                 Bundle bundle = new Bundle();
                 bundle.putString("stream", stream);
                 bundle.putString("department", department);
@@ -102,6 +128,17 @@ public class ManageVolunteer extends Fragment {
         cardView.startAnimation(fadeIn);
     }
 
+    public void fetchVolunteerDetails(){
+        firestore.collection("Volunteer").whereEqualTo("stream",stream).whereEqualTo("department",department)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (int i = 0; i < task.getResult().size(); i++) {
+
+                        }
+                    }
+                });
+    }
     public void getFragment(Fragment fragment){
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +18,6 @@ import com.example.myapplication.ManageEvents.UpdateEvent.InterCollegeEventList;
 import com.example.myapplication.ManageEvents.UpdateEvent.SeminarEventList;
 import com.example.myapplication.ManageEvents.UpdateEvent.WorkshopEventList;
 import com.example.myapplication.R;
-import com.example.myapplication.manageEvents;
 
 public class UpdateEventDetails extends Fragment {
     View view;

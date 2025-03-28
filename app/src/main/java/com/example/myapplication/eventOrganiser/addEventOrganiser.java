@@ -1,9 +1,6 @@
 package com.example.myapplication.eventOrganiser;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -22,9 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -32,10 +27,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.myapplication.LoginPage;
 import com.example.myapplication.R;
-import com.example.myapplication.RegistrationPage;
 import com.example.myapplication.User;
+import com.example.myapplication.eventOrganiser.ManageOrganiser.ManageEventOrganiser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -128,7 +122,7 @@ public class addEventOrganiser extends Fragment {
 
                 if(validateUserInput()) {
                     if (isNetworkAvailable()) {
-                        organiser = new EventOrganiser(uid,Status, Role, username, Gender, email, phone, college, password,selectedStream,selectedDepartment,isVerificationEmailsend,isEmailVerified);
+                        organiser = new EventOrganiser(uid,Status, Role, username, Gender, email, phone, college,selectedStream,selectedDepartment,isVerificationEmailsend,isEmailVerified);
                         registerUser(email, password);
                     } else {
                         Toast.makeText(requireActivity(), "Network error", Toast.LENGTH_SHORT).show();
@@ -143,65 +137,100 @@ public class addEventOrganiser extends Fragment {
         return view;
     }
     private boolean validateUserInput() {
-         username = UserName.getText().toString().trim();
-         email = EmailAddress.getText().toString().trim();
-         phone = Phone.getText().toString().trim();
-        int radioButtonId = radioGroup.getCheckedRadioButtonId();
-        if (radioButtonId != -1) {
-            selectedRadioButton = view.findViewById(radioButtonId);
-            Gender = selectedRadioButton.getText().toString();
-        } else {
-            Toast.makeText(getActivity(), "Please select a gender", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-         college= CollegeName.getText().toString().trim();
-         password = UserPassword.getText().toString();
-         confirmPassword = ConfirmPassword.getText().toString();
+        username = UserName.getText().toString().trim();
+        email = EmailAddress.getText().toString().trim();
+        phone = Phone.getText().toString().trim();
+        college = CollegeName.getText().toString().trim();
+        password = UserPassword.getText().toString();
+        confirmPassword = ConfirmPassword.getText().toString();
 
-        if (TextUtils.isEmpty(username) || TextUtils.isEmpty(email) || TextUtils.isEmpty(phone) ||
-                TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)|| TextUtils.isEmpty(college)||
-        TextUtils.isEmpty(Gender)) {
-            Toast.makeText(requireActivity(), "All fields are mandatory!", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(username)) {
+            Toast.makeText(requireActivity(), "Name is required!", Toast.LENGTH_SHORT).show();
+            UserName.setError("Name is required!");
             return false;
         }
-        if (selectedStream == null || selectedDepartment == null) {
-            Toast.makeText(requireActivity(), "Please select stream and department.", Toast.LENGTH_SHORT).show();
+        if (!username.matches("^[a-zA-Z\\s'-]{2,50}$")) {
+            UserName.setError("Invalid name format! Use only alphabets and spaces.");
+            Toast.makeText(requireActivity(), "Invalid name format! Use only alphabets and spaces.", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if(!username.matches("^[a-zA-Z\\s'-]{2,50}$")){
-            Toast.makeText(requireActivity(), "Invalid name !", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(email)) {
+            EmailAddress.setError("Email is required!");
+            Toast.makeText(requireActivity(), "Email is required!", Toast.LENGTH_SHORT).show();
             return false;
         }
-
-        if(!college.matches("^[a-zA-Z\\s'-]{2,50}$")){
-            Toast.makeText(requireActivity(), "Invalid college name !", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            EmailAddress.setError("Invalid email format!");
             Toast.makeText(requireActivity(), "Invalid email format!", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if (!phone.matches("\\d{10}")) {
-            Toast.makeText(requireActivity(), "Invalid phone number!", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(phone)) {
+            Phone.setError("Phone number is required!");
+            Toast.makeText(requireActivity(), "Phone number is required!", Toast.LENGTH_SHORT).show();
             return false;
         }
+        if (!phone.matches("\\d{10}")) {
+            Phone.setError("Phone number must be 10 digits!");
+            Toast.makeText(requireActivity(), "Phone number must be 10 digits!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        int radioButtonId = radioGroup.getCheckedRadioButtonId();
+        if (radioButtonId == -1) {
+            Toast.makeText(getActivity(), "Please select a gender", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        selectedRadioButton = view.findViewById(radioButtonId);
+        Gender = selectedRadioButton.getText().toString();
 
+        if (TextUtils.isEmpty(college)) {
+            CollegeName.setError("College name is required!");
+            Toast.makeText(requireActivity(), "College name is required!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!college.matches("^[a-zA-Z\\s'-]{2,50}$")) {
+            CollegeName.setError("Invalid college name format!");
+            Toast.makeText(requireActivity(), "Invalid college name format!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (TextUtils.isEmpty(password)) {
+            UserPassword.setError("Password is required!");
+            Toast.makeText(requireActivity(), "Password is required!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!password.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$")) {
+            UserPassword.setError("Password must be at least 8 characters long and include both letters and numbers.");
+            Toast.makeText(requireActivity(), "Password must be at least 8 characters long and include both letters and numbers.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (TextUtils.isEmpty(confirmPassword)) {
+            ConfirmPassword.setError("Please confirm your password!");
+            Toast.makeText(requireActivity(), "Please confirm your password!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         if (!password.equals(confirmPassword)) {
+            ConfirmPassword.setError("Passwords do not match!");
             Toast.makeText(requireActivity(), "Passwords do not match!", Toast.LENGTH_SHORT).show();
             return false;
         }
-
+        if (selectedStream == null || selectedStream.equals("Select Stream")) {
+            Toast.makeText(requireActivity(), "Please select a valid stream.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (selectedDepartment == null || selectedDepartment.equals("Select Department")) {
+            Toast.makeText(requireActivity(), "Please select a valid department.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         return true;
     }
+
 
     private void loadStreams() {
         List<String> streams = new ArrayList<>();
         db.collection("Departments").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                streams.add("Select Stream"); // Default option
+                streams.add("Select Stream");
                 for (DocumentSnapshot doc : task.getResult()) {
                     streams.add(doc.getId());
                 }
@@ -376,7 +405,7 @@ public class addEventOrganiser extends Fragment {
         if (user != null) {
             if(isNetworkAvailable()) {
                 uid = user.getUid();
-                EventOrganiser userdata = new EventOrganiser( uid,Status,Role, username, Gender, email, phone, college, password,selectedStream,selectedDepartment,isVerificationEmailsend,isEmailVerified);
+                EventOrganiser userdata = new EventOrganiser( uid,Status,Role, username, Gender, email, phone, college,selectedStream,selectedDepartment,isVerificationEmailsend,isEmailVerified);
                 userData.document(uid).set(userdata).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                        getFragment(new ManageEventOrganiser());

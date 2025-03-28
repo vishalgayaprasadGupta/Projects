@@ -1,23 +1,50 @@
 package com.example.myapplication.Registration;
 
 public class Registration {
-    private String eventId;
     private String eventName;
-    private String activityId,activityDate,activityTime;
-    private String activityName,uid,studentId,studentName,studentEmail,paymentStatus;
+    private String activityId,activityDate,activityTime,isPresent;
+    int paymentAmount;
+    boolean isSelected;
+    private String activityName,uid,studentId,participantName,participantEmail,paymentStatus,transactionId;
 
-    public Registration(String uid,String studentId, String eventName, String activityId, String activityName,String studentName,String studentEmail,String paymentStatus,String activityDate,String activityTime) {
+    public Registration(String uid,String studentId, String eventName, String activityId, String activityName,
+                        String participantName,String participantEmail,String paymentStatus,String activityDate,String activityTime,int paymentAmount,String isPresent,String transactionId) {
         this.eventName = eventName;
         this.activityId = activityId;
         this.activityName = activityName;
         this.uid=uid;
         this.studentId=studentId;
-        this.studentName=studentName;
-        this.studentEmail=studentEmail;
+        this.participantName=participantName;
+        this.participantEmail=participantEmail;
         this.paymentStatus=paymentStatus;
         this.activityDate=activityDate;
         this.activityTime=activityTime;
+        this.paymentAmount=paymentAmount;
+        this.isPresent=isPresent;
+        this.transactionId=transactionId;
     }
+
+    public Registration() {
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public String getIsPresent() {
+        return isPresent;
+    }
+    public void setIsPresent(String isPresent) {
+        this.isPresent = isPresent;
+    }
+
+    public boolean isSelected() { return isSelected; }
+
+    public void setSelected(boolean selected) { isSelected = selected; }
 
     public String getUid() {
         return uid;
@@ -25,6 +52,22 @@ public class Registration {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getParticipantName() {
+        return participantName;
+    }
+
+    public void setParticipantName(String participantName) {
+        this.participantName = participantName;
+    }
+
+    public String getParticipantEmail() {
+        return participantEmail;
+    }
+
+    public void setParticipantEmail(String participantEmail) {
+        this.participantEmail = participantEmail;
     }
 
     public String getActivityDate() {
@@ -43,6 +86,14 @@ public class Registration {
         this.activityTime = activityTime;
     }
 
+    public int getPaymentAmount() {
+        return paymentAmount;
+    }
+
+    public void setPaymentAmount(int paymentAmount) {
+        this.paymentAmount = paymentAmount;
+    }
+
     public String getPaymentStatus() {
         return paymentStatus;
     }
@@ -50,36 +101,11 @@ public class Registration {
     public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
     }
-
-    public String getStudentName() {
-        return studentName;
-    }
-
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
-    }
-
-    public String getStudentEmail() {
-        return studentEmail;
-    }
-
-    public void setStudentEmail(String studentEmail) {
-        this.studentEmail = studentEmail;
-    }
-
     public String getStudentId() {
         return studentId;
     }
     public void setStudentId(String studentId) {
         this.studentId = studentId;
-    }
-
-    public String getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
     }
 
     public String getEventName() {

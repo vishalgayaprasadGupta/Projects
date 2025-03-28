@@ -92,19 +92,32 @@ public class WorkshopEventActivityDetails extends Fragment {
             public void onClick(View v) {
                 registrationProgressbar.setVisibility(View.VISIBLE);
 
-                Bundle bundle = new Bundle();
-                bundle.putString("activityName", activityTitle.getText().toString());
-                bundle.putString("eventName", eventName.getText().toString());
-                bundle.putString("eventSchedule", activityDate.getText().toString());
-                bundle.putString("activityType", activityType.getText().toString());
-                bundle.putString("registrationFee", registrationFee.getText().toString());
-                bundle.putString("activityId", activityId);
-                bundle.putString("eventId", eventId);
-                bundle.putString("activityTime", time);
-                EventRegistration eventRegistration = new EventRegistration();
-                eventRegistration.setArguments(bundle);
-                registrationProgressbar.setVisibility(View.GONE);
-                getFragment(eventRegistration);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Note");
+                builder.setMessage("For Group activity details of one member is mandatory which will be verified on venue.");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("activityName", activityTitle.getText().toString());
+                        bundle.putString("eventName", eventName.getText().toString());
+                        bundle.putString("eventSchedule", activityDate.getText().toString());
+                        bundle.putString("activityType", activityType.getText().toString());
+                        bundle.putString("registrationFee", registrationFee.getText().toString());
+                        bundle.putString("activityId", activityId);
+                        bundle.putString("eventId", eventId);
+                        bundle.putString("activityTime", time);
+                        EventRegistration eventRegistration = new EventRegistration();
+                        eventRegistration.setArguments(bundle);
+                        registrationProgressbar.setVisibility(View.GONE);
+                        getFragment(eventRegistration);
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.setCancelable(false);
+                dialog.show();
             }
         });
 

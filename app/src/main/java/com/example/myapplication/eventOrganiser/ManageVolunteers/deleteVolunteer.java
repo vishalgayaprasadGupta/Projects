@@ -9,19 +9,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.myapplication.EventVolunteer.UpdateVolunteerPendingRequest;
 import com.example.myapplication.EventVolunteer.Volunteer;
-import com.example.myapplication.EventVolunteer.VolunteerPendingRequestAdapter;
-import com.example.myapplication.ManageUser.DeActivateUserAdapter;
-import com.example.myapplication.ManageUser.manageUser;
 import com.example.myapplication.R;
-import com.example.myapplication.User;
-import com.example.myapplication.eventOrganiser.ManageEventOrganiser;
+import com.example.myapplication.SendGridPackage.VolunteerAccountDeleteMail;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -30,9 +27,10 @@ import java.util.List;
 public class deleteVolunteer extends Fragment {
     private RecyclerView recyclerView;
     private FirebaseFirestore firestore;
-    String stream,department;
+    String stream,department,organiserUID,organiserName;
     private DeleteVolunteerAdapter adapter;
     private List<Volunteer> volunteerList;
+    VolunteerAccountDeleteMail sendMail;
     public deleteVolunteer() {
         // Required empty public constructor
     }
@@ -60,6 +58,7 @@ public class deleteVolunteer extends Fragment {
                     }
                 });
 
+        fetchCurrentOrganiserDetails();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
@@ -110,6 +109,7 @@ public class deleteVolunteer extends Fragment {
         firestore.collection("Volunteer").document(uid)
                 .delete()
                 .addOnSuccessListener(aVoid -> {
+                    sendMail.sendVolunteerAccountDeleteEmail(volunteerList.get(position).getEmail(),volunteerList.get(position).getName(),organiserUID,organiserName);
                     Toast.makeText(getActivity(), "Volunteer deleted successfully!", Toast.LENGTH_SHORT).show();
                     volunteerList.remove(position);
                     adapter.notifyItemRemoved(position);
@@ -120,6 +120,29 @@ public class deleteVolunteer extends Fragment {
                 });
     }
 
+    public void fetchCurrentOrganiserDetails() {
+        organiserUID = FirebaseAuth.getInstance().getUid();
+
+        if (organiserUID != null) {
+            firestore.collection("User")
+                    .document(organiserUID)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            organiserName= documentSnapshot.getString("name");
+                            Log.d("OrganiserDetails", "Organiser Name: " + organiserName);
+                        } else {
+                            Toast.makeText(getContext(), "Admin details not found!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "Error fetching organiser details: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        } else {
+            Toast.makeText(getContext(), "Organsier not logged in!", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     public void getFragment(Fragment fragment) {
         requireActivity().getSupportFragmentManager()

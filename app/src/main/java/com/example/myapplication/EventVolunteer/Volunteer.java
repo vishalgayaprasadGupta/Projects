@@ -9,11 +9,11 @@ public class Volunteer {
     private String college;
     private String stream;
     private String department;
-    private String isVerificationEmailsend;
-    private String isEmailverified,uid;
+    private String eventName,uid;
+    boolean isSelected;
 
     public Volunteer(String uid,String status, String role, String name, String gender, String email,
-                          String contact, String college, String stream, String department,String isVerificationEmailsend,String isEmailverified) {
+                          String contact, String college, String stream, String department,String eventName) {
         this.status = status;
         this.role = role;
         this.name = name;
@@ -23,33 +23,26 @@ public class Volunteer {
         this.college = college;
         this.stream = stream;
         this.department = department;
-        this.isVerificationEmailsend=isVerificationEmailsend;
-        this.isEmailverified=isEmailverified;
+        this.eventName=eventName;
         this.uid=uid;
     }
     public Volunteer() {
     }
 
+    public boolean isSelected() { return isSelected; }
+
+    public void setSelected(boolean selected) { isSelected = selected; }
     public String getUid() {
         return uid;
     }
     public void setUid(String uid) {
         this.uid = uid;
     }
-
-    public String getIsEmailverified() {
-        return isEmailverified;
+    public String getEventName() {
+        return eventName;
     }
-
-    public void setIsEmailverified(String isEmailverified) {
-        this.isEmailverified = isEmailverified;
-    }
-
-    public String getIsVerificationEmailsend() {
-        return isVerificationEmailsend;
-    }
-    public void setIsVerificationEmailsend(String isVerificationEmailsend) {
-        this.isVerificationEmailsend = isVerificationEmailsend;
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
     }
 
     public String getStatus() {

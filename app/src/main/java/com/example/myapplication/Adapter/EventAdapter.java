@@ -33,6 +33,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         Event event = eventList.get(position);
         holder.eventName.setText(event.getName());
         String status=event.getEventStatus();
+        String date=event.getStartDate()+" - "+event.getEndDate();
+        holder.eventDate.setText(date);
         if(status.equals("Active")) {
             holder.Status.setText("Registration Started");
         }else if(status.equals("Closed")){
@@ -57,11 +59,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
-        public TextView eventName,Status;
+        public TextView eventName,Status,eventDate;
         public EventViewHolder(View itemView) {
             super(itemView);
             eventName = itemView.findViewById(R.id.eventName);
             Status=itemView.findViewById(R.id.status);
+            eventDate=itemView.findViewById(R.id.eventDate);
         }
     }
 

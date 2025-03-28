@@ -15,9 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.myapplication.Adapter.ActivityAdapter;
 import com.example.myapplication.Adapter.InterCollegeActivityAdapter;
+import com.example.myapplication.ManageEvents.Activity;
 import com.example.myapplication.ManageEvents.InterCollege;
 import com.example.myapplication.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -29,7 +34,8 @@ public class InterCollegeEventActivities extends Fragment {
     private RecyclerView activityRecyclerView;
     private FirebaseFirestore db;
     private InterCollegeActivityAdapter activityAdapter;
-    private String eventId = "";
+    private String eventId = "",uid;
+    FirebaseUser user;
 
     public InterCollegeEventActivities() {
         // Required empty public constructor
@@ -40,6 +46,8 @@ public class InterCollegeEventActivities extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_inter_college_event_activities, container, false);
 
+        user=FirebaseAuth.getInstance().getCurrentUser();
+        uid=user.getUid();
         if (getArguments() != null) {
             eventId = getArguments().getString("eventId");
             Log.d("CollegeEventActivities", "Received eventId: " + eventId);
@@ -70,21 +78,41 @@ public class InterCollegeEventActivities extends Fragment {
     }
 
     private void fetchActivities(String eventId) {
-        db.collection("EventActivities")
-                .whereEqualTo("eventId", eventId)
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        db.collection("Event Registrations")
+                .whereEqualTo("uid", currentUserId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        List<InterCollege> activity = task.getResult().toObjects(InterCollege.class);
-                        if (activity.isEmpty()) {
-                            showNoEventDialog();
-                        } else {
-                            activityAdapter = new InterCollegeActivityAdapter(activity);
-                            activityAdapter.setOnItemClickListener(this::onItemClick); // Re-attach the listener
-                            activityRecyclerView.setAdapter(activityAdapter);
+                        List<String> registeredActivityIds = new ArrayList<>();
+                        for (DocumentSnapshot document : task.getResult()) {
+                            registeredActivityIds.add(document.getString("activityId"));
                         }
+                        db.collection("EventActivities")
+                                .whereEqualTo("eventId", eventId)
+                                .get()
+                                .addOnCompleteListener(activityTask -> {
+                                    if (activityTask.isSuccessful()) {
+                                        List<InterCollege> activities = new ArrayList<>();
+                                        for (DocumentSnapshot document : activityTask.getResult()) {
+                                            InterCollege activity = document.toObject(InterCollege.class);
+                                            if (activity != null && !registeredActivityIds.contains(activity.getActivityId())) {
+                                                activities.add(activity);
+                                            }
+                                        }
+                                        if (activities.isEmpty()) {
+                                            showNoEventDialog();
+                                        } else {
+                                            activityAdapter = new InterCollegeActivityAdapter(activities);
+                                            activityAdapter.setOnItemClickListener(this::onItemClick);
+                                            activityRecyclerView.setAdapter(activityAdapter);
+                                        }
+                                    } else {
+                                        Toast.makeText(getActivity(), "Error fetching events", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                     } else {
-                        Toast.makeText(getActivity(), "Error fetching events", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Error fetching registrations", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -105,9 +133,22 @@ public class InterCollegeEventActivities extends Fragment {
         dialog.show();
     }
 
-    public void onItemClick(String activtiyId) {
-        // Navigate to the next fragment
-        Toast.makeText(getActivity(), "Button clicked", Toast.LENGTH_SHORT).show();
+    public void onItemClick(String activityId) {
+        db.collection("User").document(uid).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String userRole = documentSnapshot.getString("role");
+                if (userRole != null) {
+                    if(userRole.equals("Admin") || userRole.equals("Event Organiser")){
+                        Toast.makeText(getActivity(), "Press Back button explore more events..", Toast.LENGTH_SHORT).show();
+                    }else{
+                        navigate(activityId);
+                    }
+                }
+            }
+        });
+    }
+
+    public void navigate(String activtiyId){
         IntercollegeEventActivityDetails activitiesFragment = new IntercollegeEventActivityDetails();
         Bundle bundle = new Bundle();
         bundle.putString("activityId", activtiyId);
@@ -115,7 +156,6 @@ public class InterCollegeEventActivities extends Fragment {
         activitiesFragment.setArguments(bundle);
         getFragment(activitiesFragment);
     }
-
     public void getFragment(Fragment fragment) {
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()

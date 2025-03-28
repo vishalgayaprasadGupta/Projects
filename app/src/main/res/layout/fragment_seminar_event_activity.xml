@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EDEDED"
+    android:background="@drawable/bg"
     android:fitsSystemWindows="true"
     tools:context=".fragements.CollegeEvents">
     <LinearLayout
@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Explore Events"
+            android:text="Event Activity"
             android:textSize="26dp"
             android:textStyle="bold"
             android:textColor="@color/teal_700"

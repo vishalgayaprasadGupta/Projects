@@ -43,7 +43,7 @@ public class WorkshopEventList extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         eventAdapter = new EventListAdapter(new ArrayList<>());
-        eventAdapter.setOnItemClickListener(this::onItemClick); // Set the listener
+        eventAdapter.setOnItemClickListener(this::onItemClick);
         recyclerView.setAdapter(eventAdapter);
 
         fetchEvents();
@@ -101,7 +101,7 @@ public class WorkshopEventList extends Fragment {
                 .commit();
     }
 
-    public void onItemClick(String eventId,String eventType,String eventName) {
+    public void onItemClick(String eventId,String eventType,String eventName,String startDate,String endDate) {
         db.collection("Workshops").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -114,6 +114,8 @@ public class WorkshopEventList extends Fragment {
                             bundle.putString("eventId", eventId);
                             bundle.putString("eventType", eventType);
                             bundle.putString("eventName", eventName);
+                            bundle.putString("startDate", startDate);
+                            bundle.putString("endDate", endDate);
                             activitiesFragment.setArguments(bundle);
                             getFragment(activitiesFragment);
                         }else if("Cancel".equals(status)){

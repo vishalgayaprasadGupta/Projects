@@ -1,9 +1,11 @@
 package com.example.myapplication.ManageEvents;
 
-public class InterCollege {
-    String activitytName, activityDescription, activityVenue, activityRules, availability, registrationFee, eventId, eventType, activityDate, activityId,activityType,eventName,activityStartTime,activityEndTime;
+import com.google.firebase.firestore.Exclude;
 
-    public InterCollege(String eventName,String activitytName, String activityDescription, String activityVenue, String activityDate, String activityRules, String availability, String registrationFee, String eventId, String eventType,String activityType,String activityStartTime,String activityEndTime) {
+public class InterCollege {
+    String id,activitytName, activityDescription, activityVenue, activityRules, availability,status, registrationFee, eventId, eventType, activityDate, activityId,activityType,eventName,activityStartTime,activityEndTime;
+
+    public InterCollege(String eventName,String activitytName, String activityDescription, String activityVenue, String activityDate, String activityRules, String availability, String registrationFee, String eventId, String eventType,String activityType,String activityStartTime,String activityEndTime,String status) {
         this.activitytName = activitytName;
         this.activityDescription = activityDescription;
         this.activityVenue = activityVenue;
@@ -17,6 +19,22 @@ public class InterCollege {
         this.eventName=eventName;
         this.activityStartTime=activityStartTime;
         this.activityEndTime=activityEndTime;
+        this.status=status;
+    }
+
+    @Exclude
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getActivityStartTime() {

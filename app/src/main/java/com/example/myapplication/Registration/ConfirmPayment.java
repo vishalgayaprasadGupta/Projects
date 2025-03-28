@@ -4,8 +4,10 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Activity;
@@ -22,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import com.example.myapplication.LoginPage;
 import com.example.myapplication.R;
 import com.example.myapplication.SendGridPackage.EventRegistrationPaymentEmail;
+import com.example.myapplication.SendGridPackage.sendPaymentFailEmail;
 import com.example.myapplication.adminfragements.AdminHome;
 import com.example.myapplication.eventOrganiser.EventOrganiserHome;
 import com.example.myapplication.fragements.UserHome;
@@ -41,7 +44,10 @@ public class ConfirmPayment extends AppCompatActivity implements PaymentResultLi
     TextView paymentAmount;
     FirebaseFirestore firestore;
     FirebaseUser user;
+    int registrationFee;
     String uid,eventName,activityName,role,userName,paymentStatus;
+    sendPaymentFailEmail sendFailEmail;
+    ProgressBar backProgressBar, paymentProgressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +74,10 @@ public class ConfirmPayment extends AppCompatActivity implements PaymentResultLi
         Email=getIntent().getStringExtra("studentEmail");
         activityTime=getIntent().getStringExtra("activityTime");
         activitytDate=getIntent().getStringExtra("activityDate");
+        backProgressBar=findViewById(R.id.backProgressBar);
+        backProgressBar.setVisibility(View.GONE);
+        paymentProgressBar=findViewById(R.id.paymentProgressBar);
+        paymentProgressBar.setVisibility(View.GONE);
 
         Log.d("Registration", "Student ID: " + studentId);
 
@@ -76,6 +86,7 @@ public class ConfirmPayment extends AppCompatActivity implements PaymentResultLi
         mobile = findViewById(R.id.paymentMobile);
 
         RegistrationFees = getIntent().getStringExtra("registrationAmount");
+        registrationFee=Integer.parseInt(RegistrationFees);
         paymentEmail = getIntent().getStringExtra("email");
         paymentMobile = getIntent().getStringExtra("contact");
         paymentMobile="+91"+paymentMobile;
@@ -91,6 +102,7 @@ public class ConfirmPayment extends AppCompatActivity implements PaymentResultLi
         Checkout.preload(ConfirmPayment.this);
 
         paymentButton.setOnClickListener(v -> {
+            paymentProgressBar.setVisibility(View.VISIBLE);
             startPayment(RegistrationFees);
         });
     }
@@ -139,6 +151,7 @@ public class ConfirmPayment extends AppCompatActivity implements PaymentResultLi
 
 
     public void startPayment(String RegistrationFees) {
+
         Checkout checkout = new Checkout();
         checkout.setKeyID("rzp_test_rCrxXQXOdinGmc");
 
@@ -153,26 +166,33 @@ public class ConfirmPayment extends AppCompatActivity implements PaymentResultLi
             options.put("prefill.email", paymentEmail);
             options.put("prefill.contact", paymentMobile);
 
+
             checkout.open(ConfirmPayment.this, options);
 
         } catch (Exception e) {
             Log.e("PaymentError", "Error in payment: " + e.getMessage());
         }
+        paymentProgressBar.setVisibility(View.GONE);
     }
     @Override
     public void onPaymentSuccess(String razorpayPaymentID) {
+        backProgressBar.setVisibility(View.VISIBLE);
+        paymentProgressBar.setVisibility(View.GONE);
+        paymentButton.setEnabled(false);
         paymentStatus="Success";
-        saveRegistrationDetails(uid,studentId, eventName, activityId, activityName,Name,Email,paymentStatus,activitytDate,activityTime);
+        saveRegistrationDetails(uid,studentId, eventName, activityId, activityName,Name,Email,paymentStatus,activitytDate,activityTime,registrationFee,razorpayPaymentID);
         EventRegistrationPaymentEmail.generatePDF(this,uid,studentId, paymentEmail, userName, eventName, activityName, razorpayPaymentID, paymentAmount.getText().toString(), paymentStatus,activitytDate,activityTime);
         Intent resultIntent = new Intent();
         resultIntent.putExtra("role", role);
         setResult(Activity.RESULT_OK, resultIntent);
+
         finish();
     }
 
     @Override
     public void onPaymentError(int i, String response) {
-        Toast.makeText(ConfirmPayment.this, "Payment failed: " + response, Toast.LENGTH_SHORT).show();
+        sendPaymentFailEmail.sendPaymentFailEmail(Email,Name);
+        Toast.makeText(ConfirmPayment.this, "Payment failed: ", Toast.LENGTH_SHORT).show();
     }
     @Override
     protected void onDestroy() {
@@ -180,12 +200,13 @@ public class ConfirmPayment extends AppCompatActivity implements PaymentResultLi
         Checkout.clearUserData(this);
     }
 
-    public void saveRegistrationDetails(String uid,String studentId, String eventName, String activityId, String activityName,String Name,String Email,String paymentStatus,String activityDate,String activityTime) {
-        Registration registration = new Registration(uid,studentId, eventName, activityId, activityName,Name,Email,paymentStatus,activityDate,activityTime);
-
+    public void saveRegistrationDetails(String uid,String studentId, String eventName, String activityId, String activityName,String Name,String Email,String paymentStatus,String activityDate,String activityTime,int paymentAmount,String transactionId) {
+        String  isPresent="false";
+        Registration registration = new Registration(uid,studentId, eventName, activityId, activityName,Name,Email,paymentStatus,activityDate,activityTime,paymentAmount,isPresent,transactionId);
         firestore.collection("Event Registrations")
                 .add(registration)
                 .addOnSuccessListener(documentReference -> {
+                    backProgressBar.setVisibility(View.GONE);
                     Log.d("Registration", "Registration details saved with ID: " + documentReference.getId());
                     Toast.makeText(ConfirmPayment.this, "Event Registration successful", Toast.LENGTH_SHORT).show();
                 })

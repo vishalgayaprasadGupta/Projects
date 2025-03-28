@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +21,10 @@ import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.adminfragements.AdminHome;
 import com.example.myapplication.adminfragements.AdminProfile;
+import com.example.myapplication.fragements.AboutUsPage;
 import com.example.myapplication.fragements.Announcement;
+import com.example.myapplication.fragements.SettingPage;
+import com.example.myapplication.fragements.Support;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
@@ -30,13 +34,14 @@ import com.google.firebase.auth.FirebaseUser;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class AdminHomePage extends AppCompatActivity {
+public class AdminHomePage extends AppCompatActivity implements Announcement.NotificationListener {
 
     DrawerLayout drawerLayout;
     ImageButton DrawerButtonToggle;
     TextView userName,userEmail,welcomeName,Date;
     FirebaseUser user;
     FirebaseAuth mAuth;
+    View notificationDot;
     BottomNavigationView bottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +57,7 @@ public class AdminHomePage extends AppCompatActivity {
         userEmail=headerview.findViewById(R.id.email);
         welcomeName=findViewById(R.id.welcome);
         Date=findViewById(R.id.date);
+        notificationDot = findViewById(R.id.notification_dot);
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -66,7 +72,6 @@ public class AdminHomePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 drawerLayout.openDrawer(GravityCompat.START);
-
             }
         });
         setDrawerProfile();
@@ -76,19 +81,39 @@ public class AdminHomePage extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id=item.getItemId();
                 if(id==R.id.logout){
-                    mAuth.signOut();
-                    Intent intent=new Intent(AdminHomePage.this,LoginPage.class);
-                    startActivity(intent);
-                    Toast.makeText(AdminHomePage.this, "Logout Succesfully", Toast.LENGTH_SHORT).show();
-                    finish();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(AdminHomePage.this);
+                    builder.setTitle("Logout");
+                    builder.setMessage(" Are you sure you want to Logout ?");
+
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mAuth.signOut();
+                            Intent intent=new Intent(AdminHomePage.this,LoginPage.class);
+                            startActivity(intent);
+                            Toast.makeText(AdminHomePage.this, "Logout Succesfully", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            drawerLayout.closeDrawer(GravityCompat.START);
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
                 }else if(id==R.id.setting){
-                    Toast.makeText(AdminHomePage.this, "Setting Page ", Toast.LENGTH_SHORT).show();
-                }else if(id==R.id.share){
-                    Toast.makeText(AdminHomePage.this, "Share Page ", Toast.LENGTH_SHORT).show();
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    getFragment(new SettingPage());
                 }else if(id==R.id.support){
-                    Toast.makeText(AdminHomePage.this, "Support Page ", Toast.LENGTH_SHORT).show();
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    getFragment(new Support());
                 }else if(id==R.id.info){
-                    Toast.makeText(AdminHomePage.this, "Info Page ", Toast.LENGTH_SHORT).show();
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    getFragment(new AboutUsPage());
                 }
                 return true;
             }
@@ -116,16 +141,8 @@ public class AdminHomePage extends AppCompatActivity {
 
     }
 
-    public void getFragment(Fragment fragment){
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragement_layout,fragment)
-                .commit();
-    }
-
     public void onBackPressButton() {
         if (bottomNavigationView.getSelectedItemId() == R.id.Home) {
-            // Show exit confirmation dialog when on UserHome Page
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("Exit App")
                     .setMessage("Are you sure you want to exit?")
@@ -168,5 +185,25 @@ public class AdminHomePage extends AppCompatActivity {
             Toast.makeText(this, "UserProfile not Authenticiated", Toast.LENGTH_SHORT).show();
         }
 
+    }
+    @Override
+    public void markNotificationsAsRead() {
+        if (notificationDot != null) {
+            notificationDot.setVisibility(View.GONE);
+        }
+    }
+    public void getFragment(Fragment fragment) {
+        if (fragment instanceof AdminHome) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragement_layout, fragment)
+                    .commit();
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragement_layout, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 }

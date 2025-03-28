@@ -24,7 +24,7 @@ public class VolunteerApprovalRequestEmail {
 
     private static final String SENDGRID_API_KEY = BuildConfig.SENDGRID_API_KEY;
 
-    public static void volunteerApprovalRequestEmail(String toEmail, String volunteerName, String adminUID, String adminName) {
+    public static void volunteerApprovalRequestEmail(String toEmail, String volunteerName, String organiserUID, String organiserName) {
         try {
             Log.d(TAG, "SendGrid API Key: " + SENDGRID_API_KEY);
 
@@ -40,8 +40,7 @@ public class VolunteerApprovalRequestEmail {
                     "<p>We are pleased to inform you that your request to become a volunteer has been approved.</p>" +
                     "<p><strong>Approved By:</strong></p>" +
                     "<ul>" +
-                    "<li><strong>Name:</strong> " + adminName + "</li>" +
-                    "<li><strong>UID:</strong> " + adminUID + "</li>" +
+                    "<li><strong>Name:</strong> " + organiserName + "</li>" +
                     "</ul>" +
                     "<p><strong>Approval Date:</strong> " + timestamp + "</p>" +
                     "<p>You are now officially a part of our volunteer team! Your dedication and efforts will play a vital role in making our events successful.</p>" +

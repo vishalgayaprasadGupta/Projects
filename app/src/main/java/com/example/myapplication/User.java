@@ -7,12 +7,11 @@ public class User {
     private String email;
     private String contact;
     private String college;
-    private String password;
     private  String status,uid;
     private String isVerificationEmailsend;
     private  String isEmailverified;
 
-    public User(String uid,String status,String role, String name, String gender, String email, String contact, String college, String password,String isVerificationEmailsend,String isEmailverified) {
+    public User(String uid,String status,String role, String name, String gender, String email, String contact, String college,String isVerificationEmailsend,String isEmailverified) {
         this.status=status;
         this.role = role;
         this.name = name;
@@ -20,7 +19,6 @@ public class User {
         this.email = email;
         this.contact = contact;
         this.college = college;
-        this.password = password;
         this.isVerificationEmailsend=isVerificationEmailsend;
         this.uid=uid;
         this.isEmailverified=isEmailverified;
@@ -106,13 +104,5 @@ public class User {
 
     public void setCollege(String college) {
         this.college = college;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EDEDED"
+    android:background="@drawable/bg"
     android:padding="16dp">
 
     <androidx.cardview.widget.CardView
@@ -14,7 +14,7 @@
         android:layout_margin="16dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="12dp"
-        android:backgroundTint="#EDEDED"
+        app:cardBackgroundColor="@color/card_background"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +46,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Event Name"
-                                android:textColor="@android:color/darker_gray"
+                                android:textColor="@color/black"
                                 android:textSize="26sp"
                                 android:textStyle="bold"
                                 android:layout_gravity="center"
@@ -342,7 +342,8 @@
                         android:id="@+id/checkAvailabilityProgressBar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
+                        android:layout_gravity="center"
+                        android:elevation="20dp"/>
                 </FrameLayout>
 
                 <FrameLayout
@@ -363,7 +364,8 @@
                     android:id="@+id/registerProgressBar"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:elevation="20dp"/>
                 </FrameLayout>
 
                 <TextView
@@ -383,6 +385,8 @@
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:layout_gravity="center"
+                android:visibility="gone"
+                android:elevation="20dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -1,7 +1,7 @@
 package com.example.myapplication.ManageEvents.UpdateEvent.updateEventActivity;
 
 
-import android.content.DialogInterface;
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -19,14 +19,22 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.myapplication.ManageEvents.Activity;
-import com.example.myapplication.ManageEvents.InterCollege;
 import com.example.myapplication.ManageEvents.UpdateEvent.UpdatePage;
-import com.example.myapplication.ManageEvents.Workshop;
 import com.example.myapplication.R;
-import com.example.myapplication.fragements.Seminar;
-import com.example.myapplication.manageEvents;
+import com.example.myapplication.ManageEvents.Seminar;
+import com.example.myapplication.ManageEvents.manageEvents;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class updateSeminarEventActivity extends Fragment {
     View view;
@@ -36,6 +44,8 @@ public class updateSeminarEventActivity extends Fragment {
     ProgressBar progressBar;
     FirebaseFirestore firestore;
     String activityId = "",eventId,eventType;
+    FirebaseUser user;
+    String uid,role;
 
     public updateSeminarEventActivity() {
         // Required empty public constructor
@@ -45,6 +55,10 @@ public class updateSeminarEventActivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_update_seminar_event_activity, container, false);
+        user= FirebaseAuth.getInstance().getCurrentUser();
+        firestore = FirebaseFirestore.getInstance();
+
+
         activityTitle = view.findViewById(R.id.seminarTitle);
         activityDescription = view.findViewById(R.id.seminarDescription);
         activityDate = view.findViewById(R.id.seminarDate);
@@ -66,33 +80,22 @@ public class updateSeminarEventActivity extends Fragment {
             eventType=getArguments().getString("eventType");
             eventId=getArguments().getString("eventId");
         }
-
+        fetchUserRole();
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        if (getArguments() != null && getArguments().containsKey("activityId")) {
-                            requireActivity().getSupportFragmentManager().popBackStack();
-                            String activityId = getArguments().getString("activityId");
-                            String eventId = getArguments().getString("eventId");
-                            String eventType = getArguments().getString("eventType");
-                            Bundle bundle = new Bundle();
-                            bundle.putString("activityId", activityId);
-                            bundle.putString("eventId", eventId);
-                            bundle.putString("eventType", eventType);
-                            manageEvents updatePage = new manageEvents();
-                            updatePage.setArguments(bundle);
-                            getFragment(updatePage);
-                        } else {
-                            requireActivity().getSupportFragmentManager().popBackStack();
-                        }
+                       backButton();
                     }
                 }
         );
 
-        firestore = FirebaseFirestore.getInstance();
         Log.d("CollegeEventActivityDetails", "Received activityId on updateseminarActivvity Page: " + activityId);
+
+        activityDate.setOnClickListener(v ->
+                showDatePickerDialog()
+        );
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,11 +121,83 @@ public class updateSeminarEventActivity extends Fragment {
                 progressBar.setVisibility(View.VISIBLE);
                 String activityId = getArguments().getString("activityId");
                 updateEventDetails(activityId);
+                sendNotificationToUsers();
             }
         });
         return view;
     }
+    public void backButton(){
+        getActivity().getSupportFragmentManager().popBackStack();
+        getActivity().getSupportFragmentManager().popBackStack();
+        getActivity().getSupportFragmentManager().popBackStack();
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
 
+    public void fetchUserRole(){
+        uid=user.getUid();
+        firestore.collection("User").document(uid).get().addOnSuccessListener(documentSnapshot -> {
+            if(documentSnapshot.exists()){
+                role=documentSnapshot.getString("role");
+            }
+        });
+    }
+    private void sendNotificationToUsers() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String ActivityName=activityTitle.getText().toString();
+        Map<String, Object> notification = new HashMap<>();
+        notification.put("title", "Event Activtiy Updated ");
+        notification.put("message", "Important update! Details of the activity "+ActivityName+" have been changed. Registered participants are requested to check the latest information.");
+        notification.put("senderType", role);
+        notification.put("timestamp", FieldValue.serverTimestamp());
+        notification.put("seen", false);
+
+        db.collection("Notifications").add(notification)
+                .addOnSuccessListener(documentReference -> Log.d("Firestore", "Notification added"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error adding notification", e));
+    }
+    private void showDatePickerDialog() {
+        String startDateStr = getArguments().getString("startDate");
+        String endDateStr = getArguments().getString("endDate");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        Date startDate = null, endDate = null;
+
+        try {
+            startDate = sdf.parse(startDateStr);
+            endDate = sdf.parse(endDateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Invalid date range", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Calendar calendar = Calendar.getInstance();
+        Date finalStartDate = startDate;
+        Date finalEndDate = endDate;
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                requireContext(),
+                (view, year, month, dayOfMonth) -> {
+                    Calendar selectedCal = Calendar.getInstance();
+                    selectedCal.set(year, month, dayOfMonth);
+
+                    Date selectedDate = selectedCal.getTime();
+
+                    if (selectedDate.before(finalStartDate) || selectedDate.after(finalEndDate)) {
+                        Toast.makeText(getContext(), "Please select a date within the allowed range", Toast.LENGTH_SHORT).show();
+                    } else {
+                        String formattedDate = sdf.format(selectedDate);
+                        activityDate.setText(formattedDate);
+                    }
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+
+        datePickerDialog.getDatePicker().setMinDate(startDate.getTime());
+        datePickerDialog.getDatePicker().setMaxDate(endDate.getTime());
+        datePickerDialog.show();
+    }
     private void fetchEventDetails(String activityId) {
         Log.d("CollegeEventActivityDetails", "Received activityId on fetchEventDetails : " + activityId);
 
@@ -150,7 +225,6 @@ public class updateSeminarEventActivity extends Fragment {
                             activityDescription.setText(activity.getSeminarDescription());
                             activityDate.setText(activity.getActivtiyDate());
                             activityVenue.setText(activity.getSeminarVenue());
-                            activityDuration.setText(activity.getSeminarDuration());
                             activitySpeakerName.setText(activity.getSpeakerName());
                             activitySpeakerBio.setText(activity.getSpeakerBio());
                             activityAgenda.setText(activity.getSeminarAgenda());
@@ -170,9 +244,43 @@ public class updateSeminarEventActivity extends Fragment {
                     getFragment(new UpdatePage());
                 });
     }
+    private boolean validateActivityDetails(String title, String description, String date,
+                                            String venue, String duration, String speakerName,
+                                            String speakerBio, String agenda, String requirements,
+                                            String availability, String fee) {
+        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(description) || TextUtils.isEmpty(date) ||
+                TextUtils.isEmpty(venue) || TextUtils.isEmpty(duration) || TextUtils.isEmpty(speakerName) ||
+                TextUtils.isEmpty(speakerBio) || TextUtils.isEmpty(agenda) || TextUtils.isEmpty(requirements) ||
+                TextUtils.isEmpty(availability) || TextUtils.isEmpty(fee)) {
+            Toast.makeText(getActivity(), "All fields are mandatory!", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        if (!title.matches("^[a-zA-Z ]+$") || !venue.matches("^[a-zA-Z ]+$") ||
+                !speakerName.matches("^[a-zA-Z ]+$") || !agenda.matches("^[a-zA-Z ]+$") ||
+                !requirements.matches("^[a-zA-Z ]+$")) {
+            Toast.makeText(getActivity(), "Title, Venue, Speaker Name, Agenda, and Requirements should contain only letters and spaces.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!date.matches("^\\d{2}/\\d{2}/\\d{4}$")) {
+            Toast.makeText(getActivity(), "Invalid date format! Use dd/MM/yyyy.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!duration.matches("^\\d+(\\.\\d{1,2})?$")) {
+            Toast.makeText(getActivity(), "Invalid duration! Enter a valid number.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!availability.matches("^\\d+$") || Integer.parseInt(availability) <= 0) {
+            Toast.makeText(getActivity(), "Invalid availability! Must be a positive whole number.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!fee.matches("^\\d+(\\.\\d{1,2})?$")) {
+            Toast.makeText(getActivity(), "Invalid registration fee! Enter a valid amount.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
 
+        return true;
+    }
     private void updateEventDetails(String activityId) {
-        // Fetch the updated data from the fields
         String title = activityTitle.getText().toString();
         String description = activityDescription.getText().toString();
         String date = activityDate.getText().toString();
@@ -184,12 +292,9 @@ public class updateSeminarEventActivity extends Fragment {
         String requirements = requirments.getText().toString();
         String available = availability.getText().toString();
         String fee = registrationFee.getText().toString();
-
-        if(TextUtils.isEmpty(title)||TextUtils.isEmpty(description)||TextUtils.isEmpty(date)||
-                TextUtils.isEmpty(venue)||TextUtils.isEmpty(duration)||TextUtils.isEmpty(speakerName)||
-                TextUtils.isEmpty(speakerBio)||TextUtils.isEmpty(agenda)||
-                TextUtils.isEmpty(requirements)||TextUtils.isEmpty(available)||TextUtils.isEmpty(fee)){
-            Toast.makeText(getContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
+        if (!validateActivityDetails(title, description, date, venue, duration, speakerName, speakerBio, agenda, requirements, available, fee)) {
+            progressBar.setVisibility(View.GONE);
+            return;
         }
 
         firestore.collection("EventActivities")
@@ -209,12 +314,20 @@ public class updateSeminarEventActivity extends Fragment {
                 )
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(getContext(), "Event details updated successfully", Toast.LENGTH_SHORT).show();
-                    getFragment(new UpdatePage());
+                    onComplete();
                 })
-                .addOnFailureListener(e -> Toast.makeText(getContext(), "Error updating event details", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e ->{
+                    Toast.makeText(getContext(), "Error updating event details", Toast.LENGTH_SHORT).show();
+                    onComplete();
+                });
+
         progressBar.setVisibility(View.GONE);
     }
 
+    public void onComplete(){
+        getActivity().getSupportFragmentManager().popBackStack();
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
     private void showNoEventDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("No Event");

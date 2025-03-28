@@ -204,8 +204,6 @@ public class EventRegistrationPaymentEmail {
                 byteArrayOutputStream.write(buffer, 0, bytesRead);
             }
             inputStream.close();
-
-            // Use Base64.NO_WRAP to ensure no line breaks are added
             return Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.NO_WRAP);
         } catch (IOException e) {
             Log.e(TAG, "Error encoding file to Base64: " + e.getMessage());

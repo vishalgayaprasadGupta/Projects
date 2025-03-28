@@ -64,6 +64,7 @@ public class VolunteerRegistrationPage extends AppCompatActivity {
     String Username,EmailId,College,Contact;
     User userClass;
     Volunteer volunteerClass;
+    String eventName;
     OrganiserRequestRecieveEmail sendRequestEmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,8 +158,9 @@ public class VolunteerRegistrationPage extends AppCompatActivity {
     }
     public void proceedWithRegistration(){
         if(validateInput(Contact,EmailId,Username)) {
+            eventName="TBD";
             if (isNetworkAvailable()) {
-                volunteerClass = new Volunteer(uid,Status, selectedRole, Username, Gender, EmailId, Contact, College, selectedStream, selectedDepartment,isVerificationEmailsend,isEmailVerified);
+                volunteerClass = new Volunteer(uid,Status, selectedRole, Username, Gender, EmailId, Contact, College, selectedStream, selectedDepartment,eventName);
                 showConfirmationDialog();
             } else {
                 RegisterProgressbar.setVisibility(View.GONE);
@@ -191,8 +193,12 @@ public class VolunteerRegistrationPage extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-    public boolean validateInput(String Contact,String EmailId,String Username){
-        if(TextUtils.isEmpty(Contact) || TextUtils.isEmpty(EmailId) || TextUtils.isEmpty(Username) || TextUtils.isEmpty(Gender)){
+    public boolean validateInput(String Contact, String EmailId, String Username) {
+        Contact = Contact.trim();
+        EmailId = EmailId.trim();
+        Username = Username.trim();
+
+        if (TextUtils.isEmpty(Contact) || TextUtils.isEmpty(EmailId) || TextUtils.isEmpty(Username) || TextUtils.isEmpty(Gender)) {
             Toast.makeText(VolunteerRegistrationPage.this, "All fields are mandatory!", Toast.LENGTH_LONG).show();
             return false;
         }
@@ -201,33 +207,29 @@ public class VolunteerRegistrationPage extends AppCompatActivity {
             Phone.setError("Invalid phone number");
             return false;
         }
-
-        if(!Username.matches("[a-zA-Z ]+")){
+        if (!Username.matches("^[a-zA-Z]+(?: [a-zA-Z]+)*$")) {
             UserName.setError("Invalid username");
             return false;
         }
-
         if (!Patterns.EMAIL_ADDRESS.matcher(EmailId).matches()) {
             EmailAddress.setError("Invalid email address");
             return false;
         }
-
-            if (selectedStream == null || selectedStream.equals("Select Stream")) {
-                Toast.makeText(VolunteerRegistrationPage.this, "Please select a stream", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            if(selectedCollege==null || selectedCollege.equals("Select College")){
-                Toast.makeText(VolunteerRegistrationPage.this, "Please select a college", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            if (selectedDepartment == null || selectedDepartment.equals("Select Department")) {
-                Toast.makeText(VolunteerRegistrationPage.this, "Please select a department", Toast.LENGTH_SHORT).show();
-                return false;
-            }
+        if (selectedStream == null || selectedStream.equals("Select Stream")) {
+            Toast.makeText(VolunteerRegistrationPage.this, "Please select a stream", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (selectedCollege == null || selectedCollege.equals("Select College")) {
+            Toast.makeText(VolunteerRegistrationPage.this, "Please select a college", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (selectedDepartment == null || selectedDepartment.equals("Select Department")) {
+            Toast.makeText(VolunteerRegistrationPage.this, "Please select a department", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         return true;
     }
+
 
     private void loadCollege() {
         firestore.collection("College").document("CollegeList").get().addOnCompleteListener(task -> {
@@ -393,7 +395,7 @@ public class VolunteerRegistrationPage extends AppCompatActivity {
                     Log.d("loadColleges", "Role Fetchehd 2: " + selectedRole);
                     Log.d("loadColleges", "isVerificationEmailsend: " + isVerificationEmailsend);
                     volunteerClass = new Volunteer(uid,Status, selectedRole, UserName.getText().toString(), Gender, EmailAddress.getText().toString(),
-                            Phone.getText().toString(), selectedCollege, selectedStream, selectedDepartment,isVerificationEmailsend,isEmailVerified);
+                            Phone.getText().toString(), selectedCollege, selectedStream, selectedDepartment,eventName);
                 volunteerData.document(uid).set(volunteerClass).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             RegisterProgressbar.setVisibility(View.GONE);

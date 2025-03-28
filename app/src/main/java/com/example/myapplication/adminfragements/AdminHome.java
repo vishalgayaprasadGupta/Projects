@@ -17,18 +17,17 @@ import android.view.animation.Animation;
 import android.widget.TextView;
 
 import com.example.myapplication.AdminTrackEventRegistration.AdminEventList;
-import com.example.myapplication.ManageRole.fetchUserDetails;
 import com.example.myapplication.ManageRole.updateUserRoleList;
 import com.example.myapplication.R;
 import com.example.myapplication.ManageUser.manageUser;
-import com.example.myapplication.eventOrganiser.ManageEventOrganiser;
-import com.example.myapplication.manageEvents;
+import com.example.myapplication.eventOrganiser.ManageOrganiser.ManageEventOrganiser;
+import com.example.myapplication.ManageEvents.manageEvents;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 
 public class AdminHome extends Fragment {
-    private CardView ManageUser,ManageEvents,ManageRole,ManageOrganiser,EventReport,TrackEventRegistration;
+    private CardView ManageUser,ManageEvents,ManageRole,ManageOrganiser,TrackEventRegistration;
     public AdminHome() {
         // Required empty public constructor
     }
@@ -44,16 +43,14 @@ public class AdminHome extends Fragment {
         ManageEvents=view.findViewById(R.id.Managevents);
         ManageRole=view.findViewById(R.id.ManageRole);
         ManageOrganiser=view.findViewById(R.id.ManageOrganiser);
-        EventReport=view.findViewById(R.id.EventReport);
         TrackEventRegistration=view.findViewById(R.id.TrackEventRegistration);
 
         //start animation
         animateCardView(ManageUser,0);
-        animateCardView(ManageEvents,400);
-        animateCardView(ManageRole,800);
-        animateCardView(ManageOrganiser,1200);
-        animateCardView(TrackEventRegistration,1600);
-        animateCardView(EventReport,2000);
+        animateCardView(ManageEvents,200);
+        animateCardView(ManageRole,400);
+        animateCardView(ManageOrganiser,600);
+        animateCardView(TrackEventRegistration,800);
 
         userCount=view.findViewById(R.id.UserCount);
         activeCount=view.findViewById(R.id.activeCount);
@@ -109,6 +106,7 @@ public class AdminHome extends Fragment {
                 getFragment(new AdminEventList());
             }
         });
+
         return view;
     }
 

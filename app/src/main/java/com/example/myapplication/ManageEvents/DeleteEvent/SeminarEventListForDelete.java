@@ -54,8 +54,11 @@ public class SeminarEventListForDelete extends Fragment {
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        // Custom back button logic
-                        getFragment(new EventCategory());
+                        if(getActivity()!=null) {
+                            getActivity().getSupportFragmentManager().popBackStack();
+                        }else{
+                            getFragment(new EventCategory());
+                        }
                     }
                 });
         return view;
@@ -87,6 +90,7 @@ public class SeminarEventListForDelete extends Fragment {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                getActivity().getSupportFragmentManager().popBackStack();
                 dialog.dismiss();
             }
         });
@@ -102,7 +106,7 @@ public class SeminarEventListForDelete extends Fragment {
                 .commit();
     }
 
-    public void onItemClick(String eventId,String eventType,String eventName) {
+    public void onItemClick(String eventId,String eventType,String eventName,String startTime,String endTime) {
         // Navigate to the next fragment
         Toast.makeText(getActivity(), "Button clicked", Toast.LENGTH_SHORT).show();
         DeletePage activitiesFragment = new DeletePage();
@@ -110,6 +114,8 @@ public class SeminarEventListForDelete extends Fragment {
         bundle.putString("eventId", eventId);
         bundle.putString("eventType",eventType);
         bundle.putString("eventName",eventName);
+        bundle.putString("startTime",startTime);
+        bundle.putString("endTime",endTime);
         activitiesFragment.setArguments(bundle);
         getFragment(activitiesFragment);
     }

@@ -92,20 +92,34 @@ public class CollegeEventActivityDetails extends Fragment {
                 registrationProgressbar.setVisibility(View.VISIBLE);
                 String ActivityName = activityName.getText().toString();
 
-                Bundle bundle = new Bundle();
-                bundle.putString("activityName", ActivityName);
-                bundle.putString("eventName", eventName.getText().toString());
-                bundle.putString("eventSchedule", activityDate.getText().toString());
-                bundle.putString("activityType", activityType.getText().toString());
-                bundle.putString("registrationFee", registrationFee.getText().toString());
-                bundle.putString("activityId", activityId);
-                bundle.putString("eventId", eventId);
-                bundle.putString("activityTime",time);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Note");
+                builder.setMessage("For Group activity details of one member is mandatory which will be verified on venue.");
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("activityName", ActivityName);
+                        bundle.putString("eventName", eventName.getText().toString());
+                        bundle.putString("eventSchedule", activityDate.getText().toString());
+                        bundle.putString("activityType", activityType.getText().toString());
+                        bundle.putString("registrationFee", registrationFee.getText().toString());
+                        bundle.putString("activityId", activityId);
+                        bundle.putString("eventId", eventId);
+                        bundle.putString("activityTime",time);
 
-                EventRegistration eventRegistration = new EventRegistration();
-                eventRegistration.setArguments(bundle);
-                registrationProgressbar.setVisibility(View.GONE);
-                getFragment(eventRegistration);
+                        EventRegistration eventRegistration = new EventRegistration();
+                        eventRegistration.setArguments(bundle);
+                        registrationProgressbar.setVisibility(View.GONE);
+                        getFragment(eventRegistration);
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.setCancelable(false);
+                dialog.show();
+
             }
         });
         return view;

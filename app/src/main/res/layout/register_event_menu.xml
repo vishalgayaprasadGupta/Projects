@@ -1,0 +1,71 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    android:padding="10dp"
+    android:background="@drawable/card_background">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:id="@+id/text_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentStart="true">
+
+            <TextView
+                android:id="@+id/event_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="Event Name"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"/>
+
+            <TextView
+                android:id="@+id/activity_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="Activity Name"
+                android:layout_marginTop="4dp"
+                android:textColor="@android:color/black"/>
+
+                <TextView
+                    android:id="@+id/activity_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:text="Date"
+                    android:textColor="@android:color/black"/>
+
+                <TextView
+                    android:id="@+id/activity_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:text="Time"
+                    android:textColor="@android:color/black"
+                    android:gravity="end"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/cancelRegistration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textSize="14sp"
+            android:padding="8dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:backgroundTint="@color/red"
+            android:textColor="@android:color/white"/>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

@@ -20,6 +20,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.fragements.SeminarEventActivity;
 import com.example.myapplication.fragements.SeminarsEvent;
 import com.example.myapplication.fragements.UserHome;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class OrganiserSeminarEvent extends Fragment {
     private RecyclerView recyclerView;
     private FirebaseFirestore db;
     private EventAdapter eventAdapter;
-    String stream,department;
+    String stream,department,collegeName;
 
     public OrganiserSeminarEvent() {
         // Required empty public constructor
@@ -55,6 +56,8 @@ public class OrganiserSeminarEvent extends Fragment {
             department = getArguments().getString("department");
             System.out.println("stream at View seminar event 1 " + stream);
             System.out.println("department at View seminar event 1 " + department);
+            collegeName = getArguments().getString("collegeName");
+            System.out.println("collegeName at View seminar event 1 " + collegeName);
         }
 
         fetchEvents();
@@ -85,29 +88,31 @@ public class OrganiserSeminarEvent extends Fragment {
         return view;
     }
     private void fetchEvents() {
-        db.collection("Seminars").whereEqualTo("eventStream", stream)
-                .whereEqualTo("eventDepartment", department).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<Event> events = task.getResult().toObjects(Event.class);
-                        List<Event> filteredEvents = new ArrayList<>();
-                        for (Event event : events) {
-                            if (!"Deleted".equals(event.getEventStatus())) {
-                                filteredEvents.add(event);
-                            }
-                        }
-                        if (filteredEvents.isEmpty()) {
-                            showNoEventDialog();
-                        } else {
-                            eventAdapter = new EventAdapter(filteredEvents);
-                            eventAdapter.setOnItemClickListener(this::onItemClick);
-                            recyclerView.setAdapter(eventAdapter);
-                        }
-                    } else {
-                        Toast.makeText(getActivity(), "Error fetching events", Toast.LENGTH_SHORT).show();
-                        getFragment(new SeminarsEvent());
-                    }
-                });
+        db.collection("Seminars").addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Toast.makeText(getActivity(), "Error fetching events", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (value == null || value.isEmpty()) {
+                showNoEventDialog();
+                return;
+            }
+            List<Event> filteredEvents = new ArrayList<>();
+            for (DocumentSnapshot doc : value.getDocuments()) {
+                Event event = doc.toObject(Event.class);
+                if (event.getCollege()!=null && event != null && !"Deleted".equals(event.getEventStatus()) &&
+                        event.getCollege().equals(collegeName.trim())) {
+                    filteredEvents.add(event);
+                }
+            }
+            if(filteredEvents.isEmpty()){
+                showNoEventDialog();
+            }else {
+                eventAdapter = new EventAdapter(filteredEvents);
+                eventAdapter.setOnItemClickListener(this::onItemClick);
+                recyclerView.setAdapter(eventAdapter);
+            }
+        });
     }
     private void showNoEventDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

@@ -25,7 +25,7 @@ public class OrganiserRequestRejectEmail {
 
     private static final String SENDGRID_API_KEY = BuildConfig.SENDGRID_API_KEY;
 
-    public static void sendOrganiserAccountApprovalEmail(String toEmail, String organiserName, String adminUID, String adminName) {
+    public static void sendOrganiserAccountRejectEmail(String toEmail, String organiserName, String adminUID, String adminName) {
         try {
             Log.d(TAG, "SendGrid API Key: " + SENDGRID_API_KEY);
 
@@ -43,7 +43,6 @@ public class OrganiserRequestRejectEmail {
                     "<p><strong>Reviewed By:</strong></p>" +
                     "<ul>" +
                     "<li><strong>Name:</strong> " + adminName + "</li>" +
-                    "<li><strong>UID:</strong> " + adminUID + "</li>" +
                     "</ul>" +
                     "<p><strong>Request Processed On: </strong> " + timestamp + "</p>" +
                     "<p>Your account access has been set to <strong>User</strong>. You can continue to log in and explore other features available on Campus Connect.</p>" +

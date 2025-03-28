@@ -15,6 +15,7 @@ import android.view.animation.Animation;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.myapplication.ManageEvents.DeleteEvent.CancelEventActivity;
 import com.example.myapplication.ManageEvents.UpdateEvent.addActivity.addCollegeActivity;
 import com.example.myapplication.ManageEvents.UpdateEvent.addActivity.addInterCollegiateActivity;
 import com.example.myapplication.ManageEvents.UpdateEvent.addActivity.addSeminarActivity;
@@ -29,10 +30,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class UpdatePage extends Fragment {
     View view;
-    String eventType,eventId,eventName;
+    String eventType,eventId,eventName,startDate,endDate;
     FirebaseFirestore db;
-    CardView addEventActivtiy,UpdateEventDetails,UpdateEventsActivity,DeleteEventActivities,DeleteEvent;
-    TextView addEventActivity,updateEventDetails,updateEventsActivities,deleteEventActivities,deleteEvent,EventName;
+    CardView addEventActivtiy,UpdateEventDetails,UpdateEventsActivity,DeleteEventActivities;
+    TextView addEventActivity,updateEventDetails,updateEventsActivities,cancelEventActivities,EventName;
     public UpdatePage() {
         // Required empty public constructor
     }
@@ -45,13 +46,12 @@ public class UpdatePage extends Fragment {
         UpdateEventDetails=view.findViewById(R.id.UpdateEventDetails);
         UpdateEventsActivity=view.findViewById(R.id.UpdateEventsActivity);
         DeleteEventActivities=view.findViewById(R.id.DeleteEventActivities);
-        DeleteEvent=view.findViewById(R.id.DeleteEvent);
 
         animateCardView(addEventActivtiy, 0);
-        animateCardView(UpdateEventDetails, 400);
-        animateCardView(UpdateEventsActivity, 800);
-        animateCardView(DeleteEventActivities, 1200);
-        animateCardView(DeleteEvent, 1600);
+        animateCardView(UpdateEventDetails, 200);
+        animateCardView(UpdateEventsActivity, 400);
+        animateCardView(DeleteEventActivities, 600);
+
 
         if(getArguments()!=null){
             eventId=getArguments().getString("eventId");
@@ -59,18 +59,21 @@ public class UpdatePage extends Fragment {
             eventName=getArguments().getString("eventName");
             Log.d("UpdatePage", "EventId on Update Page: "+eventId);
             Log.d("UpdatePage", "EventType on Update Page: "+eventType);
+            startDate=getArguments().getString("startDate");
+            Log.d("UpdatePage", "StartDate on Update Page: "+startDate);
+            endDate=getArguments().getString("endDate");
+            Log.d("UpdatePage", "EndDate on Update Page: "+endDate);
         }
         addEventActivity=view.findViewById(R.id.addEventActivity);
         updateEventDetails=view.findViewById(R.id.updateEventDetails);
         updateEventsActivities=view.findViewById(R.id.updateEventsActivity);
-        deleteEventActivities=view.findViewById(R.id.deleteEventActivities);
-        deleteEvent=view.findViewById(R.id.deleteEvent);
+        cancelEventActivities=view.findViewById(R.id.cancelEventActivities);
         EventName=view.findViewById(R.id.eventName);
         fetchEventName();
 
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
@@ -99,6 +102,8 @@ public class UpdatePage extends Fragment {
                             Bundle bundle = new Bundle();
                             bundle.putString("activityId", activityId);
                             bundle.putString("eventId",eventId);
+                            bundle.putString("startDate",startDate);
+                            bundle.putString("endDate",endDate);
                             targetFragment.setArguments(bundle);
                             getFragment(targetFragment);
                         } else {
@@ -135,6 +140,11 @@ public class UpdatePage extends Fragment {
                 bundle.putString("eventType",eventType);
                 bundle.putString("eventId",eventId);
                 bundle.putString("eventName",eventName);
+                Log.d("UpdatePage", "Event Type 3: " + eventType);
+                bundle.putString("startDate",startDate);
+                Log.d("UpdatePage", "Event Start Date " + startDate);
+                bundle.putString("endDate",endDate);
+                Log.d("UpdatePage", "Event End Date " + endDate);
                 targetFragment.setArguments(bundle);
                 getFragment(targetFragment);
             }
@@ -147,6 +157,9 @@ public class UpdatePage extends Fragment {
                 Bundle bundle=new Bundle();
                 bundle.putString("eventType",eventType);
                 bundle.putString("eventId",eventId);
+                bundle.putString("eventName",eventName);
+                bundle.putString("startDate",startDate);
+                bundle.putString("endDate",endDate);
                 targetFragment.setArguments(bundle);
                 getFragment(targetFragment);
             }
@@ -177,11 +190,28 @@ public class UpdatePage extends Fragment {
                 bundle.putString("eventType",eventType);
                 Log.d("UpdatePage", "Event Type 4: " + eventType);
                 bundle.putString("eventId",eventId);
+                bundle.putString("eventName",eventName);
+                bundle.putString("startDate",startDate);
+                bundle.putString("endDate",endDate);
                 targetFragment.setArguments(bundle);
                 getFragment(targetFragment);
             }
         });
 
+        cancelEventActivities.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment targetFragment=new CancelEventActivity();
+                Bundle bundle=new Bundle();
+                bundle.putString("eventType",eventType);
+                Log.d("UpdatePage", "Event Type 4: " + eventType);
+                bundle.putString("eventId",eventId);
+                bundle.putString("eventName",eventName);
+                bundle.putString("eventType",eventType);
+                targetFragment.setArguments(bundle);
+                getFragment(targetFragment);
+            }
+        });
 
         return view;
     }

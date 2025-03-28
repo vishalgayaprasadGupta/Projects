@@ -65,12 +65,6 @@ public class OrganiserCollegeEventListForDelete extends Fragment {
                     @Override
                     public void handleOnBackPressed() {
                         getActivity().getSupportFragmentManager().popBackStack();
-                        ManageOrganiserEvents activitiesFragment = new ManageOrganiserEvents();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("stream", stream);
-                        bundle.putString("department", department);
-                        activitiesFragment.setArguments(bundle);
-                        getFragment(activitiesFragment);
                     }
                 });
         return view;
@@ -134,7 +128,7 @@ public class OrganiserCollegeEventListForDelete extends Fragment {
                 .commit();
     }
 
-    public void onItemClick(String eventId,String eventType,String eventName) {
+    public void onItemClick(String eventId,String eventType,String eventName,String startDate,String endDate) {
         db.collection("College Events").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -148,6 +142,8 @@ public class OrganiserCollegeEventListForDelete extends Fragment {
                             bundle.putString("eventName", eventName);
                             bundle.putString("stream", stream);
                             bundle.putString("department", department);
+                            bundle.putString("startDate", startDate);
+                            bundle.putString("endDate", endDate);
                             activitiesFragment.setArguments(bundle);
                             getFragment(activitiesFragment);
                         }else if("Closed".equals(status)){

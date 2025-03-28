@@ -40,9 +40,10 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
         }else if(status.equals("Cancel")){
             holder.Status.setText("Event Canceled");
         }
+        holder.schedule.setText(event.getStartDate()+" - "+event.getEndDate());
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onItemClick(event.getEventId(),event.getEventType(),event.getName());
+                listener.onItemClick(event.getEventId(),event.getEventType(),event.getName(),event.getStartDate(),event.getEndDate());
             }
         });
     }
@@ -57,15 +58,16 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
-        public TextView eventName,Status;
+        public TextView eventName,Status,schedule;
         public EventViewHolder(View itemView) {
             super(itemView);
             eventName = itemView.findViewById(R.id.eventName);
             Status=itemView.findViewById(R.id.status);
+            schedule=itemView.findViewById(R.id.eventDate);
         }
     }
 
     public interface OnItemClickListener {
-        void onItemClick(String eventId,String eventType,String Name);
+        void onItemClick(String eventId,String eventType,String Name,String startDate,String endDate);
     }
 }

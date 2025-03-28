@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
+import com.example.myapplication.eventOrganiser.ManageOrganiser.ManageEventOrganiser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class PendingOrganisersRequest extends Fragment {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                getFragment(new ManageEventOrganiser());
+                getActivity().getSupportFragmentManager().popBackStack();
                 dialog.dismiss();
             }
         });

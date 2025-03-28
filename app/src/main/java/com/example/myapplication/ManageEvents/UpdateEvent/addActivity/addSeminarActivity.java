@@ -16,21 +16,20 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.myapplication.ManageEvents.InterCollege;
 import com.example.myapplication.ManageEvents.UpdateEvent.UpdatePage;
 import com.example.myapplication.adminfragements.AdminHome;
 import com.example.myapplication.R;
-import com.example.myapplication.fragements.Seminar;
+import com.example.myapplication.ManageEvents.Seminar;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class addSeminarActivity extends Fragment {
 
     View view;
     FirebaseFirestore db;
-    TextView seminarTitle,seminarDescription,seminarDate,seminarVenue,seminarDuration,speakerName,speakerBio,registrationFeeSeminar,seminarAgenda,requirments,availability;
+    TextView seminarTitle,seminarDescription,seminarDate,seminarVenue,speakerName,speakerBio,registrationFeeSeminar,seminarAgenda,requirments,availability;
     Button addEventButton;
     private Spinner  startTimeSpinner, endTimeSpinner;
     String activityType,EventName="",selectedStartTime, selectedEndTime;
@@ -87,7 +86,11 @@ public class addSeminarActivity extends Fragment {
             addEventDetails.setVisibility(View.VISIBLE);
             addEventButton.setEnabled(false);
             addEventButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#808080")));
-            validateAndAddDetails();
+            if(validateFields()) {
+                validateAndAddDetails();
+            }else{
+                resetButtonState();
+            }
         });
 
         seminarDate.setOnClickListener(v -> openDatePicker());
@@ -100,7 +103,6 @@ public class addSeminarActivity extends Fragment {
         seminarDescription=view.findViewById(R.id.seminarDescription);
         seminarDate=view.findViewById(R.id.seminarDate);
         seminarVenue=view.findViewById(R.id.seminarVenue);
-        seminarDuration=view.findViewById(R.id.seminarDuration);
         speakerName=view.findViewById(R.id.speakerName);
         speakerBio=view.findViewById(R.id.speakerBio);
         registrationFeeSeminar=view.findViewById(R.id.registrationFees);
@@ -118,116 +120,171 @@ public class addSeminarActivity extends Fragment {
     }
 
     private void setupTimeSpinners() {
+        ArrayAdapter<CharSequence> startAdapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.start_time_slots,
+                android.R.layout.simple_spinner_dropdown_item
+        );
+        startTimeSpinner.setAdapter(startAdapter);
+
         startTimeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedStartTime = parent.getItemAtPosition(position).toString();
                 if (selectedStartTime.equals("Select Start Time")) {
                     selectedStartTime = "";
+                    return;
                 }
+                filterEndTimeOptions();
             }
+
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+        setupEndTimeSpinner();
+    }
+
+    private void setupEndTimeSpinner() {
+        ArrayAdapter<CharSequence> endAdapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.end_time_slots,
+                android.R.layout.simple_spinner_dropdown_item
+        );
+        endTimeSpinner.setAdapter(endAdapter);
         endTimeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedEndTime = parent.getItemAtPosition(position).toString();
-                if (selectedEndTime.equals("Select End Time")) {
-                    selectedEndTime = "";
-                }
+                Log.d("TimeSelection", "Selected End Time: " + selectedEndTime);
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                selectedEndTime = "";
             }
         });
     }
 
-    private void openDatePicker() {
-        final Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+    private void filterEndTimeOptions() {
+        if (TextUtils.isEmpty(selectedStartTime)) return;
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
-                (view, selectedYear, selectedMonth, selectedDay) -> {
-                    Calendar selectedDate = Calendar.getInstance();
-                    selectedDate.set(selectedYear, selectedMonth, selectedDay);
+        List<String> allTimes = Arrays.asList(getResources().getStringArray(R.array.end_time_slots));
+        List<String> filteredTimes = new ArrayList<>();
 
-                    String selectedDateString = formatDate(selectedDay, selectedMonth + 1, selectedYear);
-                    seminarDate.setText(selectedDateString);
-                    loadTimeSlots(selectedDateString);
-                }, year, month, day);
-        datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
-        calendar.add(Calendar.MONTH, 2);
-        datePickerDialog.getDatePicker().setMaxDate(calendar.getTimeInMillis());
-        datePickerDialog.show();
+        int startTimeMinutes = convertTimeToMinutes(selectedStartTime);
+
+        for (String time : allTimes) {
+            if (!time.equals("Select End Time") && convertTimeToMinutes(time) > startTimeMinutes) {
+                filteredTimes.add(time);
+            }
+        }
+
+        ArrayAdapter<String> filteredAdapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_spinner_dropdown_item, filteredTimes);
+        endTimeSpinner.setAdapter(filteredAdapter);
     }
 
+
+    private void openDatePicker() {
+        if (getArguments() == null) {
+            Toast.makeText(getActivity(), "Date range not provided", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String startDateStr = getArguments().getString("startDate", "");
+        String endDateStr = getArguments().getString("endDate", "");
+
+        Calendar minCalendar = parseDate(startDateStr);
+        Calendar maxCalendar = parseDate(endDateStr);
+
+        if (minCalendar == null || maxCalendar == null) {
+            Toast.makeText(getActivity(), "Invalid date format", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final Calendar currentCalendar = Calendar.getInstance();
+        int year = currentCalendar.get(Calendar.YEAR);
+        int month = currentCalendar.get(Calendar.MONTH);
+        int day = currentCalendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                getActivity(),
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    String selectedDateString = formatDate(selectedDay, selectedMonth + 1, selectedYear);
+                    seminarDate.setText(selectedDateString);
+                    setupTimeSpinners();
+                },
+                year, month, day
+        );
+
+        datePickerDialog.getDatePicker().setMinDate(minCalendar.getTimeInMillis());
+        datePickerDialog.getDatePicker().setMaxDate(maxCalendar.getTimeInMillis());
+        datePickerDialog.show();
+    }
     private String formatDate(int day, int month, int year) {
         return String.format("%02d/%02d/%d", day, month, year);
     }
+    private Calendar parseDate(String dateStr) {
+        try {
+            if (TextUtils.isEmpty(dateStr)) {
+                Log.e("DateParseError", "Date string is empty");
+                return null;
+            }
+            String[] parts = dateStr.split("/");
 
-    private void loadTimeSlots(String selectedDate) {
-        Log.d("addEvent", "Event Name (Passed): " + EventName);
-        db.collection("EventActivities")
-                .whereEqualTo("eventName", EventName)
-                .whereEqualTo("seminarDate", selectedDate)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<String> bookedSlots = new ArrayList<>();
-                        for (DocumentSnapshot doc : task.getResult()) {
-                            String startTime = doc.getString("activityStartTime");
-                            String endTime = doc.getString("activityEndTime");
-                            if (startTime != null && endTime != null) {
-                                bookedSlots.add(startTime + " - " + endTime);
-                            }
-                        }
-                        db.collection("TimeSlots").document("Slots").get()
-                                .addOnCompleteListener(slotTask -> {
-                                    if (slotTask.isSuccessful()) {
-                                        DocumentSnapshot doc = slotTask.getResult();
-                                        if (doc.exists()) {
-                                            List<String> allSlots = (List<String>) doc.get("SathayeCollege");
+            if (parts.length != 3) {
+                Log.e("DateParseError", "Invalid date format: " + dateStr);
+                return null;
+            }
 
-                                            if (allSlots != null) {
-                                                allSlots.add(0, "Select Start Time");
-                                                List<String> availableSlots = new ArrayList<>(allSlots);
-                                                availableSlots.removeAll(bookedSlots);
+            int day = Integer.parseInt(parts[0]);
+            int month = Integer.parseInt(parts[1]) - 1;
+            int year = Integer.parseInt(parts[2]);
 
-                                                ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(),
-                                                        android.R.layout.simple_spinner_item, availableSlots);
-                                                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                                startTimeSpinner.setAdapter(adapter);
-                                                endTimeSpinner.setAdapter(adapter);
-                                            }
-                                        }
-                                    }
-                                });
-                    } else {
-                        Toast.makeText(requireActivity(), "Failed to fetch booked slots!", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year, month, day);
+            return calendar;
+        } catch (Exception e) {
+            Log.e("DateParseError", "Error parsing date: " + dateStr, e);
+            return null;
+        }
     }
 
-    private void validateAndAddDetails() {
-        String date = seminarDate.getText().toString().trim();
+    private boolean validateFields() {
+        if (isEmptyOrSpaces(seminarTitle) ||
+                isEmptyOrSpaces(seminarDescription) ||
+                isEmptyOrSpaces(seminarDate) ||
+                isEmptyOrSpaces(seminarVenue) ||
+                isEmptyOrSpaces(speakerName) ||
+                isEmptyOrSpaces(speakerBio) ||
+                isEmptyOrSpaces(seminarAgenda) ||
+                isEmptyOrSpaces(requirments) ||
+                isEmptyOrSpaces(availability) ||
+                isEmptyOrSpaces(registrationFeeSeminar)) {
+
+            Toast.makeText(getActivity(), "Please fill all fields correctly", Toast.LENGTH_SHORT).show();
+            return false;
+        }
 
         if (TextUtils.isEmpty(selectedStartTime) || TextUtils.isEmpty(selectedEndTime)) {
             Toast.makeText(getActivity(), "Please select both start and end times", Toast.LENGTH_SHORT).show();
-            resetButtonState();
-            return;
+            return false;
         }
 
         if (selectedStartTime.equals(selectedEndTime)) {
             Toast.makeText(getActivity(), "Start and end times cannot be the same", Toast.LENGTH_SHORT).show();
-            resetButtonState();
-            return;
+            return false;
         }
+
+        return true;
+    }
+    private boolean isEmptyOrSpaces(TextView textView) {
+        String text = textView.getText().toString().trim();
+        return TextUtils.isEmpty(text);
+    }
+
+    private void validateAndAddDetails() {
+        String date = seminarDate.getText().toString().trim();
 
         db.collection("EventActivities")
                 .whereEqualTo("eventName", EventName)
@@ -269,11 +326,28 @@ public class addSeminarActivity extends Fragment {
     }
 
     private int convertTimeToMinutes(String time) {
-        String[] parts = time.split(":");
-        int hours = Integer.parseInt(parts[0]);
-        int minutes = Integer.parseInt(parts[1]);
-        return hours * 60 + minutes;
+        try {
+            time = time.toLowerCase().trim();
+            boolean isPM = time.contains("pm");
+            boolean isAM = time.contains("am");
+            time = time.replace("am", "").replace("pm", "").trim();
+
+            String[] parts = time.split(":");
+            int hours = Integer.parseInt(parts[0].trim());
+            int minutes = Integer.parseInt(parts[1].trim());
+
+            if (isPM && hours != 12) {
+                hours += 12;
+            } else if (isAM && hours == 12) {
+                hours = 0;
+            }
+            return hours * 60 + minutes;
+        } catch (Exception e) {
+            Log.e("TimeParseError", "Error parsing time: " + time, e);
+            return -1;
+        }
     }
+
 
     private void addDetails() {
         String eventId = "";
@@ -289,28 +363,29 @@ public class addSeminarActivity extends Fragment {
         String description = seminarDescription.getText().toString();
         String date = seminarDate.getText().toString();
         String venue = seminarVenue.getText().toString();
-        String Duration=seminarDuration.getText().toString();
         String speaker=speakerName.getText().toString();
         String bio=speakerBio.getText().toString();
         String agenda = seminarAgenda.getText().toString();
         String requirement=requirments.getText().toString();
         String availability=this.availability.getText().toString();
         String registrationFee = registrationFeeSeminar.getText().toString();
+        String status="Active";
 
         if(name.isEmpty()||description.isEmpty()||date.isEmpty()||
-                venue.isEmpty()||Duration.isEmpty()||speaker.isEmpty()||
+                venue.isEmpty()||speaker.isEmpty()||
                 bio.isEmpty()||agenda.isEmpty()||requirement.isEmpty()||
                 availability.isEmpty()||registrationFee.isEmpty()){
             Toast.makeText(getActivity(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
             return;
         }
         Log.d("addEvent", "Event ID (Passed): " + eventId);
-        Seminar activity = new Seminar(EventName,name, description, date, venue, Duration,speaker,bio,registrationFee,agenda,eventId,eventType,requirement,availability,selectedStartTime,selectedEndTime);
+        Seminar activity = new Seminar(EventName,name, description, date, venue,speaker,bio,registrationFee,agenda,eventId,eventType,requirement,availability,selectedStartTime,selectedEndTime,status);
 
         db.collection("EventActivities").add(activity)
                 .addOnSuccessListener(documentReference -> documentReference.update("activityId", documentReference.getId())
                         .addOnSuccessListener(aVoid -> {
                             resetButtonState();
+                            Toast.makeText(getActivity(), "Activity added successfully", Toast.LENGTH_SHORT).show();
                             getFragment(new AdminHome());
                         }))
                 .addOnFailureListener(e -> {
@@ -322,7 +397,7 @@ public class addSeminarActivity extends Fragment {
     private void resetButtonState() {
         addEventDetails.setVisibility(View.INVISIBLE);
         addEventButton.setEnabled(true);
-        addEventButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF6200EE")));
+        addEventButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF018786")));
     }
 
     public void getFragment(Fragment fragment) {

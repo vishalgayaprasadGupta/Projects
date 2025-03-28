@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".RegistrationPage"
-    android:background="#EDEDED">
+    android:background="@drawable/bg">
 
     <!-- CardView for modern styling -->
 
@@ -32,7 +32,7 @@
         android:layout_margin="16dp"
         app:cardCornerRadius="20dp"
         app:cardElevation="10dp"
-        android:background="@color/white"
+        android:background="@color/card_background"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -98,18 +98,21 @@
             </RadioGroup>
 
 
-            <!-- Input Field: College -->
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/CollegeField"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="College">
+                android:layout_height="48dp"
+                android:layout_marginTop="10dp"
+                android:hint="Stream"
+                android:visibility="visible">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editCollege"
+                <Spinner
+                    android:id="@+id/collegeSpinner"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="#E5E5E5"
-                    android:inputType="textPersonName" />
+                    android:layout_height="50dp"
+                    android:background="#E5E5E5"
+                    android:spinnerMode="dropdown"
+                    android:textColor="@color/black" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Input Field: Name -->
@@ -145,7 +148,6 @@
                     android:inputType="phone" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Input Field: Password -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -155,6 +157,21 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#E5E5E5"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="Confirm Password"
+                app:endIconMode="password_toggle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editConfirmPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="#E5E5E5"

@@ -1,17 +1,12 @@
 package com.example.myapplication.ManageUser;
 
-import android.content.ContentValues;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,25 +19,9 @@ import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.SendGridPackage.PdfExporter;
-import com.example.myapplication.adminfragements.AdminHome;
-import com.example.myapplication.manageEvents;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.itextpdf.kernel.colors.ColorConstants;
-import com.itextpdf.kernel.geom.PageSize;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.borders.SolidBorder;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.properties.TextAlignment;
-import com.itextpdf.layout.properties.UnitValue;
-import com.itextpdf.layout.properties.VerticalAlignment;
 
-import java.io.File;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -66,10 +45,10 @@ public class manageUser extends Fragment {
         Export=view.findViewById(R.id.Export);
 
         animateCardView(AddUser,0);
-        animateCardView(UpdateUser,300);
-        animateCardView(DeactivateUser,600);
-        animateCardView(Activate,900);
-        animateCardView(Export,1200);
+        animateCardView(UpdateUser,200);
+        animateCardView(DeactivateUser,400);
+        animateCardView(Activate,600);
+        animateCardView(Export,800);
 
         addUser=view.findViewById(R.id.addUser);
         updateUser=view.findViewById(R.id.updateUser);

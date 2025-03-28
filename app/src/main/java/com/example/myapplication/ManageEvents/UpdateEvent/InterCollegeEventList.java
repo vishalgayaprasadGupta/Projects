@@ -102,7 +102,7 @@ public class InterCollegeEventList extends Fragment {
                 .commit();
     }
 
-    public void onItemClick(String eventId,String eventType, String eventName) {
+    public void onItemClick(String eventId,String eventType, String eventName,String startDate,String endDate) {
         db.collection("InterCollegiate Events").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -114,6 +114,8 @@ public class InterCollegeEventList extends Fragment {
                             bundle.putString("eventId", eventId);
                             bundle.putString("eventType", eventType);
                             bundle.putString("eventName", eventName);
+                            bundle.putString("startDate", startDate);
+                            bundle.putString("endDate", endDate);
                             activitiesFragment.setArguments(bundle);
                             getFragment(activitiesFragment);
                         }else if("Cancel".equals(status)){

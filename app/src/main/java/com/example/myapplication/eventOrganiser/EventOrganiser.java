@@ -7,14 +7,13 @@ public class EventOrganiser {
     private String email;
     private String contact;
     private String college;
-    private String password;
     private String stream;
     private String department;
     private String isVerificationEmailsend;
     private String isEmailverified,uid;
 
     public EventOrganiser(String uid,String status, String role, String name, String gender, String email,
-                          String contact, String college, String password, String stream, String department,String isVerificationEmailsend,String isEmailverified) {
+                          String contact, String college, String stream, String department,String isVerificationEmailsend,String isEmailverified) {
         this.status = status;
         this.role = role;
         this.name = name;
@@ -22,7 +21,6 @@ public class EventOrganiser {
         this.email = email;
         this.contact = contact;
         this.college = college;
-        this.password = password;
         this.stream = stream;
         this.department = department;
         this.isVerificationEmailsend=isVerificationEmailsend;
@@ -108,14 +106,6 @@ public class EventOrganiser {
 
     public void setCollege(String college) {
         this.college = college;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getStream() {

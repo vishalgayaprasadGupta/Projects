@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.SendGridPackage.sendAccountDeActivatedEmail;
 import com.example.myapplication.User; // Assuming you have a User class
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -58,7 +59,27 @@ public class ActivateUser extends Fragment {
         fetchInactiveUsers();
 
         adapter.setOnItemClickListener((uid, position) -> {
-            activateUser(uid, position);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Confirm");
+            builder.setMessage(" Confirm User Activation");
+
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    activateUser(uid, position);
+                    dialog.dismiss();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.show();
+
         });
 
         return view;
@@ -87,16 +108,18 @@ public class ActivateUser extends Fragment {
         firestore.collection("User").document(uid)
                 .update("status", "Active")
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getActivity(), "User activated successfully!", Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(requireContext(), "User activated successfully!", Toast.LENGTH_SHORT).show();
                     userList.get(position).setStatus("Active");
                     adapter.notifyItemChanged(position);
-
-                    redirectToFragment(new manageUser());
+                    back();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getActivity(), "Failed to activate user", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to activate user", Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    public void back(){
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     private void showNoUserDialog() {

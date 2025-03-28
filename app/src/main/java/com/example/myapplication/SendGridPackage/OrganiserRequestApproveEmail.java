@@ -42,7 +42,6 @@ public class OrganiserRequestApproveEmail {
                     "<p><strong>Approved By:</strong></p>" +
                     "<ul>" +
                     "<li><strong>Name:</strong> " + adminName + "</li>" +
-                    "<li><strong>UID:</strong> " + adminUID + "</li>" +
                     "</ul>" +
                     "<p><strong>Request Processed On: </strong> " + timestamp + "</p>" +
                     "<p>You now have access to all the tools and features needed to plan and manage events successfully on Campus Connect. Welcome aboard!</p>" +

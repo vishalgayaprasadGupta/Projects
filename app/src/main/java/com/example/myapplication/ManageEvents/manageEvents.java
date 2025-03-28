@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.ManageEvents;
 
 import android.os.Bundle;
 
@@ -13,11 +13,10 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.TextView;
 
-import com.example.myapplication.ManageEvents.AddEvent;
 import com.example.myapplication.ManageEvents.DeleteEvent.EventCategory;
-import com.example.myapplication.adminfragements.AdminHome;
+import com.example.myapplication.R;
 import com.example.myapplication.ManageEvents.UpdateEvent.updateEventDetails.UpdateEventDetails;
-import com.example.myapplication.fragements.UserHome;
+import com.example.myapplication.fragements.ViewEventCategory;
 
 public class manageEvents extends Fragment {
     TextView viewEvents,addCollegeEvents,updateEvent,deleteEvent;
@@ -37,9 +36,9 @@ public class manageEvents extends Fragment {
         DeleteEvents=view.findViewById(R.id.DeleteEvents);
 
         animateCardView(ViewEvents, 0);
-        animateCardView(AddCollegeEvents, 400);
-        animateCardView(UpdateEvents, 800);
-        animateCardView(DeleteEvents, 1200);
+        animateCardView(AddCollegeEvents, 200);
+        animateCardView(UpdateEvents, 400);
+        animateCardView(DeleteEvents, 600);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
@@ -56,7 +55,7 @@ public class manageEvents extends Fragment {
         viewEvents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragment(new UserHome());
+                getFragment(new ViewEventCategory());
             }
         });
         updateEvent=view.findViewById(R.id.updateEvents);
@@ -110,6 +109,7 @@ public class manageEvents extends Fragment {
 
         cardView.startAnimation(fadeIn);
     }
+
         public void getFragment(Fragment fragment){
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragement_layout, fragment)

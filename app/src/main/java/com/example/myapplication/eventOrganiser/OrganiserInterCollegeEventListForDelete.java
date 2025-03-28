@@ -62,12 +62,6 @@ public class OrganiserInterCollegeEventListForDelete extends Fragment {
                     @Override
                     public void handleOnBackPressed() {
                         getActivity().getSupportFragmentManager().popBackStack();
-                        ManageOrganiserEvents activitiesFragment = new ManageOrganiserEvents();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("stream", stream);
-                        bundle.putString("department", department);
-                        activitiesFragment.setArguments(bundle);
-                        getFragment(activitiesFragment);
                     }
                 });
         return view;
@@ -84,7 +78,7 @@ public class OrganiserInterCollegeEventListForDelete extends Fragment {
                             showNoEventDialog();
                         } else {
                             eventAdapter = new EventListAdapter(events);
-                            eventAdapter.setOnItemClickListener(this::onItemClick); // Re-attach the listener
+                            eventAdapter.setOnItemClickListener(this::onItemClick);
                             recyclerView.setAdapter(eventAdapter);
                         }
                     } else {
@@ -131,7 +125,7 @@ public class OrganiserInterCollegeEventListForDelete extends Fragment {
                 .commit();
     }
 
-    public void onItemClick(String eventId,String eventType,String eventName) {
+    public void onItemClick(String eventId,String eventType,String eventName,String startDate,String endDate) {
         db.collection("InterCollege Events").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -143,6 +137,10 @@ public class OrganiserInterCollegeEventListForDelete extends Fragment {
                             bundle.putString("eventId", eventId);
                             bundle.putString("eventType", eventType);
                             bundle.putString("eventName", eventName);
+                            bundle.putString("stream", stream);
+                            bundle.putString("department", department);
+                            bundle.putString("startDate", startDate);
+                            bundle.putString("endDate", endDate);
                             activitiesFragment.setArguments(bundle);
                             getFragment(activitiesFragment);
                         }else if("Closed".equals(status)){

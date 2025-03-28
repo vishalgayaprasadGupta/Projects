@@ -63,7 +63,7 @@ public class OrganiserWorkshopEventListForDelete extends Fragment {
                     @Override
                     public void handleOnBackPressed() {
                         getActivity().getSupportFragmentManager().popBackStack();
-                        ManageOrganiserEvents activitiesFragment = new ManageOrganiserEvents();
+                        OrganiserDeleteEventCategory activitiesFragment = new OrganiserDeleteEventCategory();
                         Bundle bundle = new Bundle();
                         bundle.putString("stream", stream);
                         bundle.putString("department", department);
@@ -132,7 +132,7 @@ public class OrganiserWorkshopEventListForDelete extends Fragment {
                 .commit();
     }
 
-    public void onItemClick(String eventId,String eventType,String eventName) {
+    public void onItemClick(String eventId,String eventType,String eventName,String startDate,String endDate) {
         db.collection("Workshops").document(eventId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -144,6 +144,10 @@ public class OrganiserWorkshopEventListForDelete extends Fragment {
                             bundle.putString("eventId", eventId);
                             bundle.putString("eventType", eventType);
                             bundle.putString("eventName", eventName);
+                            bundle.putString("stream", stream);
+                            bundle.putString("department", department);
+                            bundle.putString("startDate", startDate);
+                            bundle.putString("endDate", endDate);
                             activitiesFragment.setArguments(bundle);
                             getFragment(activitiesFragment);
                         }else if("Closed".equals(status)){

@@ -1,8 +1,9 @@
-package com.example.myapplication.fragements;
+package com.example.myapplication.ManageEvents;
 
+import com.google.firebase.firestore.Exclude;
 public class Seminar {
     String activityName,activtyDescription,activtiyDate,activtiyVenue,availability,eventId,activtiyDuration,
-            eventName,selectedStartTime,selectedEndTime;
+            eventName,selectedStartTime,selectedEndTime,status,id;
     String speakerName,speakerBio,registrationFee,seminarAgenda,activityId,eventType,specialRequirements,activityType,activityTime;
 
     public String getActivityId() {
@@ -21,15 +22,14 @@ public class Seminar {
         this.eventType = eventType;
     }
 
-    public Seminar(String eventName,String activityName, String activtyDescription, String activtiyDate, String activtiyVenue,
-                   String activtiyDuration, String speakerName, String speakerBio, String registrationFee,
+    public Seminar(String eventName,String activityName, String activtyDescription, String activtiyDate, String activtiyVenue
+                 , String speakerName, String speakerBio, String registrationFee,
                    String seminarAgenda,String eventId,String eventType,String specialRequirements,String availability
-                  ,String activityStartTime,String activityEndTime) {
+                  ,String activityStartTime,String activityEndTime,String status) {
         this.activityName = activityName;
         this.activtyDescription = activtyDescription;
         this.activtiyDate = activtiyDate;
         this.activtiyVenue = activtiyVenue;
-        this.activtiyDuration = activtiyDuration;
         this.speakerName = speakerName;
         this.speakerBio = speakerBio;
         this.registrationFee = registrationFee;
@@ -41,8 +41,24 @@ public class Seminar {
         this.eventName=eventName;
         this.selectedStartTime=activityStartTime;
         this.selectedEndTime=activityEndTime;
+        this.status=status;
     }
     public Seminar() {
+    }
+
+    @Exclude
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getActivityStartTime() {
@@ -51,13 +67,14 @@ public class Seminar {
     public void setActivityStartTime(String activityStartTime) {
         this.selectedStartTime = activityStartTime;
     }
+
     public String getEventName() {
         return eventName;
     }
-
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
+
     public String getActivityEndTime() {
         return selectedEndTime;
     }
@@ -119,14 +136,6 @@ public class Seminar {
 
     public void setSeminarVenue(String activtiyVenue) {
         this.activtiyVenue = activtiyVenue;
-    }
-
-    public String getSeminarDuration() {
-        return activtiyDuration;
-    }
-
-    public void setSeminarDuration(String activtiyDuration) {
-        this.activtiyDuration = activtiyDuration;
     }
 
     public String getSpeakerName() {

@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.myapplication.Event;
 import com.example.myapplication.Adapter.EventAdapter;
 import com.example.myapplication.R;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -29,8 +30,7 @@ public class WorkshopsEvents extends Fragment {
     private RecyclerView recyclerView;
     private FirebaseFirestore db;
     private EventAdapter eventAdapter;
-    private Button explore;
-
+    String collegeName;
     public WorkshopsEvents() {
         // Required empty public constructor
     }
@@ -46,6 +46,9 @@ public class WorkshopsEvents extends Fragment {
         eventAdapter.setOnItemClickListener(this::onItemClick);
         recyclerView.setAdapter(eventAdapter);
 
+        if(getArguments()!=null) {
+            collegeName = getArguments().getString("collegeName");
+        }
         fetchEvents();
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
@@ -62,37 +65,47 @@ public class WorkshopsEvents extends Fragment {
     }
 
     private void fetchEvents() {
-        db.collection("Workshops").get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<Event> events = task.getResult().toObjects(Event.class);
-                        List<Event> filteredEvents = new ArrayList<>();
-                        for (Event event : events) {
-                            if (!"Deleted".equals(event.getEventStatus())) {
-                                filteredEvents.add(event);
-                            }
-                        }
-                        if (filteredEvents.isEmpty()) {
-                            showNoEventDialog();
-                        } else {
-                            eventAdapter = new EventAdapter(filteredEvents);
-                            eventAdapter.setOnItemClickListener(this::onItemClick);
-                            recyclerView.setAdapter(eventAdapter);
-                        }
-                    } else {
-                        Toast.makeText(getActivity(), "Error fetching events", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        db.collection("Workshops").addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Toast.makeText(getActivity(), "Error fetching events", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (value == null || value.isEmpty()) {
+                showNoEventDialog();
+                return;
+            }
+            List<Event> filteredEvents = new ArrayList<>();
+            for (DocumentSnapshot doc : value.getDocuments()) {
+                Event event = doc.toObject(Event.class);
+                if (event.getCollege()!=null && event != null && !"Deleted".equals(event.getEventStatus()) &&
+                        event.getCollege().equals(collegeName.trim())) {
+                    filteredEvents.add(event);
+                }
+            }
+
+            if(filteredEvents.isEmpty()){
+                showNoEventDialog();
+            }else {
+                eventAdapter = new EventAdapter(filteredEvents);
+                eventAdapter.setOnItemClickListener(this::onItemClick);
+                recyclerView.setAdapter(eventAdapter);
+            }
+        });
     }
+
     private void showNoEventDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("No Event");
         builder.setMessage("No activity or event is there");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                getFragment(new UserHome());
+                if(getActivity()!=null){
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }else{
+                    getFragment(new ViewEventCategory());
+                }
             }
         });
         AlertDialog dialog = builder.create();
@@ -100,7 +113,7 @@ public class WorkshopsEvents extends Fragment {
         dialog.show();
     }
     public void getFragment(Fragment fragment) {
-        requireActivity().getSupportFragmentManager()
+        getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragement_layout, fragment)
                 .addToBackStack(null)

@@ -1,7 +1,5 @@
-package com.example.myapplication.eventOrganiser;
+package com.example.myapplication.eventOrganiser.ManageOrganiser;
 
-import android.content.ContentValues;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -10,8 +8,6 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,35 +20,20 @@ import android.widget.Toast;
 import com.example.myapplication.R;
 import com.example.myapplication.SendGridPackage.PdfExporter;
 import com.example.myapplication.adminfragements.AdminHome;
+import com.example.myapplication.eventOrganiser.PendingOrganisersRequest;
+import com.example.myapplication.eventOrganiser.addEventOrganiser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.itextpdf.kernel.colors.ColorConstants;
-import com.itextpdf.kernel.geom.PageSize;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.borders.SolidBorder;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.properties.TextAlignment;
-import com.itextpdf.layout.properties.UnitValue;
-import com.itextpdf.layout.properties.VerticalAlignment;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 public class ManageEventOrganiser extends Fragment {
     View view;
     CardView AddEventOrganiser,VerifyRequest,UpdateDetails,DeleteEventOrganiser,ExportOrganiser;
-    TextView addOrganiser,exportOrganiser,pendingRequest,deleteOrganiser,updateOrganiserDetails;
+    TextView addOrganiser,exportOrganiser,pendingRequest,restrictOrganiser,updateOrganiserDetails;
     PdfExporter pdfExporter = new PdfExporter(getContext());
     public ManageEventOrganiser() {
         // Required empty public constructor
@@ -69,12 +50,12 @@ public class ManageEventOrganiser extends Fragment {
         ExportOrganiser=view.findViewById(R.id.ExportOrganiser);
 
         exportOrganiser=view.findViewById(R.id.exportOrganiserDetails);
-        deleteOrganiser=view.findViewById(R.id.deleteOrganiser);
+        restrictOrganiser=view.findViewById(R.id.restrictOrganiser);
         updateOrganiserDetails=view.findViewById(R.id.updateOrganiserDetails);
 
         animateCardView(AddEventOrganiser,400);
-        animateCardView(VerifyRequest,800);
-        animateCardView(UpdateDetails,1200);
+        animateCardView(UpdateDetails,800);
+        animateCardView(VerifyRequest,1200);
         animateCardView(DeleteEventOrganiser,1600);
         animateCardView(ExportOrganiser,2000);
 
@@ -83,9 +64,7 @@ public class ManageEventOrganiser extends Fragment {
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                        fragmentManager.popBackStack();
-                        getFragment(new AdminHome());
+                        getActivity().getSupportFragmentManager().popBackStack();
                     }
                 });
 
@@ -111,15 +90,17 @@ public class ManageEventOrganiser extends Fragment {
             }
         });
 
-        deleteOrganiser.setOnClickListener(new View.OnClickListener() {
+        restrictOrganiser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getFragment(new RestrictOrganiserList());
             }
         });
 
         updateOrganiserDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getFragment(new UpdateOrganiserList());
             }
         });
 

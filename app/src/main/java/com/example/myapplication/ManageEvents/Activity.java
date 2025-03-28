@@ -1,15 +1,17 @@
 package com.example.myapplication.ManageEvents;
 
+import com.google.firebase.firestore.Exclude;
+
 public class Activity {
-    String activtiyName, activtiyDescription, activtiyVenue, activityDate, activtiyRules, availability, eventId,
-            activityId, registrationFee, eventType, activityType, eventName, activityStartTime,activityEndTime;
+    String id,activtiyName, activtiyDescription, activtiyVenue, activityDate, activtiyRules, availability, eventId,
+            activityId, registrationFee, eventType, activityType, eventName, activityStartTime,activityEndTime,status;
 
     public Activity() {
     }
 
     public Activity(String eventName,String activtiyName, String activtiyDescription, String activtiyVenue, String activityDate,
                     String activtiyRules, String availability, String eventId,String registrationFee,String eventType,
-                    String activityType, String activityStartTime, String activityEndTime) {
+                    String activityType, String activityStartTime, String activityEndTime,String Status) {
         this.activtiyName = activtiyName;
         this.activtiyDescription = activtiyDescription;
         this.activtiyVenue = activtiyVenue;
@@ -24,6 +26,15 @@ public class Activity {
         this.eventName = eventName;
         this.activityStartTime = activityStartTime;
         this.activityEndTime = activityEndTime;
+        this.status = Status;
+    }
+
+    @Exclude
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getActivtiyName() {
@@ -31,6 +42,13 @@ public class Activity {
     }
     public void setActivtiyName(String activtiyName) {
         this.activtiyName = activtiyName;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getActivtiyDescription() {

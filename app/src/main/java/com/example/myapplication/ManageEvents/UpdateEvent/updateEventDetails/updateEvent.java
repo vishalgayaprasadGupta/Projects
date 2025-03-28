@@ -27,7 +27,6 @@ public class updateEvent extends Fragment {
     private Spinner mySpinner;
     private Button updateEventButton;
     private ProgressBar progressBar;
-
     FirebaseFirestore firestore;
 
     public updateEvent() {
@@ -123,19 +122,22 @@ public class updateEvent extends Fragment {
                         "name", updatedName
                 )
                 .addOnSuccessListener(aVoid -> {
-                    progressBar.setVisibility(View.INVISIBLE);
+                    progressBar.setVisibility(View.GONE);
                     updateEventButton.setVisibility(View.VISIBLE);
-
                     Toast.makeText(getContext(), "Event details updated successfully", Toast.LENGTH_SHORT).show();
+                    onComplete();
                 })
                 .addOnFailureListener(e -> {
-                    progressBar.setVisibility(View.INVISIBLE);
+                    progressBar.setVisibility(View.GONE);
                     updateEventButton.setVisibility(View.VISIBLE);
-
                     Toast.makeText(getContext(), "Error updating event details", Toast.LENGTH_SHORT).show();
+                    onComplete();
                 });
     }
 
+    public void onComplete(){
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
     public void getFragment(Fragment fragment) {
         requireActivity().getSupportFragmentManager()
                 .beginTransaction()

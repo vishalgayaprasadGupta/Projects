@@ -1,12 +1,14 @@
 package com.example.myapplication.ManageEvents;
 
+import com.google.firebase.firestore.Exclude;
+
 public class Workshop {
-    String eventName,workshopTitle,workshopDescription,workshopDate,activityStartTime,activityEndTime;
-    String workshopVenue,availability,registrationFees,specialRequirements,activityId,eventId,eventType,activityType;
+    String eventName,workshopTitle,workshopDescription,workshopDate,activityStartTime,activityEndTime,status;
+    String workshopVenue,availability,registrationFees,specialRequirements,activityId,eventId,eventType,activityType,id;
 
     public Workshop(String eventName,String workshopTitle, String workshopDescription, String workshopDate,
                     String workshopVenue, String availability, String registrationFees, String specialRequirements,
-                    String eventId,String eventType,String activityType,String activityStartTime,String activityEndTime) {
+                    String eventId,String eventType,String activityType,String activityStartTime,String activityEndTime,String status) {
         this.workshopTitle = workshopTitle;
         this.workshopDescription = workshopDescription;
         this.workshopDate = workshopDate;
@@ -20,6 +22,23 @@ public class Workshop {
         this.eventName=eventName;
         this.activityStartTime=activityStartTime;
         this.activityEndTime=activityEndTime;
+        this.status=status;
+    }
+
+    @Exclude
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getActivityStartTime() {

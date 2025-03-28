@@ -6,12 +6,6 @@
             android:id="@+id/setting"
             android:title="Settings" />
     </group>
-    <group android:id="@+id/breaker2">
-        <item
-            android:icon="@drawable/share"
-            android:id="@+id/share"
-            android:title="Share" />
-    </group>
     <group android:id="@+id/breaker3">
         <item
             android:icon="@drawable/support"

@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,31 +14,37 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.RegisteredEvents.RegisteredEventsList;
+import com.example.myapplication.adminfragements.AdminHome;
+import com.example.myapplication.fragements.AboutUsPage;
 import com.example.myapplication.fragements.Announcement;
+import com.example.myapplication.fragements.SettingPage;
+import com.example.myapplication.fragements.Support;
 import com.example.myapplication.fragements.UserHome;
-import com.example.myapplication.fragements.UserProfile;
+import com.example.myapplication.ManageUser.UserProfile;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class UserHomePage extends AppCompatActivity {
+public class UserHomePage extends AppCompatActivity implements Announcement.NotificationListener {
     DrawerLayout drawerLayout;
     ImageButton DrawerButtonToggle;
     TextView userName,userEmail,welcomeName,Date;
     FirebaseUser user;
     FirebaseAuth mAuth;
     BottomNavigationView bottomNavigationView;
+    View notificationDot;
     NavigationView navigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +67,7 @@ public class UserHomePage extends AppCompatActivity {
         userEmail=headerview.findViewById(R.id.email);
         welcomeName=findViewById(R.id.welcome);
         Date=findViewById(R.id.date);
+        notificationDot = findViewById(R.id.notification_dot);
 
 
         DrawerButtonToggle=findViewById(R.id.DrawerButtonToggle);
@@ -76,19 +85,46 @@ public class UserHomePage extends AppCompatActivity {
 
                 int id=item.getItemId();
                 if(id==R.id.logout){
-                    mAuth.signOut();
-                    Toast.makeText(UserHomePage.this, "Logout Succesfully", Toast.LENGTH_SHORT).show();
-                    Intent intent=new Intent(UserHomePage.this,LoginPage.class);
-                    startActivity(intent);
-                    finish();
+                    AlertDialog.Builder builder = new android.app.AlertDialog.Builder(UserHomePage.this);
+                    builder.setTitle("Logout");
+                    builder.setMessage(" Are you sure you want to Logout ?");
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mAuth.signOut();
+                            Toast.makeText(UserHomePage.this, "Logout Succesfully", Toast.LENGTH_SHORT).show();
+                            Intent intent=new Intent(UserHomePage.this,LoginPage.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            drawerLayout.closeDrawer(GravityCompat.START);
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
+
                 }else if(id==R.id.setting){
                     Toast.makeText(UserHomePage.this, "Settng Page ", Toast.LENGTH_SHORT).show();
-                }else if(id==R.id.share){
-                    Toast.makeText(UserHomePage.this, "Share Page ", Toast.LENGTH_SHORT).show();
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    getFragment(new SettingPage());
+                }else if(id==R.id.registerEvents){
+                    Toast.makeText(UserHomePage.this, "Register Events Page ", Toast.LENGTH_SHORT).show();
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    getFragment( new RegisteredEventsList());
                 }else if(id==R.id.support){
                     Toast.makeText(UserHomePage.this, "Support Page ", Toast.LENGTH_SHORT).show();
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    getFragment(new Support());
                 }else if(id==R.id.info){
                     Toast.makeText(UserHomePage.this, "Info Page ", Toast.LENGTH_SHORT).show();
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    getFragment(new AboutUsPage());
                 }
                 return true;
             }
@@ -117,16 +153,29 @@ public class UserHomePage extends AppCompatActivity {
                 return true;
             }
         });
+        checkForNotifications();
     }
 
-    public void getFragment(Fragment fragment){
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragement_layout,fragment)
-                .addToBackStack(null)
-                .commit();
-    }
+    private void checkForNotifications() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        db.collection("Notifications")
+                .whereEqualTo("seen", false)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        notificationDot.setVisibility(View.VISIBLE);
+                    } else {
+                        notificationDot.setVisibility(View.GONE);
+                    }
+                });
+    }
+    @Override
+    public void markNotificationsAsRead() {
+        if (notificationDot != null) {
+            notificationDot.setVisibility(View.GONE);
+        }
+    }
     public void onBackPressButton() {
         if (bottomNavigationView.getSelectedItemId() == R.id.Home) {
             AlertDialog dialog = new AlertDialog.Builder(this)
@@ -138,7 +187,6 @@ public class UserHomePage extends AppCompatActivity {
                     .setNegativeButton("No", (dialog1, which) -> dialog1.dismiss())
                     .setCancelable(true)
                     .create();
-
             dialog.setCanceledOnTouchOutside(true);
             dialog.show();
         } else {
@@ -159,7 +207,6 @@ public class UserHomePage extends AppCompatActivity {
                 SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d");
                 String currentDate = sdf.format(Calendar.getInstance().getTime());
                 Date.setText(currentDate);
-
             }else{
                 Toast.makeText(this, "Update your profile!", Toast.LENGTH_SHORT).show();
             }
@@ -170,5 +217,20 @@ public class UserHomePage extends AppCompatActivity {
             Toast.makeText(this, "UserProfile not Authenticiated", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    public void getFragment(Fragment fragment) {
+        if (fragment instanceof AdminHome) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragement_layout, fragment)
+                    .commit();
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragement_layout, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 }

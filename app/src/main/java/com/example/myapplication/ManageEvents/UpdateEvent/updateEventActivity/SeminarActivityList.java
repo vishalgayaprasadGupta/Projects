@@ -18,8 +18,7 @@ import android.widget.Toast;
 import com.example.myapplication.Adapter.SeminarActivtiyListAdapater;
 import com.example.myapplication.ManageEvents.UpdateEvent.UpdatePage;
 import com.example.myapplication.R;
-import com.example.myapplication.fragements.CollegeEventActivityDetails;
-import com.example.myapplication.fragements.Seminar;
+import com.example.myapplication.ManageEvents.Seminar;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ public class SeminarActivityList extends Fragment {
     private RecyclerView activityRecyclerView;
     private FirebaseFirestore db;
     private SeminarActivtiyListAdapater activityAdapter;
-    private String eventId = "";
+    private String eventId = "",startDate,endDate;
 
     public SeminarActivityList() {
         // Required empty public constructor
@@ -45,6 +44,8 @@ public class SeminarActivityList extends Fragment {
         if (getArguments() != null) {
             eventId = getArguments().getString("eventId");
             Log.d("CollegeEventActivities", "Received eventId: " + eventId);
+            startDate=getArguments().getString("startDate");
+            endDate=getArguments().getString("endDate");
         }
 
         activityRecyclerView = view.findViewById(R.id.activityRecyclerView);
@@ -63,11 +64,13 @@ public class SeminarActivityList extends Fragment {
                             String activityId = getArguments().getString("activityId");
                             String eventId=getArguments().getString("eventId");
                             String eventType=getArguments().getString("eventType");
-                            // Pass activityId to the previous fragment
+
                             Bundle bundle = new Bundle();
                             bundle.putString("activityId", activityId);
                             bundle.putString("eventId",eventId);
                             bundle.putString("eventType",eventType);
+                            bundle.putString("startDate",startDate);
+                            bundle.putString("endDate",endDate);
                             UpdatePage updatePage = new UpdatePage();
                             updatePage.setArguments(bundle);
                             getFragment(updatePage);
@@ -78,7 +81,6 @@ public class SeminarActivityList extends Fragment {
                 }
         );
 
-        // Set the click listener
         activityAdapter.setOnItemClickListener(this::onItemClick);
 
         fetchActivities(eventId);
@@ -86,8 +88,8 @@ public class SeminarActivityList extends Fragment {
     }
 
     private void fetchActivities(String eventId) {
-        db.collection("EventActivities") // Assuming your Firestore collection is named "activity"
-                .whereEqualTo("eventId", eventId) // Match the eventId field in Firestore
+        db.collection("EventActivities")
+                .whereEqualTo("eventId", eventId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -112,6 +114,7 @@ public class SeminarActivityList extends Fragment {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                requireActivity().getSupportFragmentManager().popBackStack();
                 dialog.dismiss();
             }
         });
@@ -129,6 +132,8 @@ public class SeminarActivityList extends Fragment {
         bundle.putString("activityId", activtiyId);
         bundle.putString("eventType",eventType);
         bundle.putString("eventId",eventId);
+        bundle.putString("startDate",startDate);
+        bundle.putString("endDate",endDate);
         activitiesFragment.setArguments(bundle);
         getFragment(activitiesFragment);
     }

@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,12 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
-import com.example.myapplication.SendGridPackage.OrganiserRequestApproveEmail;
-import com.example.myapplication.SendGridPackage.OrganiserRequestRejectEmail;
 import com.example.myapplication.SendGridPackage.VolunteerApprovalRequestEmail;
 import com.example.myapplication.SendGridPackage.VolunteerRequestRejectEmail;
 import com.example.myapplication.eventOrganiser.EventOrganiserHome;
-import com.example.myapplication.eventOrganiser.ManageEventOrganiser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -151,16 +147,12 @@ public class UpdateVolunteerPendingRequest extends Fragment {
                                         VolunteerApprovalRequestEmail sendEmail=new VolunteerApprovalRequestEmail();
                                         sendEmail.volunteerApprovalRequestEmail(VolunteerEmail,VolunteerName,organiserUID,organiserName);
                                         Toast.makeText(getContext(), "Event Volunteer Request approved successfully!", Toast.LENGTH_SHORT).show();
-                                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                                        fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                                         getFragment(new EventOrganiserHome());
                                     })
                                     .addOnFailureListener(e -> {
                                         approveButton.setEnabled(true);
                                         approveProgressbar.setVisibility(View.INVISIBLE);
                                         Toast.makeText(getContext(), "Failed to approve Event organiser, Try again!: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                                        fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                                         getFragment(new EventOrganiserHome());
                                     });
                         }
@@ -169,14 +161,13 @@ public class UpdateVolunteerPendingRequest extends Fragment {
                         approveButton.setEnabled(true);
                         approveProgressbar.setVisibility(View.INVISIBLE);
                         Toast.makeText(getContext(), "Error finding user: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                        fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                        getFragment(new EventOrganiserHome());
+                        getActivity().getSupportFragmentManager().popBackStack();
                     });
         }else {
             approveButton.setEnabled(true);
             approveProgressbar.setVisibility(View.INVISIBLE);
-            Toast.makeText(getContext(), "Error fetching organiser details", Toast.LENGTH_SHORT).show();
+            getActivity().getSupportFragmentManager().popBackStack();
+            Toast.makeText(getContext(), "Error fetching volunteer details", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -193,14 +184,17 @@ public class UpdateVolunteerPendingRequest extends Fragment {
                                     VolunteerRequestRejectEmail sendEmail=new VolunteerRequestRejectEmail();
                                     sendEmail.volunteerRequestRejectEmail(email,VolunteerName,organiserUID,organiserName);
                                     Toast.makeText(getContext(), "User rejected successfully!", Toast.LENGTH_SHORT).show();
+                                    getFragment(new EventOrganiserHome());
                                 })
                                 .addOnFailureListener(e -> {
                                     rejectButton.setEnabled(true);
                                     rejectProgressbar.setVisibility(View.INVISIBLE);
+                                    getActivity().getSupportFragmentManager().popBackStack();
                                     Toast.makeText(getContext(), "Failed to delete user: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 });
                     }else{
                         Toast.makeText(getContext(), "User not found!", Toast.LENGTH_SHORT).show();
+                        getActivity().getSupportFragmentManager().popBackStack();
                         rejectButton.setEnabled(true);
                         rejectProgressbar.setVisibility(View.INVISIBLE);
                     }
@@ -208,6 +202,7 @@ public class UpdateVolunteerPendingRequest extends Fragment {
                 .addOnFailureListener(e -> {
                     rejectButton.setEnabled(true);
                     rejectProgressbar.setVisibility(View.INVISIBLE);
+                    getActivity().getSupportFragmentManager().popBackStack();
                     Toast.makeText(getContext(), "Error finding user: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
         rejectButton.setEnabled(true);

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
+import com.example.myapplication.SendGridPackage.sendAccountDeActivatedEmail;
 import com.example.myapplication.User;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -27,6 +28,7 @@ public class DeActivateUser extends Fragment {
     private RecyclerView recyclerView;
     private DeActivateUserAdapter adapter;
     private List<User> userList;
+    sendAccountDeActivatedEmail sendEmail=new sendAccountDeActivatedEmail();
     public DeActivateUser() {
         // Required empty public constructor
     }
@@ -54,15 +56,38 @@ public class DeActivateUser extends Fragment {
 
         fetchActiveUsers();
 
-        adapter.setOnItemClickListener((uid, position) -> {
-            deActivateUser(uid, position);
-        });
+        try {
+            adapter.setOnItemClickListener((uid, position) -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Confirm");
+                builder.setMessage("Confirm User DeActivation");
 
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deActivateUser(uid, position);
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+            });
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Error Occured "+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
         return view;
     }
 
     private void fetchActiveUsers() {
         firestore.collection("User")
+                .whereEqualTo("role", "User")
                 .whereEqualTo("status", "Active")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -84,22 +109,25 @@ public class DeActivateUser extends Fragment {
         firestore.collection("User").document(uid)
                 .update("status", "Inactive")
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getActivity(), "User DeActivated successfully!", Toast.LENGTH_SHORT).show();
+                    sendEmail.sendDeactivatedEmail(userList.get(position).getEmail(),userList.get(position).getName());
+                    Toast.makeText(requireContext(), "User DeActivated successfully!", Toast.LENGTH_SHORT).show();
 
                     userList.get(position).setStatus("Active");
                     adapter.notifyItemChanged(position);
-
-                    redirectToFragment(new manageUser());
+                    back();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getActivity(), "Failed to activate user", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Failed to deactivate user", Toast.LENGTH_SHORT).show();
                 });
     }
 
+    public void back(){
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
     private void showNoUserDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("No User");
-        builder.setMessage("No De-Activated user is found");
+        builder.setMessage("No Active user is found");
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override

@@ -5,9 +5,7 @@ import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +13,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.TextView;
 
-import com.example.myapplication.ManageEvents.UpdateEvent.InterCollegeEventList;
-import com.example.myapplication.ManageEvents.UpdateEvent.SeminarEventList;
-import com.example.myapplication.ManageEvents.UpdateEvent.WorkshopEventList;
 import com.example.myapplication.R;
-import com.example.myapplication.manageEvents;
 
 public class OrganiserDeleteEventCategory extends Fragment {
     View view;
@@ -56,9 +50,7 @@ public class OrganiserDeleteEventCategory extends Fragment {
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
-                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                         getActivity().getSupportFragmentManager().popBackStack();
-                        getFragment(new ManageOrganiserEvents());
                     }
                 });
 
@@ -80,7 +72,9 @@ public class OrganiserDeleteEventCategory extends Fragment {
         deleteInterCollegeEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragment(new OrganiserInterCollegeEventListForDelete());
+                Fragment fragment=new OrganiserInterCollegeEventListForDelete();
+                fragment.setArguments(bundle);
+                getFragment(fragment);
             }
         });
 
@@ -88,7 +82,9 @@ public class OrganiserDeleteEventCategory extends Fragment {
         deleteWorkshopEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragment(new OrganiserWorkshopEventListForDelete());
+                Fragment fragment=new OrganiserWorkshopEventListForDelete();
+                fragment.setArguments(bundle);
+                getFragment(fragment);
             }
         });
 
@@ -96,7 +92,9 @@ public class OrganiserDeleteEventCategory extends Fragment {
         deleteSeminarEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragment(new OrganiserSeminarEventListForDelete());
+                Fragment fragment=new OrganiserSeminarEventListForDelete();
+                fragment.setArguments(bundle);
+                getFragment(fragment);
             }
         });
 
@@ -117,14 +115,10 @@ public class OrganiserDeleteEventCategory extends Fragment {
             }
 
             @Override
-            public void onAnimationEnd(Animation animation) {
-                // Optional: You can add additional behavior after the animation ends
-            }
+            public void onAnimationEnd(Animation animation) {}
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
-                // Not needed in this case
-            }
+            public void onAnimationRepeat(Animation animation) {}
         });
 
         cardView.startAnimation(fadeIn);

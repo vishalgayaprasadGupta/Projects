@@ -29,7 +29,7 @@ public class InterCollegeActivityList extends Fragment {
     private RecyclerView activityRecyclerView;
     private FirebaseFirestore db;
     private InterCollegeActivityListAdapter activityAdapter;
-    private String eventId = "";
+    private String eventId = "",startDate,endDate;
 
     public InterCollegeActivityList() {
         // Required empty public constructor
@@ -43,6 +43,8 @@ public class InterCollegeActivityList extends Fragment {
         if (getArguments() != null) {
             eventId = getArguments().getString("eventId");
             Log.d("CollegeEventActivities", "Received eventId: " + eventId);
+            startDate=getArguments().getString("startDate");
+            endDate=getArguments().getString("endDate");
         }
 
         activityRecyclerView = view.findViewById(R.id.activityRecyclerView);
@@ -53,7 +55,7 @@ public class InterCollegeActivityList extends Fragment {
         activityRecyclerView.setAdapter(activityAdapter);
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),  // Safely attached to view lifecycle
+                getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
@@ -61,11 +63,13 @@ public class InterCollegeActivityList extends Fragment {
                             String activityId = getArguments().getString("activityId");
                             String eventId=getArguments().getString("eventId");
                             String eventType=getArguments().getString("eventType");
-                            // Pass activityId to the previous fragment
+
                             Bundle bundle = new Bundle();
                             bundle.putString("activityId", activityId);
                             bundle.putString("eventId",eventId);
                             bundle.putString("eventType",eventType);
+                            bundle.putString("startDate",startDate);
+                            bundle.putString("endDate",endDate);
                             UpdatePage updatePage = new UpdatePage();
                             updatePage.setArguments(bundle);
                             getFragment(updatePage);
@@ -73,9 +77,8 @@ public class InterCollegeActivityList extends Fragment {
                             requireActivity().getSupportFragmentManager().popBackStack();
                         }
                     }
-                }
-        );
-        // Set the click listener
+                });
+
         activityAdapter.setOnItemClickListener(this::onItemClick);
 
         fetchActivities(eventId);
@@ -83,8 +86,8 @@ public class InterCollegeActivityList extends Fragment {
     }
 
     private void fetchActivities(String eventId) {
-        db.collection("EventActivities") // Assuming your Firestore collection is named "activity"
-                .whereEqualTo("eventId", eventId) // Match the eventId field in Firestore
+        db.collection("EventActivities")
+                .whereEqualTo("eventId", eventId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -93,7 +96,7 @@ public class InterCollegeActivityList extends Fragment {
                             showNoEventDialog();
                         } else {
                             activityAdapter = new InterCollegeActivityListAdapter(activity);
-                            activityAdapter.setOnItemClickListener(this::onItemClick); // Re-attach the listener
+                            activityAdapter.setOnItemClickListener(this::onItemClick);
                             activityRecyclerView.setAdapter(activityAdapter);
                         }
                     } else {
@@ -109,6 +112,7 @@ public class InterCollegeActivityList extends Fragment {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                requireActivity().getSupportFragmentManager().popBackStack();
                 dialog.dismiss();
             }
         });
@@ -125,6 +129,8 @@ public class InterCollegeActivityList extends Fragment {
         bundle.putString("activityId", activtiyId);
         bundle.putString("eventType",eventType);
         bundle.putString("eventId",eventId);
+        bundle.putString("startDate",startDate);
+        bundle.putString("endDate",endDate);
         activitiesFragment.setArguments(bundle);
         getFragment(activitiesFragment);
     }

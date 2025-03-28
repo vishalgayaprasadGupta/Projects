@@ -6,18 +6,23 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.myapplication.R;
 import com.example.myapplication.eventOrganiser.ManageOrganiserEvents;
 import com.example.myapplication.fragements.InterCollegeEvents;
 import com.example.myapplication.fragements.SeminarsEvent;
 import com.example.myapplication.fragements.WorkshopsEvents;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class OrganiserEventCategory extends Fragment {
 
@@ -25,7 +30,9 @@ public class OrganiserEventCategory extends Fragment {
     View view;
     private CardView collegeEventsCard, interCollegeEventCard, workshopEventCard, seminarEventCard;
     String stream,department;
-
+    FirebaseFirestore db;
+    FirebaseUser user;
+    String uid,collegeName;
 
     public OrganiserEventCategory() {
         // Required empty public constructor
@@ -46,6 +53,10 @@ public class OrganiserEventCategory extends Fragment {
         animateCardView(workshopEventCard, 800);
         animateCardView(seminarEventCard, 1200);
 
+        db=FirebaseFirestore.getInstance();
+        user= FirebaseAuth.getInstance().getCurrentUser();
+        uid=user.getUid();
+
         CollegeEvents=view.findViewById(R.id.CollegeEvents);
         InterCollegeEvents=view.findViewById(R.id.interCollegeEvent);
         Workshops=view.findViewById(R.id.workshopEvent);
@@ -58,6 +69,7 @@ public class OrganiserEventCategory extends Fragment {
             System.out.println("department at View event " + department);
         }
 
+        fetchCollegeName(uid);
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
                 new OnBackPressedCallback(true) {
@@ -89,6 +101,7 @@ public class OrganiserEventCategory extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("stream", stream);
                 bundle.putString("department", department);
+                bundle.putString("collegeName", collegeName);
                 Fragment fragment = new OrganiserWorkshopEvent();
                 fragment.setArguments(bundle);
                 getFragment(fragment);
@@ -101,6 +114,7 @@ public class OrganiserEventCategory extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("stream", stream);
                 bundle.putString("department", department);
+                bundle.putString("collegeName", collegeName);
                 Fragment fragment = new OrganiserSeminarEvent();
                 fragment.setArguments(bundle);
                 getFragment(fragment);
@@ -113,6 +127,7 @@ public class OrganiserEventCategory extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("stream", stream);
                 bundle.putString("department", department);
+                bundle.putString("collegeName", collegeName);
                 Fragment fragment = new OrganiserInterCollegeEvent();
                 fragment.setArguments(bundle);
                 getFragment(fragment);
@@ -125,6 +140,7 @@ public class OrganiserEventCategory extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("stream", stream);
                 bundle.putString("department", department);
+                bundle.putString("collegeName", collegeName);
                 Fragment fragment = new OrganiserCollegeEvent();
                 fragment.setArguments(bundle);
                 getFragment(fragment);
@@ -168,5 +184,17 @@ public class OrganiserEventCategory extends Fragment {
                     .addToBackStack(null)
                     .commit();
         }
+    }
+    public void fetchCollegeName(String uid){
+        db.collection("User").document(uid).get().addOnSuccessListener(documentSnapshot -> {
+            if(documentSnapshot.exists()){
+                collegeName=documentSnapshot.getString("college");
+                Log.d("Event", "College Name 2: " + collegeName);
+            }else{
+                Toast.makeText(getContext(), "No user found", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(getContext(), "Error fetching admin name", Toast.LENGTH_SHORT).show();
+        });
     }
 }

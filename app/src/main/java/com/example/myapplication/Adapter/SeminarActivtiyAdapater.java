@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.fragements.Seminar;
+import com.example.myapplication.ManageEvents.Seminar;
 
 
 import androidx.annotation.NonNull;

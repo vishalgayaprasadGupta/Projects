@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,9 @@ import android.widget.Toast;
 import com.example.myapplication.Event;
 import com.example.myapplication.Adapter.EventAdapter;
 import com.example.myapplication.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -28,8 +32,10 @@ public class InterCollegeEvents extends Fragment {
     private View view;
     private RecyclerView recyclerView;
     private FirebaseFirestore db;
+    FirebaseUser user;
     private EventAdapter eventAdapter;
     private Button explore;
+    String uid,collegeName;
 
     public InterCollegeEvents() {
         // Required empty public constructor
@@ -41,11 +47,15 @@ public class InterCollegeEvents extends Fragment {
         recyclerView = view.findViewById(R.id.eventsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
+        user= FirebaseAuth.getInstance().getCurrentUser();
+        uid=user.getUid();
         db = FirebaseFirestore.getInstance();
+        if(getArguments()!=null){
+            collegeName=getArguments().getString("collegeName");
+        }
         eventAdapter = new EventAdapter(new ArrayList<>());
         eventAdapter.setOnItemClickListener(this::onItemClick);
         recyclerView.setAdapter(eventAdapter);
-
         fetchEvents();
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
@@ -62,37 +72,47 @@ public class InterCollegeEvents extends Fragment {
     }
 
     private void fetchEvents() {
-        db.collection("InterCollegiate Events").get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<Event> events = task.getResult().toObjects(Event.class);
-                        List<Event> filteredEvents = new ArrayList<>();
-                        for (Event event : events) {
-                            if (!"Deleted".equals(event.getEventStatus())) {
-                                filteredEvents.add(event);
-                            }
-                        }
-                        if (filteredEvents.isEmpty()) {
-                            showNoEventDialog();
-                        } else {
-                            eventAdapter = new EventAdapter(filteredEvents);
-                            eventAdapter.setOnItemClickListener(this::onItemClick);
-                            recyclerView.setAdapter(eventAdapter);
-                        }
-                    } else {
-                        Toast.makeText(getActivity(), "Error fetching events", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        Log.d("Event", "College Name 3: " + collegeName);
+        db.collection("InterCollegiate Events").addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Toast.makeText(getActivity(), "Error fetching events", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (value == null || value.isEmpty()) {
+                showNoEventDialog();
+                return;
+            }
+            List<Event> filteredEvents = new ArrayList<>();
+            for (DocumentSnapshot doc : value.getDocuments()) {
+                Event event = doc.toObject(Event.class);
+                if (event.getCollege()!=null && event != null && !"Deleted".equals(event.getEventStatus())
+                        && !event.getCollege().equals(collegeName.trim())) {
+                    filteredEvents.add(event);
+                }
+            }
+            if(filteredEvents.isEmpty()){
+                showNoEventDialog();
+            }else {
+                eventAdapter = new EventAdapter(filteredEvents);
+                eventAdapter.setOnItemClickListener(this::onItemClick);
+                recyclerView.setAdapter(eventAdapter);
+            }
+        });
     }
+
     private void showNoEventDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("No Event");
         builder.setMessage("No activity or event is there");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                getFragment(new UserHome());
+                if(getActivity()!=null){
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }else{
+                    getFragment(new ViewEventCategory());
+                }
             }
         });
         AlertDialog dialog = builder.create();
@@ -101,7 +121,7 @@ public class InterCollegeEvents extends Fragment {
     }
 
     public void getFragment(Fragment fragment) {
-        requireActivity().getSupportFragmentManager()
+        getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragement_layout, fragment)
                 .addToBackStack(null)

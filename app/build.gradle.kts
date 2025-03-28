@@ -76,6 +76,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("com.google.code.gson:gson:2.8.8")
 
+    //qrcode
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
     //Razorpay
     implementation ("com.razorpay:checkout:1.6.40")
 }

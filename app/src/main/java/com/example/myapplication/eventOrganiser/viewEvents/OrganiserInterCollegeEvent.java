@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.example.myapplication.Event;
 import com.example.myapplication.R;
 import com.example.myapplication.fragements.InterCollegeEventActivities;
 import com.example.myapplication.fragements.UserHome;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ public class OrganiserInterCollegeEvent extends Fragment {
     private RecyclerView recyclerView;
     private FirebaseFirestore db;
     private EventAdapter eventAdapter;
-    String stream,department;
+    String stream,department,collegeName;
 
     public OrganiserInterCollegeEvent() {
         // Required empty public constructor
@@ -53,6 +55,8 @@ public class OrganiserInterCollegeEvent extends Fragment {
         if(getArguments()!=null) {
             stream = getArguments().getString("stream");
             department = getArguments().getString("department");
+            collegeName = getArguments().getString("collegeName");
+            Log.d("Event", "College Name 2: " + collegeName);
             System.out.println("stream at View inter college event 1 " + stream);
             System.out.println("department at View inter college event 1 " + department);
         }
@@ -85,28 +89,32 @@ public class OrganiserInterCollegeEvent extends Fragment {
         return view;
     }
     private void fetchEvents() {
-        db.collection("InterCollegiate Events").whereEqualTo("eventStream", stream)
-                .whereEqualTo("eventDepartment", department).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<Event> events = task.getResult().toObjects(Event.class);
-                        List<Event> filteredEvents = new ArrayList<>();
-                        for (Event event : events) {
-                            if (!"Deleted".equals(event.getEventStatus())) {
-                                filteredEvents.add(event);
-                            }
-                        }
-                        if (filteredEvents.isEmpty()) {
-                            showNoEventDialog();
-                        } else {
-                            eventAdapter = new EventAdapter(filteredEvents);
-                            eventAdapter.setOnItemClickListener(this::onItemClick);
-                            recyclerView.setAdapter(eventAdapter);
-                        }
-                    } else {
-                        Toast.makeText(getActivity(), "Error fetching events", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        Log.d("Event", "College Name 3: " + collegeName);
+        db.collection("InterCollegiate Events").addSnapshotListener((value, error) -> {
+            if (error != null) {
+                Toast.makeText(getActivity(), "Error fetching events", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (value == null || value.isEmpty()) {
+                showNoEventDialog();
+                return;
+            }
+            List<Event> filteredEvents = new ArrayList<>();
+            for (DocumentSnapshot doc : value.getDocuments()) {
+                Event event = doc.toObject(Event.class);
+                if (event.getCollege()!=null && event != null && !"Deleted".equals(event.getEventStatus())
+                        && !event.getCollege().equals(collegeName.trim())) {
+                    filteredEvents.add(event);
+                }
+            }
+            if(filteredEvents.isEmpty()){
+                showNoEventDialog();
+            }else {
+                eventAdapter = new EventAdapter(filteredEvents);
+                eventAdapter.setOnItemClickListener(this::onItemClick);
+                recyclerView.setAdapter(eventAdapter);
+            }
+        });
     }
     private void showNoEventDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

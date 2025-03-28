@@ -12,23 +12,26 @@ import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
+import com.example.myapplication.SendGridPackage.UserAddedEmail;
 import com.example.myapplication.User;
-import com.example.myapplication.manageEvents;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -37,13 +40,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.List;
 
 public class AddUser extends Fragment {
 
     TextView back;
     Button addUser;
-    TextInputEditText name,college,email,phone,password;
+    TextInputEditText name,email,phone,password,confirmPassword;
+    Spinner collegeSpinner;
     RadioGroup radioGroup;
     ProgressBar addUserProgressbar;
     FirebaseFirestore firestore;
@@ -51,8 +58,9 @@ public class AddUser extends Fragment {
     static final String USER = "User";
     CollectionReference userData;
     User user;
-    String uid,Gender,Role,Status,isVerficationEmailSend,isEmailVerified;
+    String uid,Gender,Role,Status,isVerficationEmailSend,isEmailVerified,selectedCollege="";
     RadioButton selectedRadioButton;
+    UserAddedEmail sendEmail;
     public AddUser() {
         // Required empty public constructor
     }
@@ -70,10 +78,16 @@ public class AddUser extends Fragment {
             }});
 
         name=view.findViewById(R.id.editName);
-        college=view.findViewById(R.id.editCollege);
+        collegeSpinner = view.findViewById(R.id.collegeSpinner);
         email=view.findViewById(R.id.editEmailAddress);
         phone=view.findViewById(R.id.editPhone);
         password=view.findViewById(R.id.editPassword);
+        confirmPassword=view.findViewById(R.id.editConfirmPassword);
+        firestore= FirebaseFirestore.getInstance();
+        userData = firestore.collection(USER);
+        mAuth= FirebaseAuth.getInstance();
+
+        loadCollege();
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
@@ -90,9 +104,7 @@ public class AddUser extends Fragment {
         isVerficationEmailSend="false";
         isEmailVerified="false";
         radioGroup=view.findViewById(R.id.radioGroupGender);
-        firestore= FirebaseFirestore.getInstance();
-        userData = firestore.collection(USER);
-        mAuth= FirebaseAuth.getInstance();
+
 
         addUser=view.findViewById(R.id.addUser);
         addUser.setOnClickListener(new View.OnClickListener() {
@@ -113,17 +125,14 @@ public class AddUser extends Fragment {
                 }
                 String EmailId = email.getText().toString();
                 String Contact = phone.getText().toString();
-                String College = college.getText().toString();
                 String Password = password.getText().toString();
+                String ConfirmPassword=confirmPassword.getText().toString();
 
-                validateInput(Username,College,EmailId,Contact,Password);
+                validateInput(Username,selectedCollege,EmailId,Contact,Password,ConfirmPassword);
             }
         });
 
         return view;
-    }
-    private boolean isValidPhoneNumber(String phone) {
-        return phone.matches("\\d{10}");
     }
     public void getFragment(Fragment fragment){
         getActivity().getSupportFragmentManager()
@@ -133,29 +142,101 @@ public class AddUser extends Fragment {
                 .commit();
     }
 
-    public void validateInput(String Username,String College,String EmailId,String Contact,String Password){
+    private void loadCollege() {
+        firestore.collection("College").document("CollegeList").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot doc = task.getResult();
+                if (doc.exists()) {
+                    String collegeField = "CollegeNames";
+                    List<String> college = (List<String>) doc.get(collegeField);
+                    Log.d("Firestore", "Fetching field: " + collegeField);
+
+                    if (college != null) {
+                        college.add(0, "Select College");
+                        ArrayAdapter<String> collegeAdapter = new ArrayAdapter<>(requireActivity(),
+                                android.R.layout.simple_spinner_item, college);
+                        collegeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        collegeSpinner.setAdapter(collegeAdapter);
+
+                        collegeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                selectedCollege = college.get(position);
+                            }
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+                                // Do nothing
+                            }
+                        });
+                    } else {
+                        Toast.makeText(requireContext(), "No college selected!", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "College does not exist!", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(requireContext(), "Failed to load college!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void validateInput(String Username, String selectedCollege, String EmailId, String Contact, String Password, String ConfirmPassword) {
+        Username = Username.trim();
+        selectedCollege = selectedCollege.trim();
+        EmailId = EmailId.trim();
+        Contact = Contact.trim();
+        Password = Password.trim();
+        ConfirmPassword = ConfirmPassword.trim();
+
         int radioButtonId = radioGroup.getCheckedRadioButtonId();
         if (radioButtonId == -1) {
             Toast.makeText(getActivity(), "Please select your gender", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(TextUtils.isEmpty(Contact) || TextUtils.isEmpty(EmailId) || TextUtils.isEmpty(Username) || TextUtils.isEmpty(College) || TextUtils.isEmpty(Password) || TextUtils.isEmpty(Gender)){
+        if (TextUtils.isEmpty(Username) || TextUtils.isEmpty(EmailId) ||
+                TextUtils.isEmpty(Contact) || TextUtils.isEmpty(Password)|| TextUtils.isEmpty(ConfirmPassword)) {
             Toast.makeText(getActivity(), "All fields are mandatory!", Toast.LENGTH_LONG).show();
             return;
         }
-        if(!isValidPhoneNumber(Contact)){
-            Toast.makeText(getActivity(), "Invalid phone number", Toast.LENGTH_SHORT).show();
+        if(selectedCollege==null && selectedCollege.equals("Select College")){
+            Toast.makeText(getActivity(), "No College Selected", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        if(isNetworkAvailable()) {
-            user = new User(uid,Status,Role, Username, Gender, EmailId, Contact, College, Password,isVerficationEmailSend,isEmailVerified);
-            registerUser(EmailId, Password);
-        }else{
-            Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
+        if (!Username.matches("^[a-zA-Z]+(?: [a-zA-Z]+)*$")) {
+            name.setError("Invalid username! Only alphabets and spaces are allowed.");
+            Toast.makeText(getActivity(), "Invalid username! Only alphabets and spaces are allowed.", Toast.LENGTH_SHORT).show();
             return;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(EmailId).matches()) {
+            email.setError("Invalid email address!");
+            Toast.makeText(getActivity(), "Invalid email address!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!Contact.matches("\\d{10}")) {
+            phone.setError("Invalid phone number! Must be exactly 10 digits.");
+            Toast.makeText(getActivity(), "Invalid phone number! Must be exactly 10 digits.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (Password.length() < 8) {
+            password.setError("Password must be at least 8 characters long!");
+            Toast.makeText(getActivity(), "Password must be at least 8 characters long.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!Password.equals(ConfirmPassword)) {
+            password.setError("Passwords do not match!");
+            confirmPassword.setError("Passwords do not match!");
+            Toast.makeText(getActivity(), "Passwords do not match!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!isNetworkAvailable()) {
+            Toast.makeText(getActivity(), "Network error! Please check your connection.", Toast.LENGTH_SHORT).show();
+            return;
+        }else {
+            user = new User(uid, Status, Role, Username, Gender, EmailId, Contact, selectedCollege, isVerficationEmailSend, isEmailVerified);
+            registerUser(EmailId, Password);
         }
     }
+
 
     public void setDisplayName(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -191,13 +272,13 @@ public class AddUser extends Fragment {
                         addUserProgressbar.setEnabled(true);
                         addUser.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1E3C72")));
                         if (task.isSuccessful()) {
-                            sendVerificationEmail();
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             if(user!=null){
                                 setDisplayName();
                                 Log.d(TAG, "Register done ");
                                 Toast.makeText(getActivity(), "User added succesfully", Toast.LENGTH_SHORT).show();
+                                sendEmail.sendAcoountCreatedEmail(EmailId,name.getText().toString());
                                 if(isNetworkAvailable()) {
                                     updateUI(user);
                                 }else{
@@ -221,27 +302,12 @@ public class AddUser extends Fragment {
                 });
     }
 
-    public void sendVerificationEmail() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            user.sendEmailVerification()
-                    .addOnCompleteListener(requireActivity(), task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getContext(), " Activation link has been sent to organiser email", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(requireActivity(), "Error sending verification email", Toast.LENGTH_LONG).show();
-                            Log.e("EmailVerification", "Error sending verification email: " + task.getException());
-                        }
-                    });
-        }
-    }
-
     public void updateUI(FirebaseUser user){
         if (user != null) {
             if(isNetworkAvailable()) {
                 uid = user.getUid();
                 User userdata = new User(uid,Status,Role, name.getText().toString(), Gender, email.getText().toString(),
-                        phone.getText().toString(), college.getText().toString(), password.getText().toString(),isVerficationEmailSend,isEmailVerified);
+                        phone.getText().toString(),selectedCollege,isVerficationEmailSend,isEmailVerified);
                 userData.document(uid).set(userdata).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                       getFragment(new manageUser());
