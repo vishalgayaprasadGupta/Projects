@@ -169,6 +169,7 @@ public class addOrganiserEvent extends Fragment {
                     String selectedDateString = formatDate(selectedDay, selectedMonth + 1, selectedYear);
                     startDate.setText(selectedDateString);
                 }, year, month, day);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
         datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
         calendar.add(Calendar.MONTH, 2);
         datePickerDialog.getDatePicker().setMaxDate(calendar.getTimeInMillis());

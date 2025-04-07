@@ -136,7 +136,6 @@ public class manageUser extends Fragment {
                     dialog.dismiss();
                 })
                 .show();
-
     }
 
     private void fetchUserData() {

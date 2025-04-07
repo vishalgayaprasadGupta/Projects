@@ -393,6 +393,78 @@ public class PdfExporter {
         }
     }
 
+    public void generateVolunteerDetails(Context context,List<Map<String, Object>> userList) {
+        try {
+            File pdfFile;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Downloads.DISPLAY_NAME, "VolunteerDetails.pdf");
+                values.put(MediaStore.Downloads.MIME_TYPE, "application/pdf");
+                values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+
+                Uri uri = context.getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+                OutputStream outputStream = context.getContentResolver().openOutputStream(uri);
+
+                PdfWriter writer = new PdfWriter(outputStream);
+                PdfDocument pdfDocument = new PdfDocument(writer);
+                pdfDocument.setDefaultPageSize(PageSize.A4.rotate());
+
+                Document document = new Document(pdfDocument);
+                document.setMargins(10, 10, 10, 10);
+
+                Paragraph title = new Paragraph("Volunteer Details")
+                        .setBold()
+                        .setFontSize(18)
+                        .setTextAlignment(TextAlignment.CENTER)
+                        .setFontColor(ColorConstants.BLUE);
+                document.add(title);
+                document.add(new Paragraph("\n"));
+
+                float[] columnWidths = {100, 30, 50, 50, 100, 50, 50};
+                Table table = new Table(UnitValue.createPercentArray(columnWidths));
+                table.setWidth(UnitValue.createPercentValue(100));
+
+                String[] headers = {"Name", "Gender", "Email", "Phone", "College", "Stream","Department"};
+                for (String header : headers) {
+                    Cell headerCell = new Cell().add(new Paragraph(header)
+                                    .setBold().setFontSize(10))
+                            .setBackgroundColor(ColorConstants.CYAN)
+                            .setTextAlignment(TextAlignment.CENTER)
+                            .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                            .setPadding(2)
+                            .setBorder(new SolidBorder(1));
+                    table.addHeaderCell(headerCell);
+                }
+
+                for (Map<String, Object> user : userList) {
+                    table.addCell(new Cell().add(new Paragraph((String) user.getOrDefault("name", "N/A")))
+                            .setFontSize(9).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell().add(new Paragraph((String) user.getOrDefault("gender", "N/A")))
+                            .setFontSize(9).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell().add(new Paragraph((String) user.getOrDefault("email", "N/A")))
+                            .setFontSize(9).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell().add(new Paragraph((String) user.getOrDefault("contact", "N/A")))
+                            .setFontSize(9).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell().add(new Paragraph((String) user.getOrDefault("college", "N/A")))
+                            .setFontSize(9).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell().add(new Paragraph((String) user.getOrDefault("stream", "N/A")))
+                            .setFontSize(9).setTextAlignment(TextAlignment.CENTER));
+                    table.addCell(new Cell().add(new Paragraph((String) user.getOrDefault("department", "N/A")))
+                            .setFontSize(9).setTextAlignment(TextAlignment.CENTER));
+                }
+                document.add(table);
+                document.close();
+
+                Toast.makeText(context.getApplicationContext(), "PDF saved to Downloads!", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(context.getApplicationContext(), "PDF Downlaoding format error", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            Log.e("PDF", "Error generating PDF: ", e);
+            Toast.makeText(context.getApplicationContext(), "Error downloading PDF!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void generateOrganiserDetails(Context context,List<Map<String, Object>> userList) {
         try {
             File pdfFile;
