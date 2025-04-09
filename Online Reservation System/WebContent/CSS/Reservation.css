@@ -1,0 +1,42 @@
+@charset "ISO-8859-1";
+.Container {
+    width: 100%;
+    height: 100vh;
+    background-color: #559193;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column; 
+}
+
+.section {
+    background: #CFC5C5;
+    padding: 12px; 
+    border: 1px solid black;
+    border-radius: 30px;
+    width: 100%;
+    max-width: 600px;
+    margin-top: 100px; 
+    margin-bottom: 100px;
+    justify-content: center; 
+    align-items: center;
+    text-align: center; 
+}
+
+ .section input[type="text"], 
+    .section input[type="date"], 
+    .section select {
+        margin: 5px 0;
+    }
+
+    .section input[type="radio"] {
+        margin: 0 5px; 
+    }
+
+    .form{
+  	 font-weight: bold;
+     border: 3px solid black;
+     background : 	#808080;
+     border-radius: 30px;
+     opacity:0.6;
+    }

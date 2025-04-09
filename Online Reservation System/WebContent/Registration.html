@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<link rel="stylesheet" type="text/css" href="CSS/style.css" >
+<script>
+function redirectToPage() {
+    window.location.href = 'Login.html'; // Change 'targetPage.html' to your target page
+}
+</script>
+<title>Registration Portal(VISHAL GUPTA)</title>
+</head>
+<body>
+	<div class="container">
+	<div class="LoginSection" >
+	<form action="RegistrationServlet" method="POST">
+		<div class="A">
+			<h2>WELCOME TO RESERVATION PORTAL</h2>
+		</div>
+		<div class="B">
+		<h2><span style="margin-left:50px;"> Enter Details </span><br></h2>
+			UserName : <input type="text" id="UserName" name="uname" required />
+		<br></br>
+			Password :&nbsp;&nbsp; <input type="password" id="Password" name="upass" required />
+		<br><br>
+			Enter Email : <input type="email" name="email" required />
+		<br><br>
+			<div class="C">
+				<input type="submit" value="SIGN UP" name="Login" /><br><br>
+				Already have an account ? <br>
+				<input type="button" value="Sign In"  onclick="redirectToPage()"/>			
+			</div>
+		
+	</form>
+	</div>
+</div>
+</body>
+</html>

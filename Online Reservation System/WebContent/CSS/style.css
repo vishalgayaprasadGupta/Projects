@@ -1,0 +1,34 @@
+.container{
+    width: 100%;
+    height: 100vh;
+    background-color: #559193;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.LoginSection{
+	background:#CFC5C5;
+    padding: 100px;
+    border: 1px solid black;
+    border-radius: 30px;
+}
+.A{
+	height: 110px;
+	color: #47a689;
+	position:relative;
+	top:-40px;
+}
+.B{
+	position:relative;
+	top:-60px;
+	bottom:-20px;
+	left:50px;
+	
+}
+
+.C {
+     position:relative;
+    left:40;
+
+}
+

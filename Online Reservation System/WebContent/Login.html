@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<link rel="stylesheet" type="text/css" href="CSS/style.css" >
+<script>
+function redirectToPage() {
+    window.location.href = 'Registration.html'; 
+}
+</script>
+<title>Reservation Portal</title>
+</head>
+<body>
+<div class="container">
+	<div class="LoginSection" >
+	<form action="LoginServlet" method="POST">
+		<div class="A">
+			<h2>WELCOME TO RESERVATION PORTAL</h2>
+		</div>
+		<div class="B">
+		<h2><span style="margin-left:50px;"> Enter Credentials </span><br></h2>
+			UserName : <input type="text" id="UserName" name="uname" required />
+		<br></br>
+			Password  :&nbsp;&nbsp; <input type="password" id="Password" name="upass" required />
+		<br><br>
+			<div class="C">
+				<input type="submit" value="SIGN IN" name="Login" /><br><br>
+				Don't have an account ? <br>
+				<input type="button" value="Sign Up" onClick="redirectToPage()" />
+			</div>
+		</div>
+	</form>
+	</div>
+</div>
+</body>
+</html>
