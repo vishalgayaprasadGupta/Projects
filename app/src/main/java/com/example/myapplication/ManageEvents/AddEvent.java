@@ -399,7 +399,7 @@ public class AddEvent extends Fragment {
         String status = "Active";
 
         documentId = db.collection(collectionName).document().getId();
-        Event event = new Event(name, eventType, status, selectedStream, selectedDepartment, startDate.getText().toString(), endDate.getText().toString(), eventCollege);
+        Event event = new Event(name, eventType, status, selectedStream, selectedDepartment, startDate.getText().toString(), endDate.getText().toString(), selectedCollege);
         event.setEventId(documentId);
 
         db.collection(collectionName).document(documentId).set(event)
